@@ -1,18 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import store from './redux/store';
+import muiTheme from './components/common/CustomTheme';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-import { StylesProvider } from '@material-ui/core/styles';
+import '@fontsource/roboto';
 
 ReactDOM.render(
   <BrowserRouter>
     <StylesProvider injectFirst>
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <ThemeProvider theme={muiTheme}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </ThemeProvider>
     </StylesProvider>
   </BrowserRouter>,
   document.getElementById('root'),

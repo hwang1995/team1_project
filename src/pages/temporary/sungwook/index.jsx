@@ -1,13 +1,46 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
+import { useEffect } from 'react';
+import ClrButton from './components/ClrButton';
+import MedicineDrawer from './components/MedicineDrawer';
+import Divider from '@material-ui/core/Divider';
+import PageHeader from '../../../components/common/PageHeader';
+const SungwookPage = (props) => {
+  const [isOpened, setOpened] = useState(false);
+  const [medData, setMedData] = useState([]);
 
-const SungwookPage = () => {
+  useEffect(() => {
+    if (medData.length === 0) {
+      return;
+    }
+
+    console.log(medData);
+  }, [medData]);
+
   return (
-    <div>
-      여기에 마음껏 내용을 작성하시면 됩니다. Lorem ipsum dolor sit amet
-      consectetur adipisicing elit. Doloribus aliquam ipsum odit minus ratione,
-      at in eum sequi ea facere recusandae explicabo illum doloremque culpa quam
-      tempora quos, soluta cum.
-    </div>
+    <Fragment>
+      <PageHeader />
+      <Divider />
+      <div style={{ padding: '1rem' }}>
+        <ClrButton
+          setcolor="aliceblue"
+          size="medium"
+          onClick={() => setOpened(!isOpened)}
+        >
+          MedicineDrawer 열기
+        </ClrButton>
+        <MedicineDrawer
+          isOpened={isOpened}
+          setOpened={setOpened}
+          setMedData={setMedData}
+        />
+        {medData.length !== 0 &&
+          medData.map((data) => (
+            <div>
+              <p>{data.medicine_id}</p>
+            </div>
+          ))}
+      </div>
+    </Fragment>
   );
 };
 
