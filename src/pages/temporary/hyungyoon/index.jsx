@@ -1,27 +1,84 @@
+import ColoredButton from './components/ColoredRadiusButton';
+import ColorTable from './utils/ColorTable';
+import FontColorTable from './utils/FontColorTable';
+import NoticeDrawer from './components/NoticeDrawer';
+import LoginOutButton from './components/LoginOutButton';
+import Header from './components/Header';
 import React from 'react';
-import ColoredButton from './components/ColoredButton';
-import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
+import CollapsibleTable from './components/CollapsibleTable';
+import SearchBar from './components/SearchBar';
+import AddIcon from '@material-ui/icons/Add';
+import notfound from './resources/notfound.png';
+import notfoundhistory from './resources/notfoundhistory.png';
 
-const StyledButton = styled(Button)`
-  background-color: #6772e5;
-  color: #fff;
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  padding: 7px 14px;
-  &:hover {
-    background-color: #5469d4;
-  }
-`;
 const HyungyoonPage = () => {
   return (
     <div>
-      <StyledButton size="large">hello world </StyledButton>
-      <ColoredButton color="aliceblue">SI HYN</ColoredButton>
-      <br />
-      여기에 마음껏 내용을 작성하시면 됩니다. Lorem ipsum dolor sit amet
-      consectetur adipisicing elit. Doloribus aliquam ipsum odit minus ratione,
-      at in eum sequi ea facere recusandae explicabo illum doloremque culpa quam
-      tempora quos, soluta cum.
+      공지사항
+      <NoticeDrawer />
+      <hr />
+      <div>
+        buttons
+        <ColoredButton color={ColorTable.color_info}>
+          정보를 보여줘야 할 때에 (알려줄 때에)
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_warning}>
+          정보를 수정해야 할 때에
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_error}>
+          정보를 삭제 할 때에 (위험한 경우)
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_add_info}>
+          정보를 추가해야할 경우
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_login}>
+          로그인 버튼
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_reservation}>
+          진료 예약
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_reservation_cancel}>
+          진료 취소
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_injector_add}>
+          주사 처방
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_medicine_add}>
+          약 처방
+        </ColoredButton>
+        <ColoredButton color={ColorTable.color_hyungyoon}>
+          내가만든버튼
+        </ColoredButton>
+        <ColoredButton fontcolor={FontColorTable.color_moresee}>
+          <AddIcon />
+          더보기
+        </ColoredButton>
+      </div>
+      <hr />
+      <div>
+        CollapsibleTable
+        <CollapsibleTable />
+      </div>
+      <div>
+        LoginOutButton
+        <LoginOutButton color={ColorTable.color_login}>로그인</LoginOutButton>
+        <LoginOutButton>로그아웃</LoginOutButton>
+      </div>
+      <hr />
+      <div>
+        Header
+        <Header />
+      </div>
+      <hr />
+      <div>
+        SearchBar
+        <SearchBar />
+      </div>
+      <hr />
+      <div>
+        <img src={notfound} alt="Logo" width="200" />
+        <img src={notfoundhistory} alt="Logo" width="100" />
+      </div>
     </div>
   );
 };
