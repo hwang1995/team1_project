@@ -16,10 +16,6 @@ const TitleHeader = styled.div`
     font-size: 2rem;
     font-weight: 300;
   }
-
-  & + & {
-    margin-left: 0.5rem;
-  }
 `;
 
 export default TitleHeader;

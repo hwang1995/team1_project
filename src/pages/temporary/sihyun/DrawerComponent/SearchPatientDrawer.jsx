@@ -1,13 +1,13 @@
 import {useEffect} from "react";
-import {SearchList} from "./ComponentItems";
-import {SearchTypography} from "./ComponentItems";
+import {SearchList} from "../../../../components/common/ComponentItems";
+import {SearchTypography} from "../../../../components/common/ComponentItems";
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import PatientData from "../json/patient.json";
-import { CloseButton } from './ComponentItems';
+import { CloseButton } from '../../../../components/common/ComponentItems';
 import { GrClose } from 'react-icons/gr';
 import { Fragment } from 'react';
 

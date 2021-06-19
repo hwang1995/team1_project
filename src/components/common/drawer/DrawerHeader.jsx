@@ -6,17 +6,17 @@ const DrawerHeader = styled.div`
   top: 0;
   align-items: center;
   margin: 20px 0 20px 0;
-  min-width: 320px;
-  width: ${({ breakpoint }) => {
+  /* min-width: 320px; */
+  /* width: ${({ breakpoint }) => {
     const breakpointsWithWidth = {
       xs: '100%',
       sm: '100%',
-      md: '100%',
+      md: '600',
       lg: '912px',
       xl: '912px',
     };
     return breakpointsWithWidth[breakpoint];
-  }};
+  }}; */
 
   h1 {
     flex: 4;
@@ -30,7 +30,6 @@ const DrawerHeader = styled.div`
 
 DrawerHeader.defaultProps = {
   breakpoint: 'xs',
-  maxWidth: '912px',
 };
 
 export default DrawerHeader;

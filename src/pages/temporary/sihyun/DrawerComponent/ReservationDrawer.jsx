@@ -1,6 +1,6 @@
 import { useState , useEffect} from 'react';
-import { InfoDrawer } from './ComponentItems';
-import { FooterDrawer } from './ComponentItems';
+import { InfoDrawer } from '../../../../components/common/ComponentItems';
+import { FooterDrawer } from '../../../../components/common/ComponentItems';
 import InputComponent from '../InputComponent';
 import InformationButton from '../InformationButton';
 import RgbColor from '../util/rgb';

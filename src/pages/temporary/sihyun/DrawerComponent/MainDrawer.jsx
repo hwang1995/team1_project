@@ -1,7 +1,7 @@
 import { useState, useEffect} from 'react';
-import {BodyDiv} from "./ComponentItems";
-import  {CloseButton} from "./ComponentItems";
-import  {SearchDrawer} from "./ComponentItems";
+import {BodyDiv} from "../../../../components/common/ComponentItems";
+import  {CloseButton} from "../../../../components/common/ComponentItems";
+import  {SearchDrawer} from "../../../../components/common/ComponentItems";
 import ReservationDrawer from './ReservationDrawer';
 import SearchPatientDrawer from './SearchPatientDrawer';
 import { Fragment } from 'react';

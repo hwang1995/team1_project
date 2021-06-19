@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import { SwipeableDrawer, Container, Grid, Divider } from '@material-ui/core';
-import DrawerHeader from './DrawerHeader';
+import DrawerHeader from '../../../../components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
 import useWindowSize from 'hooks/useWindowSize';
-import SearchBox from './SearchBox';
+import SearchBox from '../../../../components/common/search/SearchBox';
 import Spinner from './Spinner';
 import InjectorData from '../injector';
 import InjectorItem from './InjectorItem';

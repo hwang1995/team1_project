@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import LoginButton from './LoginButton';
-import Profile from './Profile';
+import LoginButton from '../button/LoginButton';
+import Profile from '../profile/Profile';
 
 const PageContainer = styled.div`
   width: 100%;
