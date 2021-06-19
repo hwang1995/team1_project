@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
     ${reset}
     
     body {
-        font-family: 'Lato','Noto Sans KR', sans-serif;
+        font-family: 'Spoqa Han Sans', 'Lato','Noto Sans KR', sans-serif;
         letter-spacing: -0.2px;
     }
 
