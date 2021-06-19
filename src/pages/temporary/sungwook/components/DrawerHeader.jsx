@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 const DrawerHeader = styled.div`
   display: flex;
+  position: sticky;
+  top: 0;
   align-items: center;
   margin: 20px 0 20px 0;
   min-width: 320px;
@@ -13,15 +15,6 @@ const DrawerHeader = styled.div`
       lg: '912px',
       xl: '912px',
     };
-
-    // const breakpointsWithWidth = {
-    //   xs: '100%',
-    //   sm: '600px',
-    //   md: '600px',
-    //   lg: '912px',
-    //   xl: '912px',
-    // };
-
     return breakpointsWithWidth[breakpoint];
   }};
 

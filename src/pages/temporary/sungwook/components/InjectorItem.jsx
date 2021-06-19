@@ -4,14 +4,14 @@ import { AiOutlinePlusCircle, AiOutlineMinusCircle } from 'react-icons/ai';
 import ClrButton from './ClrButton';
 import SearchContainer from './SearchContainer';
 
-const SearchItem = ({ data, addMedicine }) => {
+const InjectorItem = ({ data, addInjector }) => {
   const [count, setCount] = useState(1);
 
   const addItem = useCallback(
     (data, count) => {
-      addMedicine({ ...data, count });
+      addInjector({ ...data, count });
     },
-    [addMedicine],
+    [addInjector],
   );
 
   const handlePlusBtn = useCallback(() => {
@@ -33,14 +33,14 @@ const SearchItem = ({ data, addMedicine }) => {
       <h2>{data.medicine_name}</h2>
       <p>
         약품 코드: {data.medicine_code} | 약품 타입 : {data.medicine_type} |
-        캡슐 타입 : {data.medicine_unit}
+        주사 타입 : {data.medicine_unit}
       </p>
       <div className="button-area">
         <div className="count-container">
           <IconButton type="button" onClick={handlePlusBtn}>
             <AiOutlinePlusCircle size={24} />
           </IconButton>
-          <span className="text-area">{count}</span>
+          <div className="text-area">{count}</div>
           <IconButton type="button" onClick={handleMinusBtn}>
             <AiOutlineMinusCircle size={24} />
           </IconButton>
@@ -57,4 +57,4 @@ const SearchItem = ({ data, addMedicine }) => {
   );
 };
 
-export default React.memo(SearchItem);
+export default React.memo(InjectorItem);

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import Avatar from '@material-ui/core/Avatar';
 import LoginButton from './LoginButton';
 import Profile from './Profile';
 
@@ -35,37 +34,33 @@ const PageContainer = styled.div`
   }
 `;
 
-const profileInfo1 = {
-  url: '/assets/image/doge.png',
-  name: 'Doge',
+const profileInfo3 = {
+  url: '/assets/image/nailon.png',
+  name: 'Elon Musk',
   role: 'Techno King',
-};
-
-const profileInfo2 = {
-  url: '/assets/image/avatar.png',
-  name: 'Karina',
-  role: 'Music Doctor',
 };
 
 const PageHeader = () => {
   const [isLogined, setLogined] = useState(false);
 
-  const handleLoginBtn = () => {
+  const handleLoginBtn = useCallback(() => {
     setLogined((prevState) => !prevState);
-  };
+  }, []);
+
   return (
     <PageContainer>
       <div className="left-side">
-        <img src="/assets/image/logo.png" alt="Logo" width="100%" />
+        <img src="/assets/image/logo_2.png" alt="Logo" width="100%" />
       </div>
       <div className="right-side">
         {/* <Profile data={profileInfo1} /> */}
-        <Profile data={profileInfo2} />
+        {isLogined ? <Profile data={profileInfo3} /> : ''}
+
         {/* <Avatar className="button-margin" src="/assets/image/doge.png" />
         <Avatar src="/assets/image/avatar.png" /> */}
         <LoginButton
           className="button-margin"
-          isLogined={isLogined}
+          islogined={isLogined.toString()}
           onClick={handleLoginBtn}
         >
           {isLogined ? 'Logout' : 'Login'}

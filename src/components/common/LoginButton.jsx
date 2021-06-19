@@ -6,7 +6,7 @@ const LoginButton = styled(Button)`
   font-family: 'Lato';
   border-radius: 0.7rem;
   /* padding: 0.6rem; */
-  color: ${({ isLogined }) => (isLogined ? '#1E4C7C' : 'black')};
+  color: ${({ islogined }) => (islogined !== 'false' ? '#1E4C7C' : 'black')};
   font-weight: 900;
   width: 6rem;
   font-size: 1rem;

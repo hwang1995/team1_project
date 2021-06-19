@@ -10,6 +10,7 @@ const SearchContainer = styled.div`
 
   p {
     font-weight: 300;
+
     margin-bottom: 0.5rem;
   }
 

@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import SearchContainer from './SearchContainer';
-import styled from 'styled-components';
 import ClrButton from './ClrButton';
 
 const MedicineItem = ({ data, removeMedicine }) => {

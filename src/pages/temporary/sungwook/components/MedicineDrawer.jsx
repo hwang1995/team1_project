@@ -57,9 +57,9 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
     }
 
     setOpened(open);
-    setLoading(false);
-    setSearchVal('');
-    setSelectedMed([]);
+    // setLoading(false);
+    // setSearchVal('');
+    // setSelectedMed([]);
   };
 
   const addMedicine = useCallback((data) => {
@@ -119,8 +119,11 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
             </div>
           </DrawerHeader>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <SearchBox setSearchVal={setSearchVal} />
+            <Grid item xs={12} sm={6}>
+              <SearchBox
+                setSearchVal={setSearchVal}
+                placeholder="약 이름을 입력해주세요."
+              />
               {searchVal === '' && (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <img
@@ -149,6 +152,7 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     marginTop: '1rem',
+                    width: '100%',
                     height: '90vh',
                     overflowY: 'scroll',
                   }}
@@ -157,7 +161,7 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
                   {MedicineData.filter(({ medicine_name }) =>
                     medicine_name.includes(searchVal),
                   ).map((data) => (
-                    <Fragment>
+                    <Fragment key={data.medicine_name}>
                       <Divider />
                       <SearchItem data={data} addMedicine={addMedicine} />
                     </Fragment>
@@ -165,7 +169,7 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
                 </div>
               )}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <div
                 style={{
                   display: 'flex',

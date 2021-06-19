@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
  * 해당 기기의 해상도가 바뀌는 경우에 감지하기 위한 커스텀 훅
  * @returns {object}
  */
-function useWindowSize() {
+const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
@@ -42,6 +42,6 @@ function useWindowSize() {
   }, []);
 
   return windowSize;
-}
+};
 
 export default useWindowSize;

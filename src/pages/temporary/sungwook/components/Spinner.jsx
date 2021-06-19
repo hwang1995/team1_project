@@ -9,7 +9,9 @@ const override = css`
 `;
 
 const Spinner = ({ isLoading }) => (
-  <PuffLoader color="red" loading={isLoading} css={override} size={150} />
+  <div style={{ width: '100%' }}>
+    <PuffLoader color="red" loading={isLoading} css={override} size={150} />
+  </div>
 );
 
 export default Spinner;

@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from 'react';
-import { useTheme } from '@material-ui/styles';
 import styled from 'styled-components';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
@@ -20,7 +19,7 @@ const SearchBase = styled(InputBase)`
   font-weight: 700;
 `;
 
-const SearchBox = ({ setSearchVal }) => {
+const SearchBox = ({ setSearchVal, placeholder }) => {
   const [inputVal, setInputVal] = useState('');
 
   const handleChange = (event) => {
@@ -43,11 +42,12 @@ const SearchBox = ({ setSearchVal }) => {
     }
     setSearchVal(inputVal);
   };
+
   return (
     <Fragment>
       <SearchContainer>
         <SearchBase
-          placeholder="약 이름을 입력해주세요."
+          placeholder={placeholder}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
         />
