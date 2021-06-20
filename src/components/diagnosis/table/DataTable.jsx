@@ -1,5 +1,5 @@
 import React from 'react';
-import Rows from '../diagnosis';
+import Rows from './diagnosis';
 import { DataGrid } from '@material-ui/data-grid';
 
 const columns = [

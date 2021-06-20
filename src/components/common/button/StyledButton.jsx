@@ -7,6 +7,10 @@ const StyledButton = styled(Button)`
   border-radius: 12px;
   background-color: ${({ bgColor }) => bgColor || 'purple'};
   color: ${({ color }) => color};
+
+  & + & {
+    margin-left: 0.5rem;
+  }
 `;
 
 StyledButton.defaultProps = {

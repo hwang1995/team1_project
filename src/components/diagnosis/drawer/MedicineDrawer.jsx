@@ -1,48 +1,52 @@
 import React, { Fragment, useEffect, useState, useCallback } from 'react';
-import { SwipeableDrawer, Container, Grid, Divider } from '@material-ui/core';
-import DrawerHeader from '../../../../components/common/drawer/DrawerHeader';
+import { SwipeableDrawer, Grid, Divider } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
+import SearchItem from '../container/SearchItem';
+import MedicineData from '../../../pages/dashboard/diagnosis/medicine';
 import useWindowSize from 'hooks/useWindowSize';
-import SearchBox from '../../../../components/common/search/SearchBox';
-import Spinner from '../../../../components/common/spinner/Spinner';
-import InjectorData from '../injector';
-import InjectorItem from './InjectorItem';
+import Spinner from 'components/common/spinner/Spinner';
+import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
+import DrawerHeader from 'components/common/drawer/DrawerHeader';
+import SearchBox from 'components/common/search/SearchBox';
+import MedicineItem from '../container/MedicineItem';
 
-const InjectorDrawer = ({ isOpened, setOpened }) => {
+const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
   const { breakpoint } = useWindowSize();
   const [searchVal, setSearchVal] = useState('');
-  const [selInjector, setSelInjector] = useState([]);
+  const [selectedMed, setSelectedMed] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (breakpoint === undefined) return;
-  }, [breakpoint]);
+  const toggleDrawer = (open) => (e) => {
+    if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
+      return;
+    }
+    setOpened(open);
+  };
 
   useEffect(() => {
-    if (searchVal === '') return;
-    console.log(searchVal);
+    if (searchVal === '') {
+      return;
+    }
+
     setLoading(false);
-
+    // 임시로 딜레이 부여
     setTimeout(() => {
       setLoading(true);
     }, 1000);
+
+    console.log('검색 창에서 searchVal이 변경되었습니다', searchVal);
   }, [searchVal]);
 
-  useEffect(() => {
-    if (selInjector === []) {
-      return;
-    }
-    console.log('addInjector', selInjector);
-  }, [selInjector]);
-
-  const addInjector = useCallback((data) => {
+  const addMedicine = useCallback((data) => {
     const findItem = (element) => {
-      if (element.medicine_id === data.medicine_id) return true;
+      if (element.medicine_id === data.medicine_id) {
+        return true;
+      }
     };
 
-    setSelInjector((prevState) => {
+    setSelectedMed((prevState) => {
       const newState = prevState;
-
+      // 중복 체크
       const isDuplicatedItem = newState.find(findItem);
 
       if (isDuplicatedItem) {
@@ -53,27 +57,26 @@ const InjectorDrawer = ({ isOpened, setOpened }) => {
     });
   }, []);
 
-  const removeInjector = useCallback((data) => {
-    setSelInjector((prevState) => {
+  const removeMedicine = useCallback((data) => {
+    setSelectedMed((prevState) => {
       const newState = prevState.filter((dataInfo) => {
-        if (dataInfo.medicine_id === data.medicine_id) return false;
+        if (dataInfo.medicine_id === data.medicine_id) {
+          return false;
+        }
         return true;
       });
       return newState;
     });
   }, []);
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return;
-    }
 
-    setOpened(open);
-  };
-
+  const passStateToContainer = useCallback(
+    (medInfo) => {
+      setMedData(medInfo);
+      setOpened(false);
+      // console.log(medInfo);
+    },
+    [setMedData, setOpened],
+  );
   return (
     <Fragment>
       <SwipeableDrawer
@@ -82,19 +85,19 @@ const InjectorDrawer = ({ isOpened, setOpened }) => {
         onOpen={toggleDrawer(true)}
         onClose={toggleDrawer(false)}
       >
-        <Container maxWidth="md">
+        <ResponsiveContainer>
           <DrawerHeader breakpoint={breakpoint}>
-            <h1>주사 처방하기</h1>
+            <h1>약 처방 하기</h1>
             <div>
               <AiOutlineClose size={32} onClick={() => setOpened(false)} />
             </div>
           </DrawerHeader>
 
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+          <Grid container>
+            <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
               <SearchBox
                 setSearchVal={setSearchVal}
-                placeholder="주사 이름을 입력해주세요."
+                placeholder="약 이름을 입력해주세요"
               />
               {searchVal === '' && (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -125,27 +128,45 @@ const InjectorDrawer = ({ isOpened, setOpened }) => {
                     flexDirection: 'column',
                     marginTop: '1rem',
                     width: '100%',
-                    height: '90vh',
+                    height: '70vh',
                     overflowY: 'scroll',
                   }}
                 >
                   <Divider />
-                  {InjectorData.filter(({ medicine_name }) =>
+                  {MedicineData.filter(({ medicine_name }) =>
                     medicine_name.includes(searchVal),
                   ).map((data) => (
                     <Fragment key={data.medicine_name}>
                       <Divider />
-                      <InjectorItem data={data} addInjector={addInjector} />
+                      <SearchItem data={data} addMedicine={addMedicine} />
                     </Fragment>
                   ))}
                 </div>
               )}
             </Grid>
+            <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginTop: '1rem',
+                  height: '90vh',
+                  overflowY: 'scroll',
+                }}
+              >
+                {selectedMed.map((data) => (
+                  <Fragment>
+                    <Divider />
+                    <MedicineItem data={data} removeMedicine={removeMedicine} />
+                  </Fragment>
+                ))}
+              </div>
+            </Grid>
           </Grid>
-        </Container>
+        </ResponsiveContainer>
       </SwipeableDrawer>
     </Fragment>
   );
 };
 
-export default InjectorDrawer;
+export default MedicineDrawer;

@@ -8,13 +8,13 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 
 import useWindowSize from 'hooks/useWindowSize';
-import ClrButton from './components/ClrButton';
+import ClrButton from 'components/diagnosis/container/ClrButton';
 import MedicineDrawer from './components/MedicineDrawer';
 import PageHeader from '../../../components/common/header/PageHeader';
 import MenuSidebar from 'components/common/sidebar/MenuSidebar';
 import TitleHeader from '../../../components/common/header/TitleHeader';
-import DataTable from './components/DataTable';
-import DiagnosisDataPage from './components/DiagnosisDataInput';
+import DataTable from 'components/diagnosis/table/DataTable';
+import DiagnosisDataPage from '../../../components/diagnosis/container/DiagnosisDataInput';
 import InjectorDrawer from './components/InjectorDrawer';
 
 const getSteps = () => [
