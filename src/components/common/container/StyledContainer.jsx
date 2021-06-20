@@ -8,6 +8,10 @@ const StyledContainer = styled(Container)`
   padding: ${({ padding }) => {
     return padding + 'rem';
   }};
+
+  & + & {
+    margin-left: 0.5rem;
+  }
 `;
 
 StyledContainer.defaultProps = {

@@ -4,6 +4,7 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import { AiOutlineSearch } from 'react-icons/ai';
 
+
 const SearchContainer = styled.div`
   padding: 0.5rem;
   border-radius: 5px;
