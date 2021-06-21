@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import {
   Divider,
   Grid,
@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import { GiMedicines, GiLoveInjection } from 'react-icons/gi';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { useSelector } from 'react-redux';
+
 import useWindowSize from 'hooks/useWindowSize';
 import StyledButton from 'components/common/button/StyledButton';
 import PageHeader from 'components/common/header/PageHeader';
@@ -20,6 +22,7 @@ import DataTable from 'components/diagnosis/table/DataTable';
 import DiagnosisDataPage from 'components/diagnosis/container/DiagnosisDataInput';
 import MedicineDrawer from 'components/diagnosis/drawer/MedicineDrawer';
 import StyledTypography from 'components/common/typography/StyledTypography';
+import { useEffect } from 'react';
 const getSteps = () => [
   '진료할 환자를 선택해주세요.',
   '진료를 진행합니다.',
@@ -31,16 +34,21 @@ const DiagnosisPage = () => {
   const { breakpoint } = useWindowSize();
   const [isOpened, setOpened] = useState(false);
   const [injectorOpened, setInjectorOpened] = useState(false);
-  const [medData, setMedData] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState('');
   const [activeStep, setActiveStep] = useState(0);
-
+  const patientInfo = useSelector((state) => state.diagnosis.patient);
+  const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
   const handleNext = () => {
     setActiveStep((prevState) => {
-      if (selectedPatient === '') {
-        alert('환자를 선택해주세요');
+      if (patientInfo.id === 0) {
+        alert('환자를 선택해주세요.');
         return prevState;
       }
+
+      if (prevState === 1 && diagnosisInfo.dr_opinion === '') {
+        alert('의사 의견을 입력해주세요.');
+        return prevState;
+      }
+
       return prevState + 1;
     });
   };
@@ -54,14 +62,18 @@ const DiagnosisPage = () => {
     });
   };
 
+  useEffect(() => {
+    console.log('patientInfo의 변화가 감지 되었습니다.', patientInfo);
+  }, [patientInfo]);
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <DataTable setPatient={setSelectedPatient} />;
+        return <DataTable />;
       case 1:
         return (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <DiagnosisDataPage selectedPatient={selectedPatient} />
+            <DiagnosisDataPage />
+            {/* <DiagnosisDataPage selectedPatient={selectedPatient} /> */}
             <Grid container spacing={2}>
               <Grid item xs={5} sm={3} md={2}>
                 <StyledButton
@@ -155,11 +167,7 @@ const DiagnosisPage = () => {
               {getStepContent(activeStep)}
 
               {/* Medicine Drawer */}
-              <MedicineDrawer
-                isOpened={isOpened}
-                setOpened={setOpened}
-                setMedData={setMedData}
-              />
+              <MedicineDrawer isOpened={isOpened} setOpened={setOpened} />
 
               <div
                 style={{
@@ -167,7 +175,7 @@ const DiagnosisPage = () => {
                   justifyContent: 'space-between',
                   position: 'fixed',
                   padding: '0.5rem',
-                  width: '80%',
+                  width: 'calc(100% - 370px)',
                   bottom: 10,
                   zIndex: 1,
                 }}

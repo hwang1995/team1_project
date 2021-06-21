@@ -1,6 +1,11 @@
 import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import { SwipeableDrawer, Grid, Divider } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
+import {
+  addMedicineInfo,
+  removeMedicineInfo,
+} from 'redux/features/diagnosis/diagnosisSlice';
 import SearchItem from '../container/SearchItem';
 import MedicineData from '../../../pages/dashboard/diagnosis/medicine';
 import useWindowSize from 'hooks/useWindowSize';
@@ -10,11 +15,12 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import MedicineItem from '../container/MedicineItem';
 
-const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
+const MedicineDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
   const [searchVal, setSearchVal] = useState('');
-  const [selectedMed, setSelectedMed] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const medicineInfo = useSelector((state) => state.diagnosis.medicineInfo);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -37,46 +43,20 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
     console.log('검색 창에서 searchVal이 변경되었습니다', searchVal);
   }, [searchVal]);
 
-  const addMedicine = useCallback((data) => {
-    const findItem = (element) => {
-      if (element.medicine_id === data.medicine_id) {
-        return true;
-      }
-    };
-
-    setSelectedMed((prevState) => {
-      const newState = prevState;
-      // 중복 체크
-      const isDuplicatedItem = newState.find(findItem);
-
-      if (isDuplicatedItem) {
-        return prevState;
-      } else {
-        return [...newState, data];
-      }
-    });
-  }, []);
-
-  const removeMedicine = useCallback((data) => {
-    setSelectedMed((prevState) => {
-      const newState = prevState.filter((dataInfo) => {
-        if (dataInfo.medicine_id === data.medicine_id) {
-          return false;
-        }
-        return true;
-      });
-      return newState;
-    });
-  }, []);
-
-  const passStateToContainer = useCallback(
-    (medInfo) => {
-      setMedData(medInfo);
-      setOpened(false);
-      // console.log(medInfo);
+  const addMedicine = useCallback(
+    (data) => {
+      dispatch(addMedicineInfo(data));
     },
-    [setMedData, setOpened],
+    [dispatch],
   );
+
+  const removeMedicine = useCallback(
+    (data) => {
+      dispatch(removeMedicineInfo(data));
+    },
+    [dispatch],
+  );
+
   return (
     <Fragment>
       <SwipeableDrawer
@@ -154,7 +134,7 @@ const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
                   overflowY: 'scroll',
                 }}
               >
-                {selectedMed.map((data) => (
+                {medicineInfo.map((data) => (
                   <Fragment>
                     <Divider />
                     <MedicineItem data={data} removeMedicine={removeMedicine} />

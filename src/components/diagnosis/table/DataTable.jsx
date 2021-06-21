@@ -1,6 +1,8 @@
 import React from 'react';
-import Rows from './diagnosis';
+import { useDispatch } from 'react-redux';
 import { DataGrid } from '@material-ui/data-grid';
+import { setPatient } from 'redux/features/diagnosis/diagnosisSlice';
+import Rows from './diagnosis';
 
 const columns = [
   { field: 'diag_id', headerName: '순번', width: 120, type: 'number' },
@@ -10,10 +12,13 @@ const columns = [
   { field: 'start_date', headerName: '예약 시간', width: 150 },
   { field: 'visit_purpose', headerName: '내원 사유', width: 400 },
 ];
+const DataTable = () => {
+  const dispatch = useDispatch();
 
-const DataTable = ({ setPatient }) => {
   const handleClick = (event) => {
-    setPatient(event.row);
+    const { row } = event;
+    // console.log('dataTable', event.row);
+    dispatch(setPatient(row));
   };
   return (
     <div style={{ height: 500, width: '100%' }}>
