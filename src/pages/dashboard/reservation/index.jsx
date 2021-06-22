@@ -61,12 +61,38 @@ const ReservationPage = () => {
     endTime: '',
   });
 
+  const [addSchedule, setSchdule] = useState([
+    {
+      id: '1',
+      calendarId: '1',
+      title: '김형윤',
+      body: "정신진료",
+      category: 'time',
+      state: "정신진료",
+      dueDateClass: '',
+      start: 'Mon Jun 21 2021 12:00:00',
+      end: 'Mon Jun 21 2021 12:29:00',
+      bgColor: 'red',
+    },
+    {
+      id: '2',
+      calendarId: '1',
+      title: '황성욱',
+      category: 'time',
+      dueDateClass: '',
+      start: '2021-06-21T17:30:00+09:00',
+      end: '2021-06-21T18:00:00+09:00',
+      bgColor: 'blue',
+      isReadOnly: true, // schedule is read-only
+    },
+  ]);
+
   // 캘린더 헤더 부분에 위클리 데이트세팅
   const now = new Date();
   const weekNum = moment(now, 'MM-DD-YYYY').week();
   const initStartDate = moment().day('Sunday').week(weekNum).toDate();
   const initEndDate = moment().day('Saturday').week(weekNum).toDate();
-
+  console.log(now);
   const [titleDate, setTitleDate] = useState({
     startDate: moment(initStartDate).format('YYYY년 MM월 DD일'),
     endDate: moment(initEndDate).format('YYYY년 MM월 DD일'),
@@ -75,6 +101,11 @@ const ReservationPage = () => {
   useEffect(() => {
     if (calInstance === null) {
       setCalInstance(calendarRef.current.getInstance());
+       console.log('null: rendering');
+        //calInstance.createSchedules(addSchedule);
+    }else {
+      console.log("rendering");
+      calInstance.createSchedules(addSchedule);
     }
   }, [calInstance]);
 
@@ -86,6 +117,8 @@ const ReservationPage = () => {
       member_name,
       doctor_room,
     });
+    console.log("add", calInstance);
+     
   }, []);
 
   const handleMenuItemClick = useCallback(
@@ -113,6 +146,7 @@ const ReservationPage = () => {
 
   const handleNextClick = () => {
     calInstance.next();
+     console.log(calInstance.getDateRangeEnd().toDate());
     const startDate = moment(calInstance.getDateRangeStart().toDate()).format(
       'YYYY년 MM월 DD일',
     );
@@ -124,6 +158,8 @@ const ReservationPage = () => {
   };
 
   const onBeforeCreateSchedule = (e) => {
+    console.log(e.start.toDate());
+    
     const start = e.start;
     const end = e.end;
     const date =
@@ -143,6 +179,10 @@ const ReservationPage = () => {
     });
     setOpened(true);
   };
+
+  const addScheduleSet = (patient) => {
+    setSchdule(patient);
+  }
 
   return (
     <div>
@@ -241,6 +281,7 @@ const ReservationPage = () => {
                   view="week"
                   ref={calendarRef}
                   onBeforeCreateSchedule={onBeforeCreateSchedule}
+                  
                 />
               </div>
 

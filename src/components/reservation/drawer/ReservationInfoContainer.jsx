@@ -1,9 +1,31 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
+import StyledButton from 'components/common/button/StyledButton';
 
-const ReservationInfoContainer = ({ reservationTime, doctorInfo }) => {
+const ReservationInfoContainer = ({
+  reservationTime,
+  doctorInfo,
+  patientInfo,
+}) => {
+
+  const [visitReson, setReason] = useState("");
+  const handleReservationClick = () => {
+    if (patientInfo.patient_name === '' && patientInfo.patient_birth === '') {
+      alert('환자를 선택해주세요');
+    } else {
+      if (visitReson === '') {
+        alert('내원 사유를 적어주세요');
+      }
+    }
+  }
+
+  const visitReasonHandleChange = (event) => {
+      setReason(event.target.value);
+  }
+
+
   return (
     <Grid
       container
@@ -25,7 +47,7 @@ const ReservationInfoContainer = ({ reservationTime, doctorInfo }) => {
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly />
+        <StyledInputBase readOnly value={patientInfo.patient_name} />
       </Grid>
       <Grid
         item
@@ -40,7 +62,7 @@ const ReservationInfoContainer = ({ reservationTime, doctorInfo }) => {
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly />
+        <StyledInputBase readOnly value={patientInfo.patient_birth} />
       </Grid>
       <Grid
         item
@@ -80,12 +102,7 @@ const ReservationInfoContainer = ({ reservationTime, doctorInfo }) => {
           alignItems: 'center',
         }}
       >
-        <StyledTypography
-          variant="h6"
-          component="h5"
-          weight={5}
-          value={doctorInfo.member_name}
-        >
+        <StyledTypography variant="h6" component="h5" weight={5}>
           예약 종료
         </StyledTypography>
       </Grid>
@@ -135,7 +152,17 @@ const ReservationInfoContainer = ({ reservationTime, doctorInfo }) => {
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase />
+        <StyledInputBase onChange={visitReasonHandleChange}  value={visitReson}/>
+      </Grid>
+      <Grid item xs={12} style={{ textAlign: 'center', marginTop: '1.5em' }}>
+        <StyledButton
+          width="80%"
+          bgColor="rgb(30, 51, 71)"
+          color="white"
+          onClick={handleReservationClick}
+        >
+          진료예약
+        </StyledButton>
       </Grid>
     </Grid>
   );

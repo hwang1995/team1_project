@@ -22,5 +22,13 @@
     "doctor_room": "진료실3",
     "member_authority": "ROLE_DOCTOR",
     "hospital_name": "안녕병원"
+  },
+  {
+    "member_id": 4,
+    "member_email": "ghi@naver.com",
+    "member_name": "홍종현",
+    "doctor_room": "진료실4",
+    "member_authority": "ROLE_DOCTOR",
+    "hospital_name": "안녕병원"
   }
 ]
