@@ -35,9 +35,6 @@ const DiagnosisTextarea = styled.textarea`
 
 const DiagnosisDataPage = () => {
   const patientInfo = useSelector((state) => state.diagnosis.patient);
-  const medicineInfo = useSelector((state) => state.diagnosis.medicineInfo);
-  const injectorInfo = useSelector((state) => state.diagnosis.injectorInfo);
-  const diagnosticInfo = useSelector((state) => state.diagnosis.diagnosticInfo);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -52,10 +49,6 @@ const DiagnosisDataPage = () => {
       }),
     );
   };
-
-  useEffect(() => {
-    console.log('medicineInfo가 변경되었습니다.', medicineInfo);
-  }, [medicineInfo]);
 
   return (
     <Fragment>

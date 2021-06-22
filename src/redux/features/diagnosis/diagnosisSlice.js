@@ -47,7 +47,7 @@ export const diagnosisSlice = createSlice({
       const { medicineInfo } = state;
       // 아무런 값이 없는 경우
       const isExistItem = medicineInfo.findIndex((element) =>
-        element.medicine_id === action.payload.medicine_id ? true : false,
+        element.medicine_id === action.payload.medicine_id ? true : false
       );
 
       // 배열에 요소가 없거나, 새로운 아이템인 경우 바로 상태에 추가시킨다.
@@ -75,7 +75,7 @@ export const diagnosisSlice = createSlice({
       const { injectorInfo } = state;
       // 아무런 값이 없는 경우
       const isExistItem = injectorInfo.findIndex((element) =>
-        element.medicine_id === action.payload.medicine_id ? true : false,
+        element.medicine_id === action.payload.medicine_id ? true : false
       );
 
       // 배열에 요소가 없거나, 새로운 아이템인 경우 바로 상태에 추가시킨다.
@@ -103,7 +103,7 @@ export const diagnosisSlice = createSlice({
       const { diagnosticInfo } = state;
       // 아무런 값이 없는 경우
       const isExistItem = diagnosticInfo.findIndex((element) =>
-        element.medicine_id === action.payload.medicine_id ? true : false,
+        element.medicine_id === action.payload.medicine_id ? true : false
       );
 
       // 배열에 요소가 없거나, 새로운 아이템인 경우 바로 상태에 추가시킨다.

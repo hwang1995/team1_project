@@ -14,6 +14,7 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import MedicineItem from '../container/MedicineItem';
+import StyledTypography from 'components/common/typography/StyledTypography';
 
 const MedicineDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
@@ -73,17 +74,18 @@ const MedicineDrawer = ({ isOpened, setOpened }) => {
             </div>
           </DrawerHeader>
 
-          <Grid container>
+          <Grid container >
             <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
+              <div style={{border: '1px solid rgba(0,0,0,0.12)', padding: '1rem'}}>
               <SearchBox
                 setSearchVal={setSearchVal}
                 placeholder="약 이름을 입력해주세요"
               />
               {searchVal === '' && (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'center'}}>
                   <img
                     src="/assets/image/searchinfo.png"
-                    width="70%"
+                    width="100%"
                     alt="search"
                   />
                 </div>
@@ -123,23 +125,40 @@ const MedicineDrawer = ({ isOpened, setOpened }) => {
                   ))}
                 </div>
               )}
+              </div>
+
             </Grid>
             <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
+
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  marginTop: '1rem',
-                  height: '90vh',
+                  height: '80vh',
                   overflowY: 'scroll',
+                  border: '1px solid rgba(0,0,0,0.12)',
+                  padding: '1rem'
                 }}
               >
-                {medicineInfo.map((data) => (
+
+                {medicineInfo.length === 0 && (
+                  <Fragment>
+                    <StyledTypography variant="h5" component="h5" weight={9}>
+                      먼저 검색을 해주세요!
+                    </StyledTypography>
+                  </Fragment>
+                )}
+                              
+                {medicineInfo.length !== 0 && medicineInfo.map((data) => (
                   <Fragment>
                     <Divider />
                     <MedicineItem data={data} removeMedicine={removeMedicine} />
                   </Fragment>
                 ))}
+
+
+                
+
               </div>
             </Grid>
           </Grid>
