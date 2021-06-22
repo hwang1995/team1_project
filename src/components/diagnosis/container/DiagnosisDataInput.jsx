@@ -1,7 +1,9 @@
-import React, { useState, useCallback, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { InputBase, Grid } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useEffect } from 'react';
+import { setDiagnosisInfo } from 'redux/features/diagnosis/diagnosisSlice';
 
 const SearchBase = styled(InputBase)`
   flex: 1;
@@ -31,16 +33,23 @@ const DiagnosisTextarea = styled.textarea`
   font-family: 'Noto Sans KR';
 `;
 
-const DiagnosisDataPage = ({ selectedPatient }) => {
-  const [drOpinion, setDrOpinion] = useState('');
+const DiagnosisDataPage = () => {
+  const patientInfo = useSelector((state) => state.diagnosis.patient);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    setDrOpinion(e.target.value);
+    const { diag_id, member_id, patient_id } = patientInfo;
+    const dr_opinion = e.target.value;
+    dispatch(
+      setDiagnosisInfo({
+        diag_id,
+        member_id,
+        patient_id,
+        dr_opinion,
+      }),
+    );
   };
 
-  useEffect(() => {
-    console.log(drOpinion);
-  }, [drOpinion]);
   return (
     <Fragment>
       <Grid container style={{ padding: '1rem' }}>
@@ -48,25 +57,25 @@ const DiagnosisDataPage = ({ selectedPatient }) => {
           <DiagnosisLabel>이름</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={selectedPatient.patient_name} />
+          <SearchBase readOnly value={patientInfo.patient_name} />
         </Grid>
         <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>생년월일</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={selectedPatient.patient_birth} />
+          <SearchBase readOnly value={patientInfo.patient_birth} />
         </Grid>
         <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>성별</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={selectedPatient.patient_gender} />
+          <SearchBase readOnly value={patientInfo.patient_gender} />
         </Grid>
         <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>내원사유</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={selectedPatient.visit_purpose} />
+          <SearchBase readOnly value={patientInfo.visit_purpose} />
         </Grid>
         <Grid item xs={12} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>의사소견</DiagnosisLabel>

@@ -4,7 +4,7 @@ import DrawerHeader from '../../../../components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
 import useWindowSize from 'hooks/useWindowSize';
 import SearchBox from '../../../../components/common/search/SearchBox';
-import Spinner from './Spinner';
+import Spinner from '../../../../components/common/spinner/Spinner';
 import InjectorData from '../injector';
 import InjectorItem from './InjectorItem';
 

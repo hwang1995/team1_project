@@ -4,14 +4,14 @@ import Container from '@material-ui/core/Container';
 import { AiOutlineClose } from 'react-icons/ai';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
-import MedicineItem from './MedicineItem';
+import MedicineItem from '../../../../components/diagnosis/container/MedicineItem';
 import useWindowSize from '../../../../hooks/useWindowSize';
 import DrawerHeader from '../../../../components/common/drawer/DrawerHeader';
 import SearchBox from '../../../../components/common/search/SearchBox';
-import Spinner from './Spinner';
-import SearchItem from './SearchItem';
+import Spinner from '../../../../components/common/spinner/Spinner';
+import SearchItem from '../../../../components/diagnosis/container/SearchItem';
 import MedicineData from '../medicine.json';
-import ClrButton from './ClrButton';
+import ClrButton from 'components/diagnosis/container/ClrButton';
 
 const MedicineDrawer = ({ isOpened, setOpened, setMedData }) => {
   const { breakpoint } = useWindowSize();

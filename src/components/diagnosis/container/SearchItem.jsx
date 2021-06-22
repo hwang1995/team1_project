@@ -50,7 +50,7 @@ const SearchItem = ({ data, addMedicine }) => {
           setcolor="aliceblue"
           onClick={() => addItem(data, count)}
         >
-          Add
+          추가
         </ClrButton>
       </div>
     </SearchContainer>

@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from 'react-icons/ai';
-import ClrButton from './ClrButton';
-import SearchContainer from './SearchContainer';
+import ClrButton from 'components/diagnosis/container/ClrButton';
+import SearchContainer from 'components/diagnosis/container/SearchContainer';
 
 const InjectorItem = ({ data, addInjector }) => {
   const [count, setCount] = useState(1);

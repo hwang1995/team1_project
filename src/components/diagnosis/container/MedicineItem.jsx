@@ -17,8 +17,8 @@ const MedicineItem = ({ data, removeMedicine }) => {
           {data.medicine_name} | {data.count}개
         </h2>
         <div>
-          <ClrButton setcolor="red" onClick={() => handleRemoveBtn(data)}>
-            삭제
+          <ClrButton setcolor="#495057" onClick={() => handleRemoveBtn(data)}>
+            <span style={{ color: 'white' }}>삭제</span>
           </ClrButton>
         </div>
       </div>
