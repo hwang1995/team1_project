@@ -35,6 +35,8 @@ export const diagnosisSlice = createSlice({
       diagnostic: false,
       diagnosisHistory: false,
     },
+    modalStatus: false,
+    activeStep: 0,
   },
   reducers: {
     setPatient(state, action) {
@@ -175,6 +177,12 @@ export const diagnosisSlice = createSlice({
       });
       state.diagnosticInfo = filteredItem;
     },
+    setDiagnosisModal(state, action) {
+      state.modalStatus = action.payload;
+    },
+    setActiveStep(state, action) {
+      state.activeStep = action.payload;
+    },
   },
 });
 
@@ -194,6 +202,8 @@ export const {
   addDiagnosticGroupItem,
   removeDiagnosticGroupItem,
   setSearchDiagnosticInfo,
+  setDiagnosisModal,
+  setActiveStep,
 } = diagnosisSlice.actions;
 
 export default diagnosisSlice.reducer;

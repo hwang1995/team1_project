@@ -18,6 +18,8 @@ import {
   setInjectorDrawer,
   setDiagnosticDrawer,
   setDiagnosisHistoryDrawer,
+  setDiagnosisModal,
+  setActiveStep,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import StyledButton from 'components/common/button/StyledButton';
 import PageHeader from 'components/common/header/PageHeader';
@@ -31,6 +33,7 @@ import InjectorDrawer from 'components/diagnosis/drawer/InjectorDrawer';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DiagnosticDrawer from 'components/diagnosis/drawer/DiagnosticDrawer';
 import DiagnosisHistoryDrawer from 'components/diagnosis/drawer/DiagnosisHistoryDrawer';
+import DiagnosisModal from 'components/diagnosis/modal/DiagnosisModal';
 
 const getSteps = () => [
   '진료할 환자를 선택해주세요.',
@@ -41,38 +44,31 @@ const getSteps = () => [
 const DiagnosisPage = () => {
   const steps = getSteps();
   const dispatch = useDispatch();
-  const [activeStep, setActiveStep] = useState(0);
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
+  const activeStep = useSelector((state) => state.diagnosis.activeStep);
 
   const handleNext = () => {
-    setActiveStep((prevState) => {
-      if (patientInfo.id === 0) {
-        alert('환자를 선택해주세요.');
-        return prevState;
-      }
-
-      if (prevState === 1 && diagnosisInfo.dr_opinion === '') {
-        alert('의사 의견을 입력해주세요.');
-        return prevState;
-      }
-
-      return prevState + 1;
-    });
+    if (patientInfo.id === 0) {
+      alert('환자를 선택해주세요.');
+      return;
+    } else if (activeStep === 1 && diagnosisInfo.dr_opinion === '') {
+      alert('의사 의견을 입력해주세요.');
+      return;
+    } else if (activeStep === 1 && diagnosisInfo.dr_opinion !== '') {
+      dispatch(setDiagnosisModal(true));
+      return;
+    }
+    dispatch(setActiveStep(activeStep + 1));
   };
 
   const handleBack = () => {
-    setActiveStep((prevState) => {
-      if (prevState < 1) {
-        return prevState;
-      }
-      return prevState - 1;
-    });
+    if (activeStep < 1) {
+      return;
+    }
+    dispatch(setActiveStep(activeStep - 1));
   };
 
-  useEffect(() => {
-    console.log('patientInfo의 변화가 감지 되었습니다.', patientInfo);
-  }, [patientInfo]);
   const getStepContent = (step) => {
     switch (step) {
       case 0:
@@ -206,7 +202,7 @@ const DiagnosisPage = () => {
               <InjectorDrawer />
               <DiagnosticDrawer />
               <DiagnosisHistoryDrawer />
-
+              <DiagnosisModal />
               <div
                 style={{
                   display: 'flex',
