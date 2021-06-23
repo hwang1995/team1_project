@@ -4,7 +4,6 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import { AiOutlineSearch } from 'react-icons/ai';
 
-
 const SearchContainer = styled.div`
   padding: 0.5rem;
   border-radius: 5px;
@@ -20,9 +19,8 @@ const SearchBase = styled(InputBase)`
   font-weight: 700;
 `;
 
-const SearchBox = ({ setSearchVal, placeholder }) => {
+const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
   const [inputVal, setInputVal] = useState('');
-
   const handleChange = (event) => {
     setInputVal(event.target.value);
   };
@@ -31,6 +29,11 @@ const SearchBox = ({ setSearchVal, placeholder }) => {
     const { key } = event;
     if (key === 'Enter' && inputVal) {
       setSearchVal(inputVal);
+      if (noRemove === undefined) {
+        setTimeout(() => {
+          setInputVal('');
+        }, 10);
+      }
     } else if (key === 'Enter' && !inputVal) {
       alert('값이 존재하지 않습니다.');
     }
@@ -42,12 +45,18 @@ const SearchBox = ({ setSearchVal, placeholder }) => {
       return;
     }
     setSearchVal(inputVal);
+    if (noRemove === undefined) {
+      setTimeout(() => {
+        setInputVal('');
+      }, 10);
+    }
   };
 
   return (
     <Fragment>
       <SearchContainer>
         <SearchBase
+          value={inputVal}
           placeholder={placeholder}
           onChange={handleChange}
           onKeyPress={handleKeyPress}

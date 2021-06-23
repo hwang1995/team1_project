@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Divider,
   Grid,
@@ -10,9 +10,15 @@ import {
 } from '@material-ui/core';
 import { GiMedicines, GiLoveInjection } from 'react-icons/gi';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { useSelector } from 'react-redux';
-
-import useWindowSize from 'hooks/useWindowSize';
+import { FaDiagnoses } from 'react-icons/fa';
+import { RiChatHistoryFill } from 'react-icons/ri';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setMedicineDrawer,
+  setInjectorDrawer,
+  setDiagnosticDrawer,
+  setDiagnosisHistoryDrawer,
+} from 'redux/features/diagnosis/diagnosisSlice';
 import StyledButton from 'components/common/button/StyledButton';
 import PageHeader from 'components/common/header/PageHeader';
 import MenuSidebar from 'components/common/sidebar/MenuSidebar';
@@ -21,8 +27,11 @@ import TitleHeader from 'components/common/header/TitleHeader';
 import DataTable from 'components/diagnosis/table/DataTable';
 import DiagnosisDataPage from 'components/diagnosis/container/DiagnosisDataInput';
 import MedicineDrawer from 'components/diagnosis/drawer/MedicineDrawer';
+import InjectorDrawer from 'components/diagnosis/drawer/InjectorDrawer';
 import StyledTypography from 'components/common/typography/StyledTypography';
-import { useEffect } from 'react';
+import DiagnosticDrawer from 'components/diagnosis/drawer/DiagnosticDrawer';
+import DiagnosisHistoryDrawer from 'components/diagnosis/drawer/DiagnosisHistoryDrawer';
+
 const getSteps = () => [
   '진료할 환자를 선택해주세요.',
   '진료를 진행합니다.',
@@ -31,12 +40,11 @@ const getSteps = () => [
 
 const DiagnosisPage = () => {
   const steps = getSteps();
-  const { breakpoint } = useWindowSize();
-  const [isOpened, setOpened] = useState(false);
-  const [injectorOpened, setInjectorOpened] = useState(false);
+  const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
+
   const handleNext = () => {
     setActiveStep((prevState) => {
       if (patientInfo.id === 0) {
@@ -73,13 +81,12 @@ const DiagnosisPage = () => {
         return (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <DiagnosisDataPage />
-            {/* <DiagnosisDataPage selectedPatient={selectedPatient} /> */}
             <Grid container spacing={2}>
               <Grid item xs={5} sm={3} md={2}>
                 <StyledButton
                   size="medium"
                   bgColor="#003049"
-                  onClick={() => setOpened((prevState) => !prevState)}
+                  onClick={() => dispatch(setMedicineDrawer(true))}
                 >
                   <GiMedicines size={28} color="white" />
                   <span style={{ marginLeft: '0.5rem', color: 'white' }}>
@@ -88,9 +95,37 @@ const DiagnosisPage = () => {
                 </StyledButton>
               </Grid>
               <Grid item xs={5} sm={3} md={2}>
-                <StyledButton size="medium" bgColor="#FCBF49">
+                <StyledButton
+                  size="medium"
+                  bgColor="#FCBF49"
+                  onClick={() => dispatch(setInjectorDrawer(true))}
+                >
                   <GiLoveInjection size={28} />
                   <span style={{ marginLeft: '0.5rem' }}>주사 처방하기</span>
+                </StyledButton>
+              </Grid>
+              <Grid item xs={5} sm={3} md={2}>
+                <StyledButton
+                  size="medium"
+                  bgColor="#003049"
+                  onClick={() => dispatch(setDiagnosticDrawer(true))}
+                >
+                  <FaDiagnoses size={28} color="white" />
+                  <span style={{ marginLeft: '0.5rem', color: 'white' }}>
+                    진단 검사 추가하기
+                  </span>
+                </StyledButton>
+              </Grid>
+              <Grid item xs={5} sm={3} md={2}>
+                <StyledButton
+                  size="medium"
+                  bgColor="#003049"
+                  onClick={() => dispatch(setDiagnosisHistoryDrawer(true))}
+                >
+                  <RiChatHistoryFill size={28} color="white" />
+                  <span style={{ marginLeft: '0.5rem', color: 'white' }}>
+                    진료 기록 보기
+                  </span>
                 </StyledButton>
               </Grid>
             </Grid>
@@ -167,7 +202,10 @@ const DiagnosisPage = () => {
               {getStepContent(activeStep)}
 
               {/* Medicine Drawer */}
-              <MedicineDrawer isOpened={isOpened} setOpened={setOpened} />
+              <MedicineDrawer />
+              <InjectorDrawer />
+              <DiagnosticDrawer />
+              <DiagnosisHistoryDrawer />
 
               <div
                 style={{

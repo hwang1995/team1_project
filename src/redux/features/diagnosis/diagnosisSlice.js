@@ -28,10 +28,23 @@ export const diagnosisSlice = createSlice({
     medicineInfo: [],
     injectorInfo: [],
     diagnosticInfo: [],
+    searchDiagnosticInfo: [],
+    drawerStatus: {
+      medicine: false,
+      injector: false,
+      diagnostic: false,
+      diagnosisHistory: false,
+    },
   },
   reducers: {
     setPatient(state, action) {
       state.patient = action.payload;
+    },
+    setMedicineDrawer(state, action) {
+      state.drawerStatus.medicine = action.payload;
+    },
+    setInjectorDrawer(state, action) {
+      state.drawerStatus.injector = action.payload;
     },
     setDiagnosisInfo(state, action) {
       const { medicineInfo, injectorInfo, diagnosticInfo } = state;
@@ -47,7 +60,7 @@ export const diagnosisSlice = createSlice({
       const { medicineInfo } = state;
       // 아무런 값이 없는 경우
       const isExistItem = medicineInfo.findIndex((element) =>
-        element.medicine_id === action.payload.medicine_id ? true : false
+        element.medicine_id === action.payload.medicine_id ? true : false,
       );
 
       // 배열에 요소가 없거나, 새로운 아이템인 경우 바로 상태에 추가시킨다.
@@ -75,7 +88,7 @@ export const diagnosisSlice = createSlice({
       const { injectorInfo } = state;
       // 아무런 값이 없는 경우
       const isExistItem = injectorInfo.findIndex((element) =>
-        element.medicine_id === action.payload.medicine_id ? true : false
+        element.medicine_id === action.payload.medicine_id ? true : false,
       );
 
       // 배열에 요소가 없거나, 새로운 아이템인 경우 바로 상태에 추가시킨다.
@@ -103,7 +116,9 @@ export const diagnosisSlice = createSlice({
       const { diagnosticInfo } = state;
       // 아무런 값이 없는 경우
       const isExistItem = diagnosticInfo.findIndex((element) =>
-        element.medicine_id === action.payload.medicine_id ? true : false
+        element.diag_inspection_id === action.payload.diag_inspection_id
+          ? true
+          : false,
       );
 
       // 배열에 요소가 없거나, 새로운 아이템인 경우 바로 상태에 추가시킨다.
@@ -120,12 +135,45 @@ export const diagnosisSlice = createSlice({
     removeDiagnosticInfo(state, action) {
       const { diagnosticInfo } = state;
       const newState = diagnosticInfo.filter((data) => {
-        if (data.medicine_id === action.payload.medicine_id) {
+        if (data.diag_inspection_id === action.payload.diag_inspection_id) {
           return false;
         }
         return true;
       });
       state.diagnosticInfo = newState;
+    },
+    setDiagnosticDrawer(state, action) {
+      state.drawerStatus.diagnostic = action.payload;
+    },
+    setDiagnosisHistoryDrawer(state, action) {
+      state.drawerStatus.diagnosisHistory = action.payload;
+    },
+    setSearchDiagnosticInfo(state, action) {
+      state.searchDiagnosticInfo = action.payload;
+    },
+    addDiagnosticGroupItem(state, action) {
+      // 1. searchDiagnosticInfo의 정보를 가져온다.
+      const { bundle_code } = action.payload;
+      const { searchDiagnosticInfo } = state;
+
+      searchDiagnosticInfo
+        .filter((data) => {
+          if (data.bundle_code === bundle_code) {
+            return true;
+          }
+          return false;
+        })
+        .map((data) => state.diagnosticInfo.push(data));
+    },
+    removeDiagnosticGroupItem(state, action) {
+      const { diagnosticInfo } = state;
+      const filteredItem = diagnosticInfo.filter((data) => {
+        if (data.bundle_code !== action.payload) {
+          return true;
+        }
+        return false;
+      });
+      state.diagnosticInfo = filteredItem;
     },
   },
 });
@@ -139,6 +187,13 @@ export const {
   removeInjectorInfo,
   addDiagnosticInfo,
   removeDiagnosticInfo,
+  setMedicineDrawer,
+  setInjectorDrawer,
+  setDiagnosticDrawer,
+  setDiagnosisHistoryDrawer,
+  addDiagnosticGroupItem,
+  removeDiagnosticGroupItem,
+  setSearchDiagnosticInfo,
 } = diagnosisSlice.actions;
 
 export default diagnosisSlice.reducer;

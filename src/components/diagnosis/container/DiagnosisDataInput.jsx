@@ -1,8 +1,7 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { InputBase, Grid } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { useEffect } from 'react';
 import { setDiagnosisInfo } from 'redux/features/diagnosis/diagnosisSlice';
 
 const SearchBase = styled(InputBase)`
@@ -37,7 +36,7 @@ const DiagnosisDataPage = () => {
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
+  const handleBlurOut = (e) => {
     const { diag_id, member_id, patient_id } = patientInfo;
     const dr_opinion = e.target.value;
     dispatch(
@@ -81,7 +80,8 @@ const DiagnosisDataPage = () => {
           <DiagnosisLabel>의사소견</DiagnosisLabel>
         </Grid>
         <Grid item xs={12} md={9} style={{ marginBottom: '1rem' }}>
-          <DiagnosisTextarea onChange={handleChange} />
+          {/* <DiagnosisTextarea onChange={handleChange} /> */}
+          <DiagnosisTextarea onBlur={handleBlurOut} />
         </Grid>
       </Grid>
     </Fragment>

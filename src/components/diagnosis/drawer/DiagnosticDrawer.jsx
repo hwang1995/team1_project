@@ -1,37 +1,36 @@
-import React, { Fragment, useEffect, useState, useCallback } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { SwipeableDrawer, Grid, Divider, IconButton } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
 import {
-  addInjectorInfo,
-  removeInjectorInfo,
-  setInjectorDrawer,
+  setDiagnosticDrawer,
+  addDiagnosticGroupItem,
+  setSearchDiagnosticInfo,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
+import diagnosticData from 'pages/dashboard/diagnosis/csvjson.json';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import Spinner from 'components/common/spinner/Spinner';
-import SearchItem from '../container/SearchItem';
-import injectorData from 'pages/dashboard/diagnosis/injector.json';
-import MedicineItem from '../container/MedicineItem';
-
-const InjectorDrawer = () => {
+import DiagnosticItem from '../container/DiagnosticItem';
+const DiagnosticDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [searchVal, setSearchVal] = useState('');
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const injectorInfo = useSelector((state) => state.diagnosis.injectorInfo);
   const isOpened = useSelector(
-    (state) => state.diagnosis.drawerStatus.injector,
+    (state) => state.diagnosis.drawerStatus.diagnostic,
   );
+
+  const diagnosticInfo = useSelector((state) => state.diagnosis.diagnosticInfo);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       return;
     }
-    dispatch(setInjectorDrawer(open));
+    dispatch(setDiagnosticDrawer(open));
   };
 
   useEffect(() => {
@@ -41,23 +40,13 @@ const InjectorDrawer = () => {
     setLoading(false);
     setTimeout(() => {
       setLoading(true);
+      const filteredData = diagnosticData.filter(({ bundle_name }) => {
+        return bundle_name.includes(searchVal);
+      });
+      dispatch(setSearchDiagnosticInfo(filteredData));
     }, 1000);
-    console.log('검색 창에서 searchVal이 변경되었습니다', searchVal);
-  }, [searchVal]);
-
-  const addInjector = useCallback(
-    (data) => {
-      dispatch(addInjectorInfo(data));
-    },
-    [dispatch],
-  );
-
-  const removeInjector = useCallback(
-    (data) => {
-      dispatch(removeInjectorInfo(data));
-    },
-    [dispatch],
-  );
+    console.log('검색 창에서 searchVal의 값이 변경되었습니다.', searchVal);
+  }, [searchVal, dispatch]);
 
   return (
     <Fragment>
@@ -69,12 +58,12 @@ const InjectorDrawer = () => {
       >
         <ResponsiveContainer>
           <DrawerHeader breakpoint={breakpoint} style={{ padding: '0.5rem' }}>
-            <h1>주사 처방 하기</h1>
+            <h1>진단 검사 추가하기</h1>
             <div>
               <IconButton>
                 <AiOutlineClose
                   size={32}
-                  onClick={() => dispatch(setInjectorDrawer(false))}
+                  onClick={() => dispatch(setDiagnosticDrawer(false))}
                 />
               </IconButton>
             </div>
@@ -90,7 +79,7 @@ const InjectorDrawer = () => {
               >
                 <SearchBox
                   setSearchVal={setSearchVal}
-                  placeholder="주사 이름을 입력해주세요"
+                  placeholder="진단 검사 그룹 명을 입력해주세요."
                   noRemove
                 />
                 {searchVal === '' && (
@@ -139,20 +128,22 @@ const InjectorDrawer = () => {
                     }}
                   >
                     <Divider />
-                    {injectorData
-                      .filter(({ medicine_name }) =>
-                        medicine_name.includes(searchVal),
+                    {diagnosticData
+                      .filter(({ bundle_name }) =>
+                        bundle_name.includes(searchVal),
                       )
                       .map((data) => (
-                        <Fragment key={data.medicine_name}>
+                        <Fragment key={data.diag_inspection_id}>
                           <Divider />
-                          <SearchItem data={data} addMedicine={addInjector} />
+                          <DiagnosticItem data={data} />
+                          {/* <SearchItem data={data} addMedicine={addMedicine} /> */}
                         </Fragment>
                       ))}
                   </div>
                 )}
               </div>
             </Grid>
+
             <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
               <div
                 style={{
@@ -164,22 +155,18 @@ const InjectorDrawer = () => {
                   padding: '1rem',
                 }}
               >
-                {injectorInfo.length === 0 && (
+                {diagnosticInfo.length === 0 && (
                   <Fragment>
                     <StyledTypography variant="h5" component="h5" weight={9}>
-                      [임시] 여기에는 추가된 주사 목록들이 나타납니다.
+                      [임시] 여기에는 추가된 진단 검사 목록이 나타납니다.
                     </StyledTypography>
                   </Fragment>
                 )}
-
-                {injectorInfo.length !== 0 &&
-                  injectorInfo.map((data, index) => (
-                    <Fragment key={index + 'injector'}>
+                {diagnosticInfo.length !== 0 &&
+                  diagnosticInfo.map((data, index) => (
+                    <Fragment key={index + 'diagnostic'}>
                       <Divider />
-                      <MedicineItem
-                        data={data}
-                        removeMedicine={removeInjector}
-                      />
+                      <DiagnosticItem data={data} isRemove />
                     </Fragment>
                   ))}
               </div>
@@ -191,4 +178,4 @@ const InjectorDrawer = () => {
   );
 };
 
-export default InjectorDrawer;
+export default DiagnosticDrawer;
