@@ -1,4 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { changePage, chaneInputVal } from "redux/features/reservation/reservationSlice";
 import StyledTypography from 'components/common/typography/StyledTypography';
 import ErrorPage from "../../../pages/ErrorPage";
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -13,43 +15,51 @@ import { GrClose } from 'react-icons/gr';
 import { Fragment } from 'react';
 
 function ReservationPatientListContainer(props) {
-  const { searchVal, closeClick, setPatientInfo, setSearchVal } = props;
+  const { setPatientInfo } = props;
+  const keyword = useSelector((state) => state.reservation.inputVal);
+  const dispatch = useDispatch();
   const [searchResults, setResult] = useState([]);
 
   useEffect(() => {
     //console.log('keyword', searchVal);
     filterResult();
     //console.log('ddd', searchResults);
-  }, [searchVal]);
+  }, []);
+
+  useEffect(() => {
+    console.log("listcontainer rendering")
+  }, []);
+  
+  const closeClick = () => {
+    dispatch(changePage('INFO'));
+  }
 
   const patientClick = useCallback((patient) => {
-    console.log(patient);
     setPatientInfo(patient);
-    console.log(searchVal);
     closeClick();
+    dispatch(chaneInputVal(""));
   });
 
   const filterResult = () => {
-    const result = PatientData.filter(patient => patient.patient_name == searchVal);
+    const result = PatientData.filter(patient => patient.patient_name == keyword);
     setResult(result);
-    
   }
-
-
 
   return (
     <div>
-      <DrawerHeader onClick={closeClick}>
+     <DrawerHeader onClick={closeClick}>
         <div style={{ cursor: 'pointer', marginTop: '1em' }}>
           <GrClose fontSize="1em" />
         </div>
-      </DrawerHeader>
+      </DrawerHeader> 
 
       <List>
-        <Divider variant="inset" component="li" />
+      
           {searchResults.map((patient) => {
+             
               return (
                 <div key={patient.patient_id}>
+                  <Divider variant="inset" component="li" />
                   <ListItem
                     alignItems="flex-start"
                     style={{ cursor: 'pointer' }}
