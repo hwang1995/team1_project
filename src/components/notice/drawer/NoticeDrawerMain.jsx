@@ -45,7 +45,7 @@ import StyledButton from 'components/common/button/StyledButton';
 //   },
 // ];
 
-const NoticeDrawerMain = ({ setActiveStep, noticeItems }) => {
+const NoticeDrawerMain = ({ setActiveStep, noticeItems, setNotice }) => {
   const [searchVal, setSearchVal] = useState('');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -62,7 +62,9 @@ const NoticeDrawerMain = ({ setActiveStep, noticeItems }) => {
     setPage(newPage);
   };
 
-  const handleClick = (event) => {
+  const handleClick = (data) => {
+    console.log('asdasdasd', data);
+    setNotice(data);
     setActiveStep('READ');
   };
 
@@ -113,7 +115,12 @@ const NoticeDrawerMain = ({ setActiveStep, noticeItems }) => {
                     <h4 style={{ marginLeft: '5px' }}>{data.notice_author}</h4>
                   </div>
                   <div className="textTitle-container">
-                    <div align="left" onClick={handleClick}>
+                    <div
+                      align="left"
+                      onClick={() => {
+                        handleClick(data);
+                      }}
+                    >
                       {data.notice_title}
                     </div>
                   </div>

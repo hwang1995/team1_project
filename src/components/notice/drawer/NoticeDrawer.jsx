@@ -58,6 +58,12 @@ const noticeItems = [
 const NoticeDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
   //   const [isLoading, setLoading] = useState(false);
+  const [notice, setNotice] = useState({});
+  const [noticeitem, setNoticeitem] = useState(noticeItems);
+
+  useEffect(() => {
+    console.log('asdasdasdasdasdasd12', noticeitem);
+  }, [noticeitem]);
 
   const [activeStep, setActiveStep] = useState('MAIN');
 
@@ -75,6 +81,7 @@ const NoticeDrawer = ({ isOpened, setOpened }) => {
           <NoticeDrawerMain
             setActiveStep={setActiveStep}
             noticeItems={noticeItems}
+            setNotice={setNotice}
           />
         );
       case 'WRITE':
@@ -82,6 +89,7 @@ const NoticeDrawer = ({ isOpened, setOpened }) => {
           <NoticeDrawerWrite
             setActiveStep={setActiveStep}
             noticeItems={noticeItems}
+            setNoticeitem={setNoticeitem}
           />
         );
       case 'READ':
@@ -89,6 +97,7 @@ const NoticeDrawer = ({ isOpened, setOpened }) => {
           <NoticeDrawerRead
             setActiveStep={setActiveStep}
             noticeItems={noticeItems}
+            notice={notice}
           />
         );
       case 'MODIFY':

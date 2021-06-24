@@ -1,20 +1,21 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { BsPencilSquare, BsListUl, BsFillTrashFill } from 'react-icons/bs';
-import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 
 import StyledButton from 'components/common/button/StyledButton';
-import { Divider } from '@material-ui/core';
 
-const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
+const NoticeDrawerRead = ({ setActiveStep, notice }) => {
   // const board = data.find((board) => board.bno === bno);
   // board.bhitcount++;
   // return board;
+  useEffect(() => {
+    console.log('data가 들어왔는지..?', notice);
+  }, []);
 
   return (
     <Fragment>
       <div style={{ marginTop: '2rem', display: 'flex' }}>
         <div style={{ flex: 0.8, alignSelf: 'center' }}>
-          <h2 style={{ fontWeight: '400' }}>저희 병원을 소개합니다.</h2>
+          <h2 style={{ fontWeight: '400' }}>{notice.notice_title}</h2>
         </div>
       </div>
       <div style={{ display: 'flex', marginTop: '10px' }}>
@@ -32,11 +33,11 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
           }}
         >
           <div className="avatar-container">
-            <h3 style={{ fontWeight: '600' }}>홍길동</h3>
+            <h3 style={{ fontWeight: '600' }}>{notice.notice_author}</h3>
           </div>
           <div className="textDate-container">
             <div style={{ fontWeight: '500', marginTop: '5px', color: 'gray' }}>
-              6월 8일
+              {notice.notice_date}
             </div>
           </div>
         </div>
@@ -51,7 +52,9 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
       >
         <img src="/assets/image/hospital.png" alt="Logo" width="100%" />
       </div>
-      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>멋지죠?</h3>
+      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
+        {notice.notice_content}
+      </h3>
       <hr />
       <div
         style={{

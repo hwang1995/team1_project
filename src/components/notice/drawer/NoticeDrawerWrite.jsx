@@ -5,39 +5,39 @@ import AddEditer from './AddEditer';
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
-const NoticeDrawerWrite = ({ setActiveStep, noticeItems }) => {
-  const [notice, setNotice] = useState({
+const NoticeDrawerWrite = ({ setActiveStep, noticeItems, setNoticeitem }) => {
+  const [title, setTitle] = useState('');
+  const [ckcontent, setCkcontent] = useState('');
+  const [noticeWrite, setNoticeWrite] = useState({
+    notice_id: '',
     notice_title: '',
     notice_content: '',
-    notice_id: 0,
-    notice_author: '',
     notice_date: '',
+    notice_author: '홍금보',
   });
 
   const handleChange = (event) => {
-    setNotice({
-      ...notice,
-      [event.target.name]: event.target.value,
-    });
-    console.log('event.target.value', event.target.value);
+    setTitle(event.target.value);
+    //console.log('event.target.value', event.target.value);
+    //console.log('editordata', editor.gettData());
   };
 
   useEffect(() => {
-    console.log(notice);
-  }, [notice]);
+    console.log('asdasdasdasdasdasdasdasdasdasd12312312', noticeItems.length);
+  }, []);
 
-  let lastnotice_id = 7;
+  useEffect(() => {
+    console.log('lllllllllldasd12312312', ckcontent);
+  }, [ckcontent]);
+
   const handleAdd = () => {
-    // event.preventDefault();
-    lastnotice_id++;
-    const newNotice = { ...notice };
-    newNotice.notice_id = lastnotice_id;
-    newNotice.notice_date = new Date().toLocaleDateString();
-    newNotice.notice_author = '황박사';
-
-    noticeItems.push(newNotice);
-    console.log('handleAdd 실행', newNotice);
-    setActiveStep('SUCCESS');
+    const now = new Date();
+    setNoticeWrite({
+      notice_id: noticeItems.length + 1,
+      notice_title: title,
+      notice_date: now,
+      notice_content: ckcontent,
+    });
   };
 
   // const handleAdd = (event) => {
@@ -65,14 +65,14 @@ const NoticeDrawerWrite = ({ setActiveStep, noticeItems }) => {
         </div>
         <div style={{ flex: 6 }}>
           <StyledInputBase
-            name="notice_title"
+            value="notice_title"
             onChange={handleChange}
             placeholder="제목을 입력해주세요."
           />
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        <AddEditer name="notice_content" onChange={handleChange} />
+        <AddEditer setCkcontent={setCkcontent} onChange={handleChange} />
       </div>
       <div
         style={{
