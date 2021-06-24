@@ -1,0 +1,1 @@
+import ClassicEditorBase from '@ckeditor/ckeditor5-build-classic/build/'

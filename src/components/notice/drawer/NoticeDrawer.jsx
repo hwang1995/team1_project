@@ -1,9 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { SwipeableDrawer } from '@material-ui/core';
+import { AiOutlineClose } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
-import { AiOutlineClose } from 'react-icons/ai';
+
 import NoticeDrawerWrite from './NoticeDrawerWrite';
 import NoticeDrawerSuccess from './NoticeDrawerSuccess';
 import NoticeDrawerMain from './NoticeDrawerMain';
@@ -57,15 +59,8 @@ const noticeItems = [
 
 const NoticeDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
-  //   const [isLoading, setLoading] = useState(false);
-  const [notice, setNotice] = useState({});
-  const [noticeitem, setNoticeitem] = useState(noticeItems);
 
-  useEffect(() => {
-    console.log('asdasdasdasdasdasd12', noticeitem);
-  }, [noticeitem]);
-
-  const [activeStep, setActiveStep] = useState('MAIN');
+  const activeStep = useSelector((state) => state.notice.activeStep);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -77,50 +72,17 @@ const NoticeDrawer = ({ isOpened, setOpened }) => {
   const getStepContent = (step) => {
     switch (step) {
       case 'MAIN':
-        return (
-          <NoticeDrawerMain
-            setActiveStep={setActiveStep}
-            noticeItems={noticeItems}
-            setNotice={setNotice}
-          />
-        );
+        return <NoticeDrawerMain />;
       case 'WRITE':
-        return (
-          <NoticeDrawerWrite
-            setActiveStep={setActiveStep}
-            noticeItems={noticeItems}
-            setNoticeitem={setNoticeitem}
-          />
-        );
+        return <NoticeDrawerWrite />;
       case 'READ':
-        return (
-          <NoticeDrawerRead
-            setActiveStep={setActiveStep}
-            noticeItems={noticeItems}
-            notice={notice}
-          />
-        );
+        return <NoticeDrawerRead />;
       case 'MODIFY':
-        return (
-          <NoticeDrawerModify
-            setActiveStep={setActiveStep}
-            noticeItems={noticeItems}
-          />
-        );
+        return <NoticeDrawerModify />;
       case 'SUCCESS':
-        return (
-          <NoticeDrawerSuccess
-            setActiveStep={setActiveStep}
-            noticeItems={noticeItems}
-          />
-        );
+        return <NoticeDrawerSuccess />;
       default:
-        return (
-          <NoticeDrawerMain
-            setActiveStep={setActiveStep}
-            noticeItems={noticeItems}
-          />
-        );
+        return <NoticeDrawerMain />;
     }
   };
 

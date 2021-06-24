@@ -1,31 +1,33 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Context from '@ckeditor/ckeditor5-core/src/context';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+// import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
-const AddEditer = ({ setCkcontent }) => {
+const AddEditer = ({ setCkcontent, data }) => {
   return (
-    <div className="AddEditer" z>
-      {/* <h2>Using CKEditor 5 build in React</h2> */}
-      <CKEditor
-        editor={ClassicEditor}
-        data="<p>Hello from the first editor working with the context!</p>"
-        onReady={(editor) => {
-          // You can store the "editor" and use when it is needed.
-          console.log('Editor is ready to use!', editor);
-        }}
-        onChange={(event, editor) => {
-          const data = editor.getData();
-          console.log('hellodata', data);
-          console.log({ event, editor, data });
-          setCkcontent(data);
-        }}
-        onBlur={(event, editor) => {
-          console.log('Blur.', editor);
-        }}
-        onFocus={(event, editor) => {
-          console.log('Focus.', editor);
-        }}
-      />
+    <div className="AddEditer">
+      <CKEditorContext context={Context}>
+        <CKEditor
+          editor={ClassicEditor}
+          // config={{
+          //   plugins: [Paragraph, Bold, Italic, Essentials],
+          //   toolbar: ['bold', 'italic'],
+          // }}
+          // onReady={(editor) => {
+          //   console.log(editor);
+          // }}
+          data="<p>내용을 넣어보시요.</p>"
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            setCkcontent(data);
+          }}
+        />
+      </CKEditorContext>
     </div>
   );
 };

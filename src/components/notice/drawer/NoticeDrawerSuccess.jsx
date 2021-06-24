@@ -1,8 +1,13 @@
-import React, { Fragment, useEffect, useState } from 'react';
-
+import React, { Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import StyledButton from 'components/common/button/StyledButton';
 
-const NoticeDrawerSuccess = ({ setActiveStep }) => {
+const NoticeDrawerSuccess = () => {
+  const dispatch = useDispatch();
+
+  const activeStep = useSelector((state) => state.notice.activeStep);
+
   return (
     <Fragment>
       <div style={{ marginTop: '3rem', display: 'flex' }}></div>
@@ -12,12 +17,16 @@ const NoticeDrawerSuccess = ({ setActiveStep }) => {
       >
         <img src="/assets/image/verified-account.png" alt="Logo" width="70%" />
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <h2 style={{ fontWeight: '800' }}>게시물 등록이 완료 되었습니다.</h2>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <h2 style={{ fontWeight: '800' }}>게시물 수정이 완료 되었습니다.</h2>
-      </div>
+      {activeStep === 'SUCCESS' && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <h2 style={{ fontWeight: '800' }}>게시물 등록이 완료 되었습니다.</h2>
+        </div>
+      )}
+      {activeStep === 'MODIFY' && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <h2 style={{ fontWeight: '800' }}>게시물 수정이 완료 되었습니다.</h2>
+        </div>
+      )}
 
       <div
         style={{
@@ -31,7 +40,7 @@ const NoticeDrawerSuccess = ({ setActiveStep }) => {
           <StyledButton
             bgColor="rgb(8,78,127)"
             color="white"
-            onClick={() => setActiveStep('READ')}
+            onClick={() => dispatch(setActiveStep('READ'))}
           >
             작성 게시물 보기
           </StyledButton>
@@ -40,7 +49,7 @@ const NoticeDrawerSuccess = ({ setActiveStep }) => {
           <StyledButton
             bgColor="rgb(8,78,127)"
             color="white"
-            onClick={() => setActiveStep('MAIN')}
+            onClick={() => dispatch(setActiveStep('MAIN'))}
           >
             목록으로 이동
           </StyledButton>

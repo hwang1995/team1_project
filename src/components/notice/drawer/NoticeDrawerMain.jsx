@@ -1,54 +1,25 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { TablePagination } from '@material-ui/core';
-
 import { BsPencilSquare } from 'react-icons/bs';
+import { useSelector, useDispatch } from 'react-redux';
+import parse from 'html-react-parser';
+import {
+  setNoticeCurrentIndex,
+  setActiveStep,
+} from 'redux/features/notice/noticeSlice';
 import SearchBox from 'components/common/search/SearchBox';
 import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 import StyledButton from 'components/common/button/StyledButton';
 
-// const noticeItems = [
-//   {
-//     notice_id: 1,
-//     notice_title: '종현이 멋죠요.',
-//     notice_date: '6월 21일',
-//     notice_author: 'Dr. Hong',
-//   },
-//   {
-//     notice_id: 2,
-//     notice_title: '가즈아.',
-//     notice_date: '6월 9일',
-//     notice_author: 'Dr. Hong',
-//   },
-//   {
-//     notice_id: 3,
-//     notice_title: '가즈아.',
-//     notice_date: '6월 9일',
-//     notice_author: 'Dr. Hong',
-//   },
-//   {
-//     notice_id: 4,
-//     notice_title: '가즈아.',
-//     notice_date: '6월 9일',
-//     notice_author: 'Dr. Hong',
-//   },
-//   {
-//     notice_id: 5,
-//     notice_title: '가즈아.',
-//     notice_date: '6월 9일',
-//     notice_author: 'Dr. Hong',
-//   },
-//   {
-//     notice_id: 6,
-//     notice_title: '가즈아.',
-//     notice_date: '6월 9일',
-//     notice_author: 'Dr. Hong',
-//   },
-// ];
-
-const NoticeDrawerMain = ({ setActiveStep, noticeItems, setNotice }) => {
+const NoticeDrawerMain = () => {
   const [searchVal, setSearchVal] = useState('');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const dispatch = useDispatch();
+
+  const noticeItem = useSelector((state) => state.notice.noticeItem);
+
   const handleChange = (e) => {
     setSearchVal(e.target.value);
     console.log(e.target.value);
@@ -63,9 +34,9 @@ const NoticeDrawerMain = ({ setActiveStep, noticeItems, setNotice }) => {
   };
 
   const handleClick = (data) => {
-    console.log('asdasdasd', data);
-    setNotice(data);
-    setActiveStep('READ');
+    console.log(data);
+    dispatch(setNoticeCurrentIndex(data.notice_id - 1));
+    dispatch(setActiveStep('READ'));
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -73,9 +44,10 @@ const NoticeDrawerMain = ({ setActiveStep, noticeItems, setNotice }) => {
     setPage(0);
   };
 
-  const matchData = noticeItems.filter((noticeItems) =>
-    noticeItems.notice_title.includes(searchVal),
+  const matchData = noticeItem.filter((data) =>
+    data.notice_title.includes(searchVal),
   );
+
   return (
     <Fragment>
       <div style={{ marginTop: '3rem', display: 'flex' }}>
@@ -85,7 +57,7 @@ const NoticeDrawerMain = ({ setActiveStep, noticeItems, setNotice }) => {
             bgColor="rgb(226,153,51)"
             color="white"
             width="100%"
-            onClick={() => setActiveStep('WRITE')}
+            onClick={() => dispatch(setActiveStep('WRITE'))}
           >
             <BsPencilSquare style={{ marginRight: '5px' }} />
             글쓰기
@@ -125,7 +97,7 @@ const NoticeDrawerMain = ({ setActiveStep, noticeItems, setNotice }) => {
                     </div>
                   </div>
                   <div className="textContent-container">
-                    <div align="left">{data.notice_content}</div>
+                    <div align="left">{parse(data.notice_content)}</div>
                   </div>
                   <div className="textDate-container">
                     <div align="left">{data.notice_date}</div>
