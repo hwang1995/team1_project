@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { BsPencilSquare, BsListUl } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -6,8 +6,8 @@ import {
   modifyNoticeItem,
   setActiveStep,
 } from 'redux/features/notice/noticeSlice';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
@@ -65,11 +65,11 @@ const NoticeDrawerModify = () => {
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        <CKEditor
+        {/* <CKEditor
           editor={ClassicEditor}
           data={inputContent}
           onChange={handleEditorChange}
-        />
+        /> */}
       </div>
       <div
         style={{

@@ -12,50 +12,6 @@ import NoticeDrawerMain from './NoticeDrawerMain';
 import NoticeDrawerRead from './NoticeDrawerRead';
 import NoticeDrawerModify from './NoticeDrawerModify';
 
-const noticeItems = [
-  {
-    notice_id: 1,
-    notice_title: '종현이 멋죠요.',
-    notice_date: '6월 21일',
-    notice_content: '안녕하세요',
-    notice_author: 'Dr. Hong',
-  },
-  {
-    notice_id: 2,
-    notice_title: '가즈아.',
-    notice_date: '6월 9일',
-    notice_content: '안녕하세요',
-    notice_author: 'Dr. Hong',
-  },
-  {
-    notice_id: 3,
-    notice_title: '가즈아.',
-    notice_date: '6월 9일',
-    notice_content: '안녕하세요',
-    notice_author: 'Dr. Hong',
-  },
-  {
-    notice_id: 4,
-    notice_title: '가즈아.',
-    notice_date: '6월 9일',
-    notice_content: '안녕하세요',
-    notice_author: 'Dr. Hong',
-  },
-  {
-    notice_id: 5,
-    notice_title: '가즈아.',
-    notice_content: '안녕하세요',
-    notice_date: '6월 9일',
-    notice_author: 'Dr. Hong',
-  },
-  {
-    notice_id: 6,
-    notice_title: '가즈아.',
-    notice_content: '안녕하세요',
-    notice_date: '6월 9일',
-    notice_author: 'Dr. Hong',
-  },
-];
 
 const NoticeDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
@@ -94,7 +50,7 @@ const NoticeDrawer = ({ isOpened, setOpened }) => {
         onOpen={toggleDrawer(true)}
         onClose={toggleDrawer(false)}
       >
-        <ResponsiveContainer breakpoint={breakpoint}>
+        <ResponsiveContainer>
           <DrawerHeader breakpoint={breakpoint}>
             <h1>공지 사항</h1>
             <div>
