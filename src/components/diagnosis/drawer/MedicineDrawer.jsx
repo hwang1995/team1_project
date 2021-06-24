@@ -5,6 +5,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import {
   addMedicineInfo,
   removeMedicineInfo,
+  setMedicineDrawer,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import SearchItem from '../container/SearchItem';
 import MedicineData from '../../../pages/dashboard/diagnosis/medicine';
@@ -16,18 +17,21 @@ import SearchBox from 'components/common/search/SearchBox';
 import MedicineItem from '../container/MedicineItem';
 import StyledTypography from 'components/common/typography/StyledTypography';
 
-const MedicineDrawer = ({ isOpened, setOpened }) => {
+const MedicineDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [searchVal, setSearchVal] = useState('');
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const medicineInfo = useSelector((state) => state.diagnosis.medicineInfo);
+  const isOpened = useSelector(
+    (state) => state.diagnosis.drawerStatus.medicine,
+  );
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       return;
     }
-    setOpened(open);
+    dispatch(setMedicineDrawer(open));
   };
 
   useEffect(() => {
@@ -67,69 +71,86 @@ const MedicineDrawer = ({ isOpened, setOpened }) => {
         onClose={toggleDrawer(false)}
       >
         <ResponsiveContainer>
-          <DrawerHeader breakpoint={breakpoint}>
+          <DrawerHeader breakpoint={breakpoint} style={{ padding: '0.5rem' }}>
             <h1>약 처방 하기</h1>
             <div>
-              <AiOutlineClose size={32} onClick={() => setOpened(false)} />
+              <AiOutlineClose
+                size={32}
+                onClick={() => dispatch(setMedicineDrawer(false))}
+              />
             </div>
           </DrawerHeader>
 
-          <Grid container >
+          <Grid container spacing={1}>
             <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
-              <div style={{border: '1px solid rgba(0,0,0,0.12)', padding: '1rem'}}>
-              <SearchBox
-                setSearchVal={setSearchVal}
-                placeholder="약 이름을 입력해주세요"
-              />
-              {searchVal === '' && (
-                <div style={{ display: 'flex', justifyContent: 'center'}}>
-                  <img
-                    src="/assets/image/searchinfo.png"
-                    width="100%"
-                    alt="search"
-                  />
-                </div>
-              )}
-              {searchVal !== '' && !isLoading && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    height: '100vh',
-                  }}
-                >
-                  <Spinner />
-                </div>
-              )}
-              {searchVal !== '' && isLoading && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    marginTop: '1rem',
-                    width: '100%',
-                    height: '70vh',
-                    overflowY: 'scroll',
-                  }}
-                >
-                  <Divider />
-                  {MedicineData.filter(({ medicine_name }) =>
-                    medicine_name.includes(searchVal),
-                  ).map((data) => (
-                    <Fragment key={data.medicine_name}>
-                      <Divider />
-                      <SearchItem data={data} addMedicine={addMedicine} />
-                    </Fragment>
-                  ))}
-                </div>
-              )}
+              <div
+                style={{
+                  border: '1px solid rgba(0,0,0,0.12)',
+                  padding: '1rem',
+                }}
+              >
+                <SearchBox
+                  setSearchVal={setSearchVal}
+                  placeholder="약 이름을 입력해주세요"
+                  noRemove
+                />
+                {searchVal === '' && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <img
+                      src="/assets/image/searchinfo.png"
+                      width="100%"
+                      alt="search"
+                    />
+                    <StyledTypography variant="h4" component="h5" weight={9}>
+                      먼저 검색을 해주세요!
+                    </StyledTypography>
+                  </div>
+                )}
+                {searchVal !== '' && !isLoading && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
+                      height: '100vh',
+                    }}
+                  >
+                    <Spinner />
+                  </div>
+                )}
+                {searchVal !== '' && isLoading && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      marginTop: '1rem',
+                      width: '100%',
+                      height: '70vh',
+                      overflowY: 'scroll',
+                    }}
+                  >
+                    <Divider />
+                    {MedicineData.filter(({ medicine_name }) =>
+                      medicine_name.includes(searchVal),
+                    ).map((data) => (
+                      <Fragment key={data.medicine_name}>
+                        <Divider />
+                        <SearchItem data={data} addMedicine={addMedicine} />
+                      </Fragment>
+                    ))}
+                  </div>
+                )}
               </div>
-
             </Grid>
             <Grid item xs={12} sm={6} style={{ padding: '1rem' }}>
-
               <div
                 style={{
                   display: 'flex',
@@ -137,28 +158,26 @@ const MedicineDrawer = ({ isOpened, setOpened }) => {
                   height: '80vh',
                   overflowY: 'scroll',
                   border: '1px solid rgba(0,0,0,0.12)',
-                  padding: '1rem'
+                  padding: '1rem',
                 }}
               >
-
                 {medicineInfo.length === 0 && (
                   <Fragment>
                     <StyledTypography variant="h5" component="h5" weight={9}>
-                      먼저 검색을 해주세요!
+                      여기에는 추가된 약 목록들이 나타납니다.
                     </StyledTypography>
                   </Fragment>
                 )}
-                              
-                {medicineInfo.length !== 0 && medicineInfo.map((data) => (
-                  <Fragment>
-                    <Divider />
-                    <MedicineItem data={data} removeMedicine={removeMedicine} />
-                  </Fragment>
-                ))}
-
-
-                
-
+                {medicineInfo.length !== 0 &&
+                  medicineInfo.map((data, index) => (
+                    <Fragment key={index + 'medicine'}>
+                      <Divider />
+                      <MedicineItem
+                        data={data}
+                        removeMedicine={removeMedicine}
+                      />
+                    </Fragment>
+                  ))}
               </div>
             </Grid>
           </Grid>

@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "bundle_code": "L2001",
+      "bundle_name": "CBC (CBC,PLT,DIFF)",
+      "diagnostics": [
+        {
+          "diag_inspection_id": 1,
+          "bundle_code": "L2001",
+          "bundle_name": "CBC (CBC,PLT,DIFF)",
+          "pres_code": "L2010",
+          "pres_name": "WBC",
+          "pres_unit": "x10^3/mm3",
+          "pres_lower_limit": 4.1,
+          "pres_upper_limit": 10.2,
+          "pres_vessel": "",
+          "pres_specimen_name": ""
+        },
+        {
+          "diag_inspection_id": 2,
+          "bundle_code": "L2001",
+          "bundle_name": "CBC (CBC,PLT,DIFF)",
+          "pres_code": "L2011",
+          "pres_name": "RBC",
+          "pres_unit": "x10^6/mm3",
+          "pres_lower_limit": 4.31,
+          "pres_upper_limit": 5.47,
+          "pres_vessel": "",
+          "pres_specimen_name": ""
+        },
+        {
+          "diag_inspection_id": 3,
+          "bundle_code": "L2001",
+          "bundle_name": "CBC (CBC,PLT,DIFF)",
+          "pres_code": "L2012",
+          "pres_name": "Hb (광전비색법)",
+          "pres_unit": "g/dL",
+          "pres_lower_limit": 13.7,
+          "pres_upper_limit": 16.8,
+          "pres_vessel": "",
+          "pres_specimen_name": ""
+        },
+        {
+          "diag_inspection_id": 4,
+          "bundle_code": "L2001",
+          "bundle_name": "CBC (CBC,PLT,DIFF)",
+          "pres_code": "L2013",
+          "pres_name": "Hct(Hematocrit)",
+          "pres_unit": "%",
+          "pres_lower_limit": 40.8,
+          "pres_upper_limit": 50,
+          "pres_vessel": "",
+          "pres_specimen_name": ""
+        },
+        {
+          "diag_inspection_id": 5,
+          "bundle_code": "L2001",
+          "bundle_name": "CBC (CBC,PLT,DIFF)",
+          "pres_code": "L2015",
+          "pres_name": "Platelet",
+          "pres_unit": "x10^3/mm3",
+          "pres_lower_limit": 158,
+          "pres_upper_limit": 332,
+          "pres_vessel": "",
+          "pres_specimen_name": ""
+        }
+      ]
+    }, {
+        
+    }
+  ]
+}
