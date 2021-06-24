@@ -73,7 +73,9 @@ const NoticeDrawerMain = () => {
       </div>
       <NoticeDrawerItem>
         {matchData
+          .reverse()
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
           .map((data) => (
             <Fragment>
               <div style={{ display: 'flex', marginTop: '10px' }}>
