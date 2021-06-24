@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { CKEditor, CKEditorContext } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class AddEditer extends Component {
-  
   render() {
     return (
-      <div className="AddEditer">
+      <div className="AddEditer" z>
         {/* <h2>Using CKEditor 5 build in React</h2> */}
         <CKEditor
           editor={ClassicEditor}
-          data="<p>내용을 입력주세요.</p>"
+          data="<p>Hello from the first editor working with the context!</p>"
           onReady={(editor) => {
             // You can store the "editor" and use when it is needed.
             console.log('Editor is ready to use!', editor);
           }}
           onChange={(event, editor) => {
             const data = editor.getData();
+            console.log(data);
             console.log({ event, editor, data });
           }}
           onBlur={(event, editor) => {

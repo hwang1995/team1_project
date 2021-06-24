@@ -9,6 +9,9 @@
     "symptom": "허리통증",
     "drOpinion": "환자의 자세가 올바르지 않음으로 자세를 고칠 것을 요청",
     "vitalRecord": "",
+    "pulse": "",
+    "respiration_rate": "",
+    "temperature": "",
     "medicineRecord": "",
     "injectionRecord": ""
   },

@@ -10,6 +10,7 @@ import SearchBar from './components/SearchBar';
 import AddIcon from '@material-ui/icons/Add';
 import notfound from './resources/notfound.png';
 import notfoundhistory from './resources/notfoundhistory.png';
+import { Link } from 'react-router-dom';
 
 const HyungyoonPage = () => {
   return (
@@ -55,10 +56,7 @@ const HyungyoonPage = () => {
         </ColoredButton>
       </div>
       <hr />
-      <div>
-        CollapsibleTable
-        <CollapsibleTable />
-      </div>
+      
       <div>
         LoginOutButton
         <LoginOutButton color={ColorTable.color_login}>로그인</LoginOutButton>
@@ -79,7 +77,19 @@ const HyungyoonPage = () => {
         <img src={notfound} alt="Logo" width="200" />
         <img src={notfoundhistory} alt="Logo" width="100" />
       </div>
+        <p> 개인용 페이지에서 작업하세요 꼭! 아니면 merge 에러 뜹니다.</p>
+        <li>
+          <Link to="/temporary/hyungyoon/diagnotic/index">- 진료기록</Link>
+        </li>
+        <li>
+          <Link to="/temporary/hyungyoon/notice">- 공지사항</Link>
+        </li>
+        <li>
+          <Link to="/temporary/hyungyoon/exercise">- 개인연습</Link>
+        </li>
+        
     </div>
+    
   );
 };
 

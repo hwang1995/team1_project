@@ -12,6 +12,7 @@ import StyledContainer from 'components/common/container/StyledContainer';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledButton from 'components/common/button/StyledButton';
 import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
+// import noticeData from 'components/notice/notice'
 /**
  * 이 페이지 컴포넌트는 대쉬보드의 메인을 보여주기 위해 작성하는 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -25,16 +26,16 @@ import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
 
 const noticeItems = [
   {
-    id: 1,
-    title: '종현이 멋죠요.',
-    createDate: new Date().toLocaleDateString(),
-    author: 'Dr. Hong',
+    notice_id: 1,
+    notice_title: '종현이 멋죠요.',
+    notice_date: '6월 21일',
+    notice_author: 'Dr. Hong',
   },
   {
-    id: 2,
-    title: '가즈아.',
-    createDate: new Date().toLocaleDateString(),
-    author: 'Dr. Hong',
+    notice_id: 2,
+    notice_title: '가즈아.',
+    notice_date: '6월 9일',
+    notice_author: 'Dr. Hong',
   },
 ];
 
@@ -123,7 +124,7 @@ const FrontPage = () => {
                   </div>
                   <List component="nav">
                     {noticeItems.map((data) => (
-                      <NoticeItem key={data.id} data={data} />
+                      <NoticeItem key={data.notice_id} data={data} />
                     ))}
                   </List>
                 </Grid>
