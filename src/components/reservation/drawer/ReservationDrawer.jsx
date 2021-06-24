@@ -1,4 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { changePage, chaneInputVal } from "redux/features/reservation/reservationSlice";
 import { SwipeableDrawer, Grid } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import useWindowSize from 'hooks/useWindowSize';
@@ -13,9 +15,11 @@ const ReservationDrawer = ({
   reservationTime,
   doctorInfo,
 }) => {
+
+  const page = useSelector((state) => state.reservation.pageStatus);
+  const dispatch = useDispatch();
+
   const { breakpoint } = useWindowSize();
-  const [searchVal, setSearchVal] = useState('');
-  const [page, setPage] = useState('INFO');
     const [patientInfo, setPatient] = useState({
       patient_id: '',
       patient_name: '',
@@ -30,20 +34,11 @@ const ReservationDrawer = ({
     setOpened(open);
   };
 
-  const closeClick = () => {
-    setPage("INFO");
+  const handleChangeCloseClick = () => {
+    setOpened(false);
+    dispatch(changePage('INFO'));
   }
 
-  useEffect(() => {
-
-    if (searchVal !== '') {
-     
-      console.log("검색", page)
-    }else{
-       console.log('검색 no');
-    }
-
-  }, [searchVal]);
 
    useEffect(() => {
      setPatient({
@@ -52,22 +47,8 @@ const ReservationDrawer = ({
        patient_gender: '',
        patient_birth: '',
      });
-     setPage("INFO")
+     //setPage("INFO")
    }, [isOpened]);
-
-   useEffect(() => {
-     console.log("page : ", page);
-   }, [])
-
-   useEffect(() => {
-     console.log('searchVal', searchVal);
-     if (searchVal !== '') {
-       setPage('SEARCH_INFO');
-     } else {
-       setPage('INFO');
-     }
-   }, [searchVal]);
-
 
   const setPatientInfo = (patient) => {
     setPatient({
@@ -77,6 +58,11 @@ const ReservationDrawer = ({
       patient_birth: patient.patient_birth,
     });
   };
+
+  const setSearchVal = (inputVal) => {
+    dispatch(changePage("SEARCH_INFO"));
+    dispatch(chaneInputVal(inputVal));
+  }
 
 
   return (
@@ -93,7 +79,7 @@ const ReservationDrawer = ({
             <div>
               <AiOutlineClose
                 size={32}
-                onClick={() => setOpened(false)}
+                onClick={handleChangeCloseClick}
                 style={{ cursor: 'pointer' }}
               />
             </div>
@@ -109,14 +95,10 @@ const ReservationDrawer = ({
               reservationTime={reservationTime}
               doctorInfo={doctorInfo}
               patientInfo={patientInfo}
+              setOpened={setOpened}
             />
           ) : (
-            <ReservationPatientListContainer
-              closeClick={closeClick}
-              searchVal={searchVal}
-              setPatientInfo={setPatientInfo}
-              setSearchVal={setSearchVal}
-            />
+            <ReservationPatientListContainer setPatientInfo={setPatientInfo} />
           )}
         </ResponsiveContainer>
       </SwipeableDrawer>

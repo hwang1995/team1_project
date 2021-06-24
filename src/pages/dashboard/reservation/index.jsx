@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PageHeader from 'components/common/header/PageHeader';
 import {
   Divider,
@@ -11,6 +12,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import {RiUserSearchFill} from "react-icons/ri";
 import useWindowSize from 'hooks/useWindowSize';
 
 // Toast UI Calendar Library & monent.js
@@ -26,6 +28,8 @@ import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import doctorJson from '../../../pages/temporary/sihyun/json/doctorJson';
 import ReservationDrawer from 'components/reservation/drawer/ReservationDrawer';
+import ReservationReadDrawer from 'components/reservation/drawer/read/ReservationReadDrawer';
+import SearchReservation from "components/reservation/drawer/SearchReservation";
 
 /**
  * 이 페이지 컴포넌트는 진료 에약(접수) 페이지를 작성하기 위한 컴포넌트입니다.
@@ -34,6 +38,9 @@ import ReservationDrawer from 'components/reservation/drawer/ReservationDrawer';
  * @returns {JSX.Element}
  */
 const ReservationPage = () => {
+  const reservationInfo = useSelector(
+    (state) => state.reservation.reservationInfo,
+  );
   const { breakpoint } = useWindowSize();
 
   // Calendar DOM을 가져오기 위해 설정하는 Ref
@@ -44,6 +51,8 @@ const ReservationPage = () => {
 
   // Drawer 여부를 확인하기 위한 State
   const [isOpened, setOpened] = useState(false);
+  const [readOpened, setReadOpened] = useState(false);
+  const [searchOpened, setSearchOpened] = useState(false);
 
   // Select ID를 선택하기 위한 State
   const [selectId, setSelectId] = useState(1);
@@ -59,40 +68,21 @@ const ReservationPage = () => {
     date: '',
     startTime: '',
     endTime: '',
+    scheduleStart: '',
+    scheduleEnd: '',
+    weekNum: '',
   });
 
-  const [addSchedule, setSchdule] = useState([
-    {
-      id: '1',
-      calendarId: '1',
-      title: '김형윤',
-      body: "정신진료",
-      category: 'time',
-      state: "정신진료",
-      dueDateClass: '',
-      start: 'Mon Jun 21 2021 12:00:00',
-      end: 'Mon Jun 21 2021 12:29:00',
-      bgColor: 'red',
-    },
-    {
-      id: '2',
-      calendarId: '1',
-      title: '황성욱',
-      category: 'time',
-      dueDateClass: '',
-      start: '2021-06-21T17:30:00+09:00',
-      end: '2021-06-21T18:00:00+09:00',
-      bgColor: 'blue',
-      isReadOnly: true, // schedule is read-only
-    },
-  ]);
+  const [readPatient, setReadPatient] = useState();
+
+  const [addSchedule, setSchdule] = useState([]);
 
   // 캘린더 헤더 부분에 위클리 데이트세팅
   const now = new Date();
   const weekNum = moment(now, 'MM-DD-YYYY').week();
   const initStartDate = moment().day('Sunday').week(weekNum).toDate();
   const initEndDate = moment().day('Saturday').week(weekNum).toDate();
-  console.log(now);
+  //console.log(now);
   const [titleDate, setTitleDate] = useState({
     startDate: moment(initStartDate).format('YYYY년 MM월 DD일'),
     endDate: moment(initEndDate).format('YYYY년 MM월 DD일'),
@@ -100,26 +90,48 @@ const ReservationPage = () => {
 
   useEffect(() => {
     if (calInstance === null) {
+      console.log(
+        'calInstance가 렌더링 null 값이므로 아직 캘린더에 대한 인스턴스는 받지 못했습니다.',
+      );
       setCalInstance(calendarRef.current.getInstance());
-       console.log('null: rendering');
-        //calInstance.createSchedules(addSchedule);
-    }else {
-      console.log("rendering");
-      calInstance.createSchedules(addSchedule);
+      //calInstance.createSchedules(addSchedule);
+      // }else {
+      //   console.log("rendering");
+      //   calInstance.createSchedules(addSchedule);
     }
   }, [calInstance]);
 
   // doctorInfo 임의로 설정하기 위한 코드
   useEffect(() => {
+    console.log('캘린더 index.jsx 파일이 렌더링 되었습니다.');
     const { member_id, member_name, doctor_room } = doctorJson[0];
     setDoctorInfo({
       member_id,
       member_name,
       doctor_room,
     });
-    console.log("add", calInstance);
-     
   }, []);
+
+  useEffect(() => {
+    console.log('rendering');
+    if (calInstance !== null) {
+      calInstance.clear();
+      const result = reservationInfo.filter(
+        (resInfo) => selectId === resInfo.memberId,
+      );
+      console.log('addSchedule', result);
+      calInstance.createSchedules(result);
+      calInstance.render();
+    }
+  }, [reservationInfo, selectId, calInstance]);
+
+  // useEffect(() => {
+  //   console.log('select 의사 실행', reservationInfo);
+  //   console.log("의사 num", selectId);
+  //   const result = reservationInfo.filter((resInfo) => selectId === resInfo.memberId);
+  //   console.log("index result" , result);
+  //   calInstance.createSchedules(result);
+  // }, [selectId]);
 
   const handleMenuItemClick = useCallback(
     ({ member_id, member_name, doctor_room }) => {
@@ -146,7 +158,7 @@ const ReservationPage = () => {
 
   const handleNextClick = () => {
     calInstance.next();
-     console.log(calInstance.getDateRangeEnd().toDate());
+    console.log(calInstance.getDateRangeEnd().toDate());
     const startDate = moment(calInstance.getDateRangeStart().toDate()).format(
       'YYYY년 MM월 DD일',
     );
@@ -158,8 +170,9 @@ const ReservationPage = () => {
   };
 
   const onBeforeCreateSchedule = (e) => {
-    console.log(e.start.toDate());
-    
+    console.log('시작시간', moment(e.start.toDate()).format());
+    console.log('엔드시간', moment(e.end.toDate()).format());
+    const weekNum = moment(e.start.toDate(), 'MM-DD-YYYY').week();
     const start = e.start;
     const end = e.end;
     const date =
@@ -172,16 +185,31 @@ const ReservationPage = () => {
     const startTime = start.getHours() + '시 ' + start.getMinutes() + '분 ';
     const endTime = end.getHours() + '시 ' + end.getMinutes() + '분 ';
 
+    const scheduleStart = moment(start.toDate()).format();
+    const scheduleEnd = moment(end.toDate()).format();
+
     setReservationTime({
       date,
       startTime,
       endTime,
+      scheduleStart,
+      scheduleEnd,
+      weekNum,
     });
     setOpened(true);
   };
 
-  const addScheduleSet = (patient) => {
-    setSchdule(patient);
+  const onClickSchedule = (event) => {
+    const result = reservationInfo.filter(
+      (reservationInfo) => reservationInfo.id === event.schedule.id,
+    );
+    setReadPatient(result[0]);
+    console.log('result', result[0]);
+    setReadOpened(true);
+  };
+
+  const handeSearchOpenClick = () => {
+      setSearchOpened(true);
   }
 
   return (
@@ -248,6 +276,19 @@ const ReservationPage = () => {
                   size="small"
                   style={{
                     border: '1px solid rgba(0,0,0,0.12)',
+                    marginLeft: '0.5rem',
+                    marginRight: '1rem',
+                    padding: '0.5rem',
+                  }}
+                  onClick={handeSearchOpenClick}
+                >
+                  <RiUserSearchFill />
+                </IconButton>
+                <IconButton
+                  type="button"
+                  size="small"
+                  style={{
+                    border: '1px solid rgba(0,0,0,0.12)',
                     marginRight: '0.5rem',
                     padding: '0.5rem',
                   }}
@@ -281,7 +322,7 @@ const ReservationPage = () => {
                   view="week"
                   ref={calendarRef}
                   onBeforeCreateSchedule={onBeforeCreateSchedule}
-                  
+                  onClickSchedule={onClickSchedule}
                 />
               </div>
 
@@ -290,6 +331,15 @@ const ReservationPage = () => {
                 setOpened={setOpened}
                 reservationTime={reservationTime}
                 doctorInfo={doctorInfo}
+              />
+              <ReservationReadDrawer
+                readOpened={readOpened}
+                setReadOpened={setReadOpened}
+                readPatient={readPatient}
+              />
+              <SearchReservation
+                searchOpened={searchOpened}
+                setSearchOpened={setSearchOpened}
               />
             </ContentContainer>
           </Grid>

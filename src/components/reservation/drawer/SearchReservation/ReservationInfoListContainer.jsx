@@ -1,56 +1,55 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setReservationTime } from 'redux/features/reservation/reservationSlice';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  upateReservationTime,
+  removeReservationTime,
+} from 'redux/features/reservation/reservationSlice';
+import moment from 'moment';
 import { Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
 
-const ReservationInfoContainer = ({
-  reservationTime,
-  doctorInfo,
-  patientInfo,
-  setOpened,
-}) => {
-  const [visitReason, setReason] = useState('');
- const reserve_Info = useSelector(
-   (state) => state.reservation.reservationInfo,
- );
+const ReservationInfoListContainer = ({ setReadOpened, readPatient }) => {
   const dispatch = useDispatch();
-  const handleReservationClick = () => {
-    if (patientInfo.patient_name === '' && patientInfo.patient_birth === '') {
-      alert('환자를 선택해주세요');
+
+  const [visitReason, setReason] = useState(readPatient.drOpinion);
+  const [reservationTime, setReservationTime] = useState({
+    day: '',
+    startTime: '',
+    endTime: '',
+  });
+  const visitReasonHandleChange = (event) => {
+    setReason(event.target.value);
+  };
+  useEffect(() => {
+    console.log('reservationreadcontainer 실행');
+    const day = moment(readPatient.start).format('YYYY년 MM월 DD일');
+    const startTime = moment(readPatient.start).format('LT');
+    const endTime = moment(readPatient.end).format('LT');
+    setReservationTime({ day, startTime, endTime });
+  }, []);
+
+  const updateReservationInfo = (id, changeVisitReason) => {
+    if (visitReason === readPatient.drOpinion) {
+      alert('수정된 내용을 입력해주세요');
     } else {
-      if (visitReason === '') {
-        alert('내원 사유를 적어주세요');
-      } else {
-        const reservationInfo = {
-          id: reserve_Info.length + 1,
-          calendarId: reservationTime.weekNum,
-          title: patientInfo.patient_name,
-          birth: patientInfo.patient_birth,
-          category: 'time',
-          body: visitReason,
-          start: reservationTime.scheduleStart,
-          end: reservationTime.scheduleEnd,
-          bgColor: 'blue',
-          color: "white",
-          drOpinion: visitReason,
-          patientId: patientInfo.patient_id,
-          memberId: doctorInfo.member_id,
-          memberName: doctorInfo.member_name,
-          drRoom: doctorInfo.doctor_room,
-        };
-        console.log('reservationInfo', reserve_Info.length);
-        dispatch(setReservationTime(reservationInfo));
-        
-        setOpened(false);
-      }
+      console.log('id', id);
+      console.log('changeVisitReason', changeVisitReason);
+      const updateInfo = {
+        id: id,
+        drOpinion: changeVisitReason,
+      };
+      dispatch(upateReservationTime(updateInfo));
+      ///나중에 수정이 완료되었다는 컴포넌트 작성해서 여기다 작성하기!
+      setReadOpened(false);
     }
   };
 
-  const visitReasonHandleChange = (event) => {
-    setReason(event.target.value);
+  const removeReservationInfo = (id) => {
+    dispatch(removeReservationTime(id));
+    ///나중에 삭제가 완료되면 컴포넌트 작성해서 여기다 작성하기!
+    setReadOpened(false);
   };
 
   return (
@@ -74,7 +73,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={patientInfo.patient_name} />
+        <StyledInputBase readOnly value={readPatient.title} />
       </Grid>
       <Grid
         item
@@ -89,7 +88,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={patientInfo.patient_birth} />
+        <StyledInputBase readOnly value={readPatient.birth} />
       </Grid>
       <Grid
         item
@@ -104,7 +103,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={reservationTime.date} />
+        <StyledInputBase readOnly value={reservationTime.day} />
       </Grid>
       <Grid
         item
@@ -149,7 +148,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={doctorInfo.doctor_room} />
+        <StyledInputBase readOnly value={readPatient.drRoom} />
       </Grid>
       <Grid
         item
@@ -164,7 +163,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={doctorInfo.member_name} />
+        <StyledInputBase readOnly value={readPatient.memberName} />
       </Grid>
       <Grid
         item
@@ -184,18 +183,32 @@ const ReservationInfoContainer = ({
           value={visitReason}
         />
       </Grid>
-      <Grid item xs={12} style={{ textAlign: 'center', marginTop: '1.5em' }}>
+      <Grid item xs={6} style={{ textAlign: 'center', marginTop: '1.5em' }}>
         <StyledButton
           width="80%"
-          bgColor="rgb(30, 51, 71)"
+          bgColor="#99582a"
           color="white"
-          onClick={handleReservationClick}
+          onClick={() => {
+            updateReservationInfo(readPatient.id, visitReason);
+          }}
         >
-          진료예약
+          예약수정
+        </StyledButton>
+      </Grid>
+      <Grid item xs={6} style={{ textAlign: 'center', marginTop: '1.5em' }}>
+        <StyledButton
+          width="80%"
+          bgColor="#DDB892"
+          color="white"
+          onClick={() => {
+            removeReservationInfo(readPatient.id);
+          }}
+        >
+          예약취소
         </StyledButton>
       </Grid>
     </Grid>
   );
 };
 
-export default ReservationInfoContainer;
+export default ReservationInfoListContainer;
