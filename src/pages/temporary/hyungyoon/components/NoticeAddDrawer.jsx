@@ -4,7 +4,7 @@ import SearchBar from './SearchBar';
 import ColoredButton from './ColoredRadiusButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { AiFillEdit } from 'react-icons/ai';
-import AddEditer from '../components/AddEditer';
+import AddEditer from '../../../../components/notice/drawer/AddEditer';
 import ColorTable from '../utils/ColorTable';
 
 function NoticeAddDrawer(props) {

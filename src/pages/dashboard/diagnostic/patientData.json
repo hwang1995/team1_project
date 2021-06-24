@@ -1,0 +1,58 @@
+[
+  {
+    "patient_id": 1,
+    "patient_name": "홍길동",
+    "patient_ssn": "960118-1221332",
+    "patient_tel": "010-1234-5678",
+    "patient_gender": "남자",
+    "patient_addr1": "서울시 금천구 금천동 00아파트"
+  },
+  {
+    "patient_id": 2,
+    "patient_name": "홍길순",
+    "patient_ssn": "961321-1236789",
+    "patient_tel": "010-1234-5628",
+    "patient_gender": "여자",
+    "patient_addr1": "서울시 금천구 금천동 00아파트"
+  },
+  {
+    "patient_id": 3,
+    "patient_name": "김영희",
+    "patient_ssn": "912312-1236789",
+    "patient_tel": "010-1234-5678",
+    "patient_gender": "여자",
+    "patient_addr1": "서울시 관악구 00아파트"
+  },
+  {
+    "patient_id": 1,
+    "patient_name": "김민수",
+    "patient_ssn": "922313-1236789",
+    "patient_tel": "010-1234-5678",
+    "patient_gender": "남자",
+    "patient_addr1": "서울시 금천구 금천동 00아파트"
+  },
+  {
+    "patient_id": 4,
+    "patient_name": "홍길동",
+    "patient_ssn": "922313-1236789",
+    "patient_tel": "010-1234-5678",
+    "patient_gender": "여자",
+    "patient_addr1": "서울시 금천구 금천동 00아파트"
+  },
+  {
+    "patient_id": 5,
+    "patient_name": "홍길",
+    "patient_ssn": "922313-1236789",
+    "patient_tel": "010-1234-5678",
+    "patient_gender": "남자",
+    "patient_addr1": "서울시 금천구 금천동 00아파트"
+  },
+  {
+    "patient_id": 6,
+    "patient_name": "홍영식",
+    "patient_ssn": "922313-1236789",
+    "patient_tel": "010-1234-5678",
+    "patient_gender": "남자",
+    "patient_addr1": "서울시 금천구 금천동 00아파트"
+  }
+]
