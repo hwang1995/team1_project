@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ColoredButton from './components/ColoredButton';
 import { GoSearch } from 'react-icons/go';
 import styled from 'styled-components';
@@ -8,9 +8,6 @@ import clsx from 'clsx';
 import {
   Avatar,
   Button,
-  createMuiTheme,
-  Divider,
-  Grid,
   Input,
   InputAdornment,
   List,
@@ -18,10 +15,9 @@ import {
   ListItemText,
   makeStyles,
   TextField,
-  Typography,
 } from '@material-ui/core';
 import TableCode from './components/TableCode';
-import DenseTable from './components/patientTable';
+// import DenseTable from './components/patientTable';
 
 // 입력전용 부모 컴포넌트
 const InputDiv = styled.div`
@@ -41,9 +37,6 @@ const DrawerContent = styled('div')({
   padding: 20,
 });
 
-const testP = styled('p')({
-  display: 'flex',
-});
 
 //환자 정보
 const PatientInfo = styled('p')({
