@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   Divider,
   Grid,
@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { GrPowerReset } from 'react-icons/gr';
+import PuffLoader from 'react-spinners/PuffLoader';
 import PageHeader from 'components/common/header/PageHeader';
 import MenuSidebar from 'components/common/sidebar/MenuSidebar';
 import ContentContainer from 'components/common/container/ContentContainer';

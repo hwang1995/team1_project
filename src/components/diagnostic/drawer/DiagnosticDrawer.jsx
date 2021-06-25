@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import {
   SwipeableDrawer,
   IconButton,
@@ -6,9 +6,6 @@ import {
   TableContainer,
   Table,
   TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Paper,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,16 +17,47 @@ import { AiOutlineClose } from 'react-icons/ai';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
-import StyledTypography from 'components/common/typography/StyledTypography';
+
 import StyledButtonGroup from 'components/common/button/StyledButtonGroup';
+import diagnosticDetailHistory from 'pages/dashboard/diagnostic/diagnosticDetailHistory.json';
+import DiagnosticDetailTableHead from '../table/DiagnosticDetailTableHead';
+import DiagnosticDetailTableRows from '../table/DiagnosticDetailTableRows';
+import DiagnosticDetailInputTableHead from '../table/DiagnosticDetailInputTableHead';
+import DiagnosticDetailInputTableRows from '../table/DiagnosticDetailInputTableRows';
 
 const getStepContent = (step) => {
   if (step === 'LIST') {
-    return <h1>LIST GOOD</h1>;
+    return (
+      <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
+        <Table style={{ minWidth: '930px', overflowX: 'scroll' }}>
+          <DiagnosticDetailTableHead />
+          <TableBody>
+            {diagnosticDetailHistory.map((data) => (
+              <Fragment key={data.diag_inspection_id}>
+                <DiagnosticDetailTableRows data={data} />
+              </Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
   }
 
   if (step === 'RESULT_INPUT') {
-    return <h1>RESULT_INPUT GOOD</h1>;
+    return (
+      <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
+        <Table style={{ minWidth: '930px', overflowX: 'scroll' }}>
+          <DiagnosticDetailInputTableHead />
+          <TableBody>
+            {diagnosticDetailHistory.map((data) => (
+              <Fragment key={data.diag_inspection_id}>
+                <DiagnosticDetailInputTableRows data={data} />
+              </Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
   }
 };
 

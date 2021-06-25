@@ -13,7 +13,9 @@
     "member_id": 1,
     "member_name": "박시현",
     "inspector_member_id": 2,
-    "inspector_member_name": "홍종현"
+    "inspector_member_name": "홍종현",
+    "diag_test_value": 123.12,
+    "diag_test_status": "PENDING"
   },
   {
     "diag_inspection_id": 2,
@@ -29,7 +31,9 @@
     "member_id": 1,
     "member_name": "박시현",
     "inspector_member_id": 2,
-    "inspector_member_name": "홍종현"
+    "inspector_member_name": "홍종현",
+    "diag_test_value": null,
+    "diag_test_status": "REGISTER"
   },
   {
     "diag_inspection_id": 3,
@@ -45,7 +49,9 @@
     "member_id": 1,
     "member_name": "박시현",
     "inspector_member_id": 2,
-    "inspector_member_name": "홍종현"
+    "inspector_member_name": "홍종현",
+    "diag_test_value": null,
+    "diag_test_status": "COMPLETED"
   },
   {
     "diag_inspection_id": 4,
@@ -61,7 +67,9 @@
     "member_id": 1,
     "member_name": "박시현",
     "inspector_member_id": 2,
-    "inspector_member_name": "홍종현"
+    "inspector_member_name": "홍종현",
+    "diag_test_value": null,
+    "diag_test_status": "REGISTER"
   },
   {
     "diag_inspection_id": 5,
@@ -77,6 +85,8 @@
     "member_id": 1,
     "member_name": "박시현",
     "inspector_member_id": 2,
-    "inspector_member_name": "홍종현"
+    "inspector_member_name": "홍종현",
+    "diag_test_value": null,
+    "diag_test_status": "REGISTER"
   }
 ]

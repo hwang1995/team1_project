@@ -1,7 +1,7 @@
 import { TableHead, TableCell } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 
-const DiagnosticDetailTableHead = () => {
+const DiagnosticDetailInputTableHead = () => {
   return (
     <TableHead>
       <TableCell style={{ minWidth: '80px' }}>
@@ -19,30 +19,19 @@ const DiagnosticDetailTableHead = () => {
           묶음명
         </StyledTypography>
       </TableCell>
-
-      <TableCell style={{ minWidth: '200px' }}>
+      <TableCell style={{ minWidth: '150px' }}>
         <StyledTypography variant="subtitle1" component="h5" weight={7}>
           검사명
         </StyledTypography>
       </TableCell>
-      <TableCell style={{ minWidth: '80px' }}>
+      <TableCell style={{ minWidth: '150px' }}>
         <StyledTypography variant="subtitle1" component="h5" weight={7}>
           결과값
         </StyledTypography>
       </TableCell>
-      <TableCell style={{ minWidth: '130px' }}>
+      <TableCell style={{ minWidth: '100px' }}>
         <StyledTypography variant="subtitle1" component="h5" weight={7}>
           평균값
-        </StyledTypography>
-      </TableCell>
-      <TableCell style={{ minWidth: '100px' }}>
-        <StyledTypography variant="subtitle1" component="h5" weight={7}>
-          검체명
-        </StyledTypography>
-      </TableCell>
-      <TableCell style={{ minWidth: '100px' }}>
-        <StyledTypography variant="subtitle1" component="h5" weight={7}>
-          용기
         </StyledTypography>
       </TableCell>
       <TableCell style={{ minWidth: '80px' }}>
@@ -55,13 +44,8 @@ const DiagnosticDetailTableHead = () => {
           검사담당자
         </StyledTypography>
       </TableCell>
-      <TableCell style={{ minWidth: '50px' }}>
-        <StyledTypography variant="subtitle1" component="h5" weight={7}>
-          상태
-        </StyledTypography>
-      </TableCell>
     </TableHead>
   );
 };
 
-export default DiagnosticDetailTableHead;
+export default DiagnosticDetailInputTableHead;
