@@ -11,7 +11,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import notfoundhistory from '../resources/notfoundhistory.png';
 
-
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -25,7 +24,6 @@ const useRowStyles = makeStyles({
     },
   },
 });
-
 
 function Row(props) {
   const classes = useRowStyles();
@@ -128,7 +126,7 @@ function Row(props) {
   );
 }
 
-export default function CollapsibleTable({ patientName }) {
+export default function CollapsibleTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -144,6 +142,7 @@ export default function CollapsibleTable({ patientName }) {
     rowsPerPage -
     Math.min(rowsPerPage, treatmentHistory.length - page * rowsPerPage);
 
+  const patientName = '황성욱';
   const matchData = treatmentHistory.filter((data) =>
     data.patient_name.includes(patientName),
   );
