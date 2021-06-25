@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
 import {
   setDiagnosticDrawer,
-  addDiagnosticGroupItem,
   setSearchDiagnosticInfo,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import useWindowSize from 'hooks/useWindowSize';

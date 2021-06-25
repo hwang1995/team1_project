@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import React, { useEffect, useState } from 'react';
-
-
+// import InputAdornment from '@material-ui/core/InputAdornment';
+import React, { useEffect } from 'react';
 
 const RadiusContainer = styled(Input)`
   border-radius: 20px;
@@ -16,7 +14,7 @@ const RadiusContainer = styled(Input)`
 
 function ColorRadiusContainer(props) {
   const [inputVal, setInputVal] = React.useState('');
-  
+
   const handleChange = (e) => {
     setInputVal(e.target.value);
     props.setData(e.target.value);
@@ -32,7 +30,6 @@ function ColorRadiusContainer(props) {
         onChange={handleChange}
         disableUnderline="true"
         placeholder="제목을 입력해주세요."
-        
       ></RadiusContainer>
     </div>
   );

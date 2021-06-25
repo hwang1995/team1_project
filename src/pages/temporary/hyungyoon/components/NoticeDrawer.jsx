@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import AddIcon from '@material-ui/icons/Add';
 import ColorTable from '../utils/ColorTable';

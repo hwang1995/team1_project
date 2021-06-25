@@ -10,7 +10,6 @@ import {
   Backdrop,
   IconButton,
   Grid,
-  Divider,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import SpringFade from 'components/common/fade/SpringFade';

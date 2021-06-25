@@ -15,7 +15,7 @@ const SearchContainer = styled.div`
 const SearchBase = styled(InputBase)`
   margin-left: 8px;
   flex: 1;
-  font-family: 'Lato', 'Noto Sans KR', sans-serif;
+  font-family: 'Spoqa Han Sans Neo', 'Noto Sans KR', sans-serif;
   font-weight: 700;
 `;
 
