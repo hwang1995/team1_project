@@ -27,6 +27,8 @@ const ReservationDrawer = ({
       patient_birth: '',
     });
 
+  const [checkChange, setCheckChange] = useState(false);
+
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       return;
@@ -84,11 +86,34 @@ const ReservationDrawer = ({
               />
             </div>
           </DrawerHeader>
-
-          <SearchBox
-            setSearchVal={setSearchVal}
-            placeholder="환자 이름을 입력해주세요."
-          />
+          {checkChange === false ? (
+            <SearchBox
+              setSearchVal={setSearchVal}
+              placeholder="환자 이름을 입력해주세요."
+            />
+          ) : (
+            <div style={{ display: 'flex', alignItems: "center" }}>
+              <div style={{ flex: 2, }}>
+                <img
+                  src="/assets/image/question.jpeg"
+                  width="100%"
+                  alt="confirmPicture"
+                />
+              </div>
+              <div
+                style={{
+                  flex: 3,
+                  alignItems: 'center',
+                  marginLeft:"1em"
+                }}
+              >
+                <div style={{fontWeight:"bold"}}>
+                  <h1>접수 내용이 </h1>
+                  <h1>다음과 같습니까? </h1>
+                </div>
+              </div>
+            </div>
+          )}
 
           {page === 'INFO' ? (
             <ReservationInfoContainer
@@ -96,6 +121,7 @@ const ReservationDrawer = ({
               doctorInfo={doctorInfo}
               patientInfo={patientInfo}
               setOpened={setOpened}
+              setCheckChange={setCheckChange}
             />
           ) : (
             <ReservationPatientListContainer setPatientInfo={setPatientInfo} />

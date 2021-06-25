@@ -11,11 +11,13 @@ const ReservationInfoContainer = ({
   doctorInfo,
   patientInfo,
   setOpened,
+  setCheckChange,
 }) => {
   const [visitReason, setReason] = useState('');
- const reserve_Info = useSelector(
-   (state) => state.reservation.reservationInfo,
- );
+  const [buttonChange, setButtonChange] = useState(false);
+  const reserve_Info = useSelector(
+    (state) => state.reservation.reservationInfo,
+  );
   const dispatch = useDispatch();
   const handleReservationClick = () => {
     if (patientInfo.patient_name === '' && patientInfo.patient_birth === '') {
@@ -24,6 +26,14 @@ const ReservationInfoContainer = ({
       if (visitReason === '') {
         alert('내원 사유를 적어주세요');
       } else {
+        setCheckChange(true);
+        setButtonChange(true);
+      }
+    }
+    
+  };
+
+  const handleInsertInfoClick = () => {
         const reservationInfo = {
           id: reserve_Info.length + 1,
           calendarId: reservationTime.weekNum,
@@ -34,7 +44,7 @@ const ReservationInfoContainer = ({
           start: reservationTime.scheduleStart,
           end: reservationTime.scheduleEnd,
           bgColor: 'blue',
-          color: "white",
+          color: 'white',
           drOpinion: visitReason,
           patientId: patientInfo.patient_id,
           memberId: doctorInfo.member_id,
@@ -43,11 +53,10 @@ const ReservationInfoContainer = ({
         };
         console.log('reservationInfo', reserve_Info.length);
         dispatch(setReservationTime(reservationInfo));
-        
+        setCheckChange(false);
+        setButtonChange(false);
         setOpened(false);
-      }
-    }
-  };
+  }
 
   const visitReasonHandleChange = (event) => {
     setReason(event.target.value);
@@ -184,16 +193,44 @@ const ReservationInfoContainer = ({
           value={visitReason}
         />
       </Grid>
-      <Grid item xs={12} style={{ textAlign: 'center', marginTop: '1.5em' }}>
-        <StyledButton
-          width="80%"
-          bgColor="rgb(30, 51, 71)"
-          color="white"
-          onClick={handleReservationClick}
-        >
-          진료예약
-        </StyledButton>
-      </Grid>
+      {buttonChange === false ? (
+        <Grid item xs={12} style={{ textAlign: 'center', marginTop: '1.5em' }}>
+          <StyledButton
+            width="80%"
+            bgColor="rgb(30, 51, 71)"
+            color="white"
+            onClick={handleReservationClick}
+          >
+            진료예약
+          </StyledButton>
+        </Grid>
+      ) : (
+        <Grid item xs={12} style={{ textAlign: 'center', marginTop: '1.5em' }}>
+          <div style={{ marginBottom: '1em' }}>
+            <StyledButton
+              width="80%"
+              bgColor="#a9e34b"
+              color="white"
+              onClick={() => {
+                setCheckChange(false);
+                setButtonChange(false);
+              }}
+            >
+              이전으로 돌아가기
+            </StyledButton>
+          </div>
+          <div>
+            <StyledButton
+              width="80%"
+              bgColor="rgb(30, 51, 71)"
+              color="white"
+              onClick={handleInsertInfoClick}
+            >
+              진료예약
+            </StyledButton>
+          </div>
+        </Grid>
+      )}
     </Grid>
   );
 };

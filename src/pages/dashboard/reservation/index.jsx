@@ -172,6 +172,7 @@ const ReservationPage = () => {
   const onBeforeCreateSchedule = (e) => {
     console.log('시작시간', moment(e.start.toDate()).format());
     console.log('엔드시간', moment(e.end.toDate()).format());
+    console.log("dataeeee", moment(e.start.toDate()).format("LT"));
     const weekNum = moment(e.start.toDate(), 'MM-DD-YYYY').week();
     const start = e.start;
     const end = e.end;
@@ -182,8 +183,8 @@ const ReservationPage = () => {
       '월 ' +
       start.getDate() +
       '일';
-    const startTime = start.getHours() + '시 ' + start.getMinutes() + '분 ';
-    const endTime = end.getHours() + '시 ' + end.getMinutes() + '분 ';
+    const startTime = moment(start.toDate()).format('LT');
+    const endTime = moment(end.toDate()).format('LT'); 
 
     const scheduleStart = moment(start.toDate()).format();
     const scheduleEnd = moment(end.toDate()).format();
