@@ -1,62 +1,49 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { BsPencilSquare, BsListUl } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
 
-import AddEditer from './AddEditer';
+import {
+  setNoticeCurrentIndex,
+  setActiveStep,
+  addNoticeItem,
+} from 'redux/features/notice/noticeSlice';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
-const NoticeDrawerWrite = ({ setActiveStep, noticeItems }) => {
-  const [notice, setNotice] = useState({
-    notice_title: '',
-    notice_content: '',
-    notice_id: 0,
-    notice_author: '',
-    notice_date: '',
-  });
+const NoticeDrawerWrite = () => {
+  const [title, setTitle] = useState('');
+  const [ckcontent, setCkcontent] = useState('');
+
+  const dispatch = useDispatch();
+  const noticeItem = useSelector((state) => state.notice.noticeItem);
 
   const handleChange = (event) => {
-    setNotice({
-      ...notice,
-      [event.target.name]: event.target.value,
-    });
-    console.log('event.target.value', event.target.value);
+    setTitle(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(notice);
-  }, [notice]);
-
-  let lastnotice_id = 7;
   const handleAdd = () => {
-    // event.preventDefault();
-    lastnotice_id++;
-    const newNotice = { ...notice };
-    newNotice.notice_id = lastnotice_id;
-    newNotice.notice_date = new Date().toLocaleDateString();
-    newNotice.notice_author = '황박사';
+    const now = new Date().toLocaleDateString();
+    const noticeIndex = noticeItem.length;
+    // console.log(ckcontent.toString());
+    dispatch(
+      addNoticeItem({
+        notice_id: noticeIndex + 1,
+        notice_title: title,
+        notice_date: now,
+        notice_content: ckcontent.toString(),
+        notice_author: '홍금보',
+      }),
+    );
 
-    noticeItems.push(newNotice);
-    console.log('handleAdd 실행', newNotice);
-    setActiveStep('SUCCESS');
+    dispatch(setNoticeCurrentIndex(noticeIndex));
+    dispatch(setActiveStep('SUCCESS'));
   };
 
-  // const handleAdd = (event) => {
-  //   //event.preventDefault();
-  //   event.preventDefault();
-  //   const newBoard = { ...board }; // 상태를 그대로 넘기는 것은 위험, 상태를 복제해서
-  //   // 객체를 새로 만든 다음에 나머지 부족한 부분 넣어주기
-  //   newBoard.bwriter = "user1";
-  //   insertBoard(newBoard);
-  //   props.history.goBack();
-  // };
-  // export function insertBoard(board) {
-  //   lastBno++;
-  //   board.bno = lastBno;
-  //   board.bdate = new Date().toLocaleDateString();
-  //   board.bhitcount = 0;
-  //   data.push(board);
-  // }
-
+  const handleEditorChange = (e, editor) => {
+    setCkcontent(editor.getData());
+  };
   return (
     <Fragment>
       <div style={{ marginTop: '2rem', display: 'flex' }}>
@@ -65,14 +52,20 @@ const NoticeDrawerWrite = ({ setActiveStep, noticeItems }) => {
         </div>
         <div style={{ flex: 6 }}>
           <StyledInputBase
-            name="notice_title"
+            value={title}
             onChange={handleChange}
             placeholder="제목을 입력해주세요."
           />
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        <AddEditer name="notice_content" onChange={handleChange} />
+        {/* <CKEditor
+          editor={ClassicEditor}
+          data="<p>내용을 넣어보시요.</p>"
+          onChange={(event, editor) => handleEditorChange(event, editor)}
+        /> */}
+
+        {/* <AddEditer setCkcontent={setCkcontent} onChange={handleChange} /> */}
       </div>
       <div
         style={{
@@ -94,7 +87,7 @@ const NoticeDrawerWrite = ({ setActiveStep, noticeItems }) => {
           <StyledButton
             bgColor="rgb(8,78,127)"
             color="white"
-            onClick={() => setActiveStep('MAIN')}
+            onClick={() => dispatch(setActiveStep('MAIN'))}
           >
             <BsListUl style={{ marginRight: '5px' }} />
             목록

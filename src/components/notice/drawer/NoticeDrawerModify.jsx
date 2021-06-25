@@ -1,17 +1,48 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import SearchBox from 'components/common/search/SearchBox';
 import { BsPencilSquare, BsListUl } from 'react-icons/bs';
-
-import AddEditer from 'components/notice/drawer/AddEditer';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setNoticeCurrentIndex,
+  modifyNoticeItem,
+  setActiveStep,
+} from 'redux/features/notice/noticeSlice';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
-const NoticeDrawerModify = ({ setActiveStep, noticeItems }) => {
-  const [inputVal, setInputVal] = useState('');
+const NoticeDrawerModify = () => {
+  const dispatch = useDispatch();
+
+  const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
+  const noticeItem = useSelector((state) => state.notice.noticeItem);
+  const currentItem = noticeItem[currentIndex];
+  const [inputVal, setInputVal] = useState(currentItem.notice_title);
+  const [inputContent, setInputContent] = useState(currentItem.notice_content);
 
   const handleChange = (e) => {
     setInputVal(e.target.value);
-    console.log(e.target.value);
+  };
+
+  // useEffect(() => {
+  //   setInputVal();
+  //   setInputContent();
+  // }, [currentItem]);
+
+  const handleEditorChange = (e, editor) => {
+    const data = editor.getData();
+    setInputContent(data);
+  };
+
+  const handleModifyBtn = () => {
+    dispatch(
+      modifyNoticeItem({
+        ...currentItem,
+        notice_title: inputVal,
+        notice_content: inputContent,
+      }),
+    );
+    dispatch(setActiveStep('SUCCESS'));
   };
 
   useEffect(() => {
@@ -27,13 +58,18 @@ const NoticeDrawerModify = ({ setActiveStep, noticeItems }) => {
         <div style={{ flex: 6 }}>
           <StyledInputBase
             name="notice_title"
+            value={inputVal}
             onChange={handleChange}
             placeholder="저희 병원을 소개합니다."
           />
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        <AddEditer />
+        <CKEditor
+          editor={ClassicEditor}
+          data={inputContent}
+          onChange={handleEditorChange}
+        />
       </div>
       <div
         style={{
@@ -45,7 +81,7 @@ const NoticeDrawerModify = ({ setActiveStep, noticeItems }) => {
           <StyledButton
             bgColor="rgb(226,153,51)"
             color="white"
-            onClick={() => setActiveStep('SUCCESS')}
+            onClick={handleModifyBtn}
           >
             <BsPencilSquare style={{ marginRight: '5px' }} />
             게시물 수정
@@ -55,7 +91,7 @@ const NoticeDrawerModify = ({ setActiveStep, noticeItems }) => {
           <StyledButton
             bgColor="rgb(8,78,127)"
             color="white"
-            onClick={() => setActiveStep('MAIN')}
+            onClick={() => dispatch(setActiveStep('MAIN'))}
           >
             <BsListUl style={{ marginRight: '5px' }} />
             목록

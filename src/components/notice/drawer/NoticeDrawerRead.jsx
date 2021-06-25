@@ -1,20 +1,22 @@
 import React, { Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import { BsPencilSquare, BsListUl, BsFillTrashFill } from 'react-icons/bs';
-import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
-
+import parse from 'html-react-parser';
 import StyledButton from 'components/common/button/StyledButton';
-import { Divider } from '@material-ui/core';
 
-const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
-  // const board = data.find((board) => board.bno === bno);
-  // board.bhitcount++;
-  // return board;
+const NoticeDrawerRead = () => {
+  const dispatch = useDispatch();
+  const noticeItem = useSelector((state) => state.notice.noticeItem);
+  const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
 
   return (
     <Fragment>
       <div style={{ marginTop: '2rem', display: 'flex' }}>
         <div style={{ flex: 0.8, alignSelf: 'center' }}>
-          <h2 style={{ fontWeight: '400' }}>저희 병원을 소개합니다.</h2>
+          <h2 style={{ fontWeight: '400' }}>
+            {noticeItem[currentIndex].notice_title}
+          </h2>
         </div>
       </div>
       <div style={{ display: 'flex', marginTop: '10px' }}>
@@ -32,11 +34,13 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
           }}
         >
           <div className="avatar-container">
-            <h3 style={{ fontWeight: '600' }}>홍길동</h3>
+            <h3 style={{ fontWeight: '600' }}>
+              {noticeItem[currentIndex].notice_author}
+            </h3>
           </div>
           <div className="textDate-container">
             <div style={{ fontWeight: '500', marginTop: '5px', color: 'gray' }}>
-              6월 8일
+              {noticeItem[currentIndex].notice_date}
             </div>
           </div>
         </div>
@@ -51,7 +55,9 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
       >
         <img src="/assets/image/hospital.png" alt="Logo" width="100%" />
       </div>
-      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>멋지죠?</h3>
+      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
+        {parse(noticeItem[currentIndex].notice_content)}
+      </h3>
       <hr />
       <div
         style={{
@@ -63,7 +69,7 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
           <StyledButton
             bgColor="rgb(8,78,127)"
             color="white"
-            onClick={() => setActiveStep('MAIN')}
+            onClick={() => dispatch(setActiveStep('MAIN'))}
           >
             <BsListUl style={{ marginRight: '5px' }} />
             목록
@@ -73,7 +79,7 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
           <StyledButton
             bgColor="rgb(226,153,51)"
             color="white"
-            onClick={() => setActiveStep('MODIFY')}
+            onClick={() => dispatch(setActiveStep('MODIFY'))}
           >
             <BsPencilSquare style={{ marginRight: '5px' }} />
             수정
@@ -83,7 +89,7 @@ const NoticeDrawerRead = ({ setActiveStep, noticeItems }) => {
           <StyledButton
             bgColor="rgb(216,89,56)"
             color="white"
-            onClick={() => setActiveStep('MAIN')}
+            onClick={() => dispatch(setActiveStep('MAIN'))}
           >
             <BsFillTrashFill style={{ marginRight: '5px' }} />
             삭제
