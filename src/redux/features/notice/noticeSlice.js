@@ -11,6 +11,8 @@ export const noticeSlice = createSlice({
         notice_date: '6월 21일',
         notice_content: '안녕하세요',
         notice_author: 'Dr. Hong',
+        notice_head_text: '안녕하세요',
+        notice_head_image: '/assets/image/hell.jpg',
       },
       {
         notice_id: 2,
@@ -18,6 +20,8 @@ export const noticeSlice = createSlice({
         notice_date: '6월 9일',
         notice_content: '안녕하세요',
         notice_author: 'Dr. Hong',
+        notice_head_text: '안녕하세요',
+        notice_head_image: '/assets/image/hell.jpg',
       },
       {
         notice_id: 3,
@@ -25,6 +29,8 @@ export const noticeSlice = createSlice({
         notice_date: '6월 9일',
         notice_content: '안녕하세요',
         notice_author: 'Dr. Hong',
+        notice_head_text: '안녕하세요',
+        notice_head_image: '/assets/image/hell.jpg',
       },
       {
         notice_id: 4,
@@ -32,6 +38,8 @@ export const noticeSlice = createSlice({
         notice_date: '6월 9일',
         notice_content: '안녕하세요',
         notice_author: 'Dr. Hong',
+        notice_head_text: '안녕하세요',
+        notice_head_image: '/assets/image/hell.jpg',
       },
       {
         notice_id: 5,
@@ -39,6 +47,8 @@ export const noticeSlice = createSlice({
         notice_content: '안녕하세요',
         notice_date: '6월 9일',
         notice_author: 'Dr. Hong',
+        notice_head_text: '안녕하세요',
+        notice_head_image: '/assets/image/hell.jpg',
       },
       {
         notice_id: 6,
@@ -46,6 +56,8 @@ export const noticeSlice = createSlice({
         notice_content: '안녕하세요',
         notice_date: '6월 9일',
         notice_author: 'Dr. Hong',
+        notice_head_text: '안녕하세요',
+        notice_head_image: '/assets/image/hell.jpg',
       },
     ],
     noticeCurrentIndex: 0,

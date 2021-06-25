@@ -46,15 +46,7 @@ const NoticeDrawerRead = () => {
         </div>
       </div>
       <hr />
-      <div
-        style={{
-          marginTop: '20px',
-          display: 'flex',
-          padding: '15px',
-        }}
-      >
-        <img src="/assets/image/hospital.png" alt="Logo" width="100%" />
-      </div>
+
       <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
         {parse(noticeItem[currentIndex].notice_content)}
       </h3>

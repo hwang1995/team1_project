@@ -1,20 +1,20 @@
-import React, { Fragment, useState } from 'react';
-import { BsPencilSquare, BsListUl } from 'react-icons/bs';
-import { useDispatch, useSelector } from 'react-redux';
-
-import {
-  setNoticeCurrentIndex,
-  setActiveStep,
-  addNoticeItem,
-} from 'redux/features/notice/noticeSlice';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { Editor } from '@toast-ui/react-editor';
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
+import React, { Fragment, useRef, useState } from 'react';
+import { BsListUl, BsPencilSquare } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addNoticeItem,
+  setActiveStep,
+  setNoticeCurrentIndex,
+} from 'redux/features/notice/noticeSlice';
+
 const NoticeDrawerWrite = () => {
   const [title, setTitle] = useState('');
-  const [ckcontent, setCkcontent] = useState('');
+  const editorRef = useRef(null);
 
   const dispatch = useDispatch();
   const noticeItem = useSelector((state) => state.notice.noticeItem);
@@ -26,14 +26,27 @@ const NoticeDrawerWrite = () => {
   const handleAdd = () => {
     const now = new Date().toLocaleDateString();
     const noticeIndex = noticeItem.length;
-    // console.log(ckcontent.toString());
+    const editorContent = editorRef.current.getInstance().getHTML();
+
+    if (editorContent === '' || title === '') {
+      alert('제목 혹은 내용이 비어있습니다.');
+      return;
+    }
+    const imgRegEx = /(?<=<img src=").*?(?=")/gm;
+    const notice_head_image = editorContent.match(imgRegEx);
+    const notice_head_text = editorContent
+      .replace(/<(?:.|\n)*?>/gm, '')
+      .substring(0, 50);
+
     dispatch(
       addNoticeItem({
         notice_id: noticeIndex + 1,
         notice_title: title,
         notice_date: now,
-        notice_content: ckcontent.toString(),
+        notice_content: editorContent,
         notice_author: '홍금보',
+        notice_head_text,
+        notice_head_image,
       }),
     );
 
@@ -41,9 +54,6 @@ const NoticeDrawerWrite = () => {
     dispatch(setActiveStep('SUCCESS'));
   };
 
-  const handleEditorChange = (e, editor) => {
-    setCkcontent(editor.getData());
-  };
   return (
     <Fragment>
       <div style={{ marginTop: '2rem', display: 'flex' }}>
@@ -59,13 +69,14 @@ const NoticeDrawerWrite = () => {
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        {/* <CKEditor
-          editor={ClassicEditor}
-          data="<p>내용을 넣어보시요.</p>"
-          onChange={(event, editor) => handleEditorChange(event, editor)}
-        /> */}
-
-        {/* <AddEditer setCkcontent={setCkcontent} onChange={handleChange} /> */}
+        <Editor
+          previewStyle="vertical"
+          height="500px"
+          initialEditType="wysiwyg"
+          placeholder="내용을 입력해주세요."
+          language="ko"
+          ref={editorRef}
+        />
       </div>
       <div
         style={{

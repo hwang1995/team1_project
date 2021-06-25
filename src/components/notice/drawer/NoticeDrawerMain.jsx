@@ -73,7 +73,9 @@ const NoticeDrawerMain = () => {
       </div>
       <NoticeDrawerItem>
         {matchData
+          .reverse()
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
           .map((data) => (
             <Fragment>
               <div style={{ display: 'flex', marginTop: '10px' }}>
@@ -97,14 +99,14 @@ const NoticeDrawerMain = () => {
                     </div>
                   </div>
                   <div className="textContent-container">
-                    <div align="left">{parse(data.notice_content)}</div>
+                    <div align="left">{data.notice_head_text}</div>
                   </div>
                   <div className="textDate-container">
                     <div align="left">{data.notice_date}</div>
                   </div>
                 </div>
                 <div className="right-side" style={{ flex: 1 }}>
-                  <img src="/assets/image/hell.jpg" alt="Logo" width="100%" />
+                  <img src={data.notice_head_image} alt="Logo" width="100%" />
                 </div>
               </div>
             </Fragment>
