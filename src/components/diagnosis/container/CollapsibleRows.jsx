@@ -5,7 +5,6 @@ import {
   IconButton,
   Collapse,
   Box,
-  Typography,
   Grid,
 } from '@material-ui/core';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';

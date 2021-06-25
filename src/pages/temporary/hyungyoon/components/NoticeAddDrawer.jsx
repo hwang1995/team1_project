@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Component } from 'react';
+import React, { useState } from 'react';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import SearchBar from './SearchBar';
 import ColoredButton from './ColoredRadiusButton';
@@ -12,8 +12,6 @@ function NoticeAddDrawer(props) {
   const [state, setState] = useState({
     right: false,
   });
-
-  const handleChangePage = (event) => {};
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
