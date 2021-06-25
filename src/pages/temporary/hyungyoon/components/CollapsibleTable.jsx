@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton'
+import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -31,7 +31,7 @@ const useRowStyles = makeStyles({
 function Row(props) {
   const classes = useRowStyles();
   const { row } = props;
-  const [ open, setOpen ] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -93,7 +93,7 @@ function Row(props) {
                             alt="Logo"
                             width="100"
                             style={{
-                            display: 'flex',
+                              display: 'flex',
                             }}
                           />
                           <TableCell>기록이 존재하지 않습니다.</TableCell>
@@ -129,11 +129,7 @@ function Row(props) {
   );
 }
 
-
-
-
-
-export default function CollapsibleTable() {
+export default function CollapsibleTable({ patientName }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -149,12 +145,15 @@ export default function CollapsibleTable() {
     rowsPerPage -
     Math.min(rowsPerPage, treatmentHistory.length - page * rowsPerPage);
 
+  const matchData = treatmentHistory.filter((data) =>
+    data.patient_name.includes(patientName),
+  );
   return (
     <Paper>
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
           <TableBody>
-            {treatmentHistory
+            {matchData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
                 <Row key={row.patient_id} row={row} />
@@ -170,7 +169,7 @@ export default function CollapsibleTable() {
       <TablePagination
         rowsPerPageOptions={[5, 10, 15]}
         component="div"
-        count={treatmentHistory.length}
+        count={matchData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
