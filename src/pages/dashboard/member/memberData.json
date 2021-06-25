@@ -1,100 +1,142 @@
 [
   {
     "member_id": 1,
+    "member_pw": "123",
     "member_email": "sihyun@hungry.com",
     "member_name": "박시현",
     "member_authority": "ROLE_DOCTOR",
-    "member_address": "서울시 금천구 금천동 떡상가자."
+    "member_postal": "012345",
+    "member_addr1": "서울시 금천구 금천동 떡상가자.",
+    "member_addr2": "1회원의 상세 주소입니다."
   },
   {
     "member_id": 2,
+    "member_pw": "123",
     "member_email": "jonghyun@girlfriendsoon.com",
     "member_name": "홍종현",
     "member_authority": "ROLE_DOCTOR",
-    "member_address": "경기도 의정부 부대찌개동"
+    "member_postal": "012345",
+    "member_addr1": "경기도 의정부 부대찌개동",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 3,
+    "member_pw": "123",
     "member_email": "hyeongyun@soso.com",
     "member_name": "김형윤",
     "member_authority": "ROLE_INSPECTOR",
-    "member_address": "서울시 동작구 가즈아동"
+    "member_postal": "012345",
+    "member_addr1": "서울시 동작구 가즈아동",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 4,
+    "member_pw": "123",
     "member_email": "sungwook@healthguy.com",
     "member_name": "황성욱",
     "member_authority": "ROLE_NURSE",
-    "member_address": "서울시 금천구 언제 떡상하냐?"
+    "member_postal": "012345",
+    "member_addr1": "서울시 금천구 언제 떡상하냐?",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 5,
+    "member_pw": "123",
     "member_email": "test55@test55.com",
     "member_name": "김자바",
     "member_authority": "ROLE_DOCTOR",
-    "member_address": "강원도 춘천시 더존구"
+    "member_postal": "012345",
+    "member_addr1": "강원도 춘천시 더존구",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 6,
+    "member_pw": "123",
     "member_email": "jonghyun@girlfriendsoon.com",
     "member_name": "오렌지",
     "member_authority": "ROLE_DOCTOR",
-    "member_address": "서울시 잠실구 잠실동"
+    "member_postal": "012345",
+    "member_addr1": "서울시 잠실구 잠실동",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 7,
+    "member_pw": "123",
     "member_email": "hyeongyun@soso.com",
     "member_name": "박도지",
     "member_authority": "ROLE_INSPECTOR",
-    "member_address": "경기도 구리시 구릿빛"
+    "member_postal": "012345",
+    "member_addr1": "경기도 구리시 구릿빛",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 8,
+    "member_pw": "123",
     "member_email": "test888@test888.com",
     "member_name": "888",
     "member_authority": "ROLE_NURSE",
-    "member_address": "888888888"
+    "member_postal": "012345",
+    "member_addr1": "888888888",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 9,
+    "member_pw": "123",
     "member_email": "비둘기@비둘기.com",
     "member_name": "999",
     "member_authority": "ROLE_INSPECTOR",
-    "member_address": "비둘가"
+    "member_postal": "012345",
+    "member_addr1": "비둘가",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 10,
+    "member_pw": "123",
     "member_email": "10번아이디@10번.com",
     "member_name": "황성욱",
     "member_authority": "ROLE_NURSE",
-    "member_address": "10번주소 10번지"
+    "member_postal": "012345",
+    "member_addr1": "10번주소 10번지",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 11,
+    "member_pw": "123",
     "member_email": "testDoctor11@test11.com",
     "member_name": "김성현",
     "member_authority": "ROLE_DOCTOR",
-    "member_address": "부산광역시 해운대구"
+    "member_postal": "012345",
+    "member_addr1": "부산광역시 해운대구",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 12,
+    "member_pw": "123",
     "member_email": "goodman@haveagoodday.com",
     "member_name": "고은지",
     "member_authority": "ROLE_DOCTOR",
-    "member_address": "서울시 노원구"
+    "member_postal": "012345",
+    "member_addr1": "서울시 노원구",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 13,
+    "member_pw": "123",
     "member_email": "hyeongyun@soso.com",
     "member_name": "정호연",
     "member_authority": "ROLE_INSPECTOR",
-    "member_address": "수원시"
+    "member_postal": "012345",
+    "member_addr1": "수원시",
+    "member_addr2": "상세 주소입니다."
   },
   {
     "member_id": 14,
+    "member_pw": "123",
     "member_email": "dogedoge@coin.com",
     "member_name": "김정현",
     "member_authority": "ROLE_NURSE",
-    "member_address": "경기도 양주시"
+    "member_postal": "012345",
+    "member_addr1": "경기도 양주시",
+    "member_addr2": "상세 주소입니다."
   }
 ]

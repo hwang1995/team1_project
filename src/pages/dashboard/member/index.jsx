@@ -23,6 +23,7 @@ import SearchBox from 'components/common/search/SearchBox';
 import MemberDrawer from 'components/member/drawer/MemberDrawer';
 import StyledButton from 'components/common/button/StyledButton';
 import MemberUpdateDrawer from 'components/member/drawer/MemberUpdateDrawer';
+import DeleteModal from 'components/member/modal/DeleteModal';
 /**
  * 이 페이지 컴포넌트는 임직원 관리 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -37,6 +38,7 @@ const MemberPage = () => {
   const [isUpdateOpened, setUpdateOpened] = useState(false);
   const [searchVal, setSearchVal] = useState('');
 
+  const [selectedData, setSelectedData] = useState('');
   const [member, setMember] = useState(memberData);
   //page설정 상태관리
   const [page, setPage] = useState(0);
@@ -44,41 +46,16 @@ const MemberPage = () => {
 
   const [isOpenModal, setOpenModal] = useState(false);
 
-  //Drawer창 이동(정보 추가)
-  const memberAdd = () => {};
-
-  //Drawer창 이동(정보 수정)
-  const memberUpdate = () => {};
-
   //페이지상태 이벤트(페이지 이동시)
   const handleChangePage = (event, newPage) => {
     console.log('newPage: ', newPage);
     setPage(newPage);
   };
 
-  const openModal = () => {
-    setOpenModal(true);
-  };
-
-  const closeModal = () => {
-    setOpenModal(false);
-  };
-
   //페이지당 보여줄 컬럼개수
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  //Member 추가 이벤트처리
-  const addMember = (event) => {
-    setMember((memberData) => [
-      ...memberData,
-      {
-        member_name: 'asdasd',
-        member_email: 'BLAHBLAH',
-      },
-    ]);
   };
 
   useEffect(() => {
@@ -150,7 +127,7 @@ const MemberPage = () => {
                           })
                           .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
                           .map((data) => (
-                            <Fragment>
+                            <Fragment key={data.member_id}>
                               <TableRow hover="true">
                                 <TableCell component="th">
                                   {data.member_authority === 'ROLE_DOCTOR'
@@ -170,15 +147,18 @@ const MemberPage = () => {
                                   {data.member_email}
                                 </TableCell>
                                 <TableCell component="th">
-                                  {data.member_address}
+                                  {data.member_addr1} {data.member_addr2}
                                 </TableCell>
                                 <TableCell component="th">
                                   <StyledButton
                                     bgColor="rgb(11, 83, 151)"
                                     color="white"
-                                    onClick={() =>
-                                      setUpdateOpened((prevState) => !prevState)
-                                    }
+                                    onClick={() => {
+                                      setUpdateOpened(
+                                        (prevState) => !prevState,
+                                      );
+                                      setSelectedData(data);
+                                    }}
                                   >
                                     변경
                                   </StyledButton>
@@ -187,16 +167,13 @@ const MemberPage = () => {
                                   <StyledButton
                                     bgColor="rgb(228, 20, 30)"
                                     color="white"
-                                    onClick={openModal}
+                                    onClick={() => {
+                                      setOpenModal((prevState) => !prevState);
+                                      setSelectedData(data.member_id);
+                                    }}
                                   >
                                     삭제
                                   </StyledButton>
-                                  <Modal
-                                    open={isOpenModal}
-                                    onClose={closeModal}
-                                  >
-                                    <p>asd</p>
-                                  </Modal>
                                 </TableCell>
                               </TableRow>
                             </Fragment>
@@ -218,10 +195,35 @@ const MemberPage = () => {
                   </TableContainer>
                 </Grid>
               </Grid>
-              <MemberDrawer isOpened={isOpened} setOpened={setOpened} />
+
+              {/* 추가 Drawer 
+                  isOpened, setOpened: Drawer 오픈상태 
+                  setMember: memberData에 대한 정보 수정에 대한 상태setter전달
+              */}
+              <MemberDrawer
+                isOpened={isOpened}
+                setOpened={setOpened}
+                member={member}
+                setMember={setMember}
+              />
+              {/* 수정 Drawer 
+                  isUpdateOpened, setUpdateOpened: Drawer 오픈상태
+                  memberData: 선택한 멤버정보 전달
+                  setMember: memberData에 대한 정보 수정에 대한 상태setter전달
+              */}
               <MemberUpdateDrawer
                 isUpdateOpened={isUpdateOpened}
                 setUpdateOpened={setUpdateOpened}
+                memberData={selectedData}
+                member={member}
+                setMember={setMember}
+              />
+              {/* 삭제 Modal */}
+              <DeleteModal
+                isOpenModal={isOpenModal}
+                setOpenModal={setOpenModal}
+                member={member}
+                member_id={selectedData}
               />
             </ContentContainer>
           </Grid>

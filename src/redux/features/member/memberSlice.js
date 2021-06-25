@@ -11,7 +11,7 @@ export const memberSlice = createSlice({
   },
   reducers: {
     setModalStatus(state, action) {
-      state.modalStatus = action.payload;
+      state.modalStatus = action.payload; //http.body
     },
     setAddressInfo(state, action) {
       const { member_postal, member_addr1 } = action.payload;

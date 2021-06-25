@@ -22,7 +22,7 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import PostalCodeModal from '../modal/PostalCodeModal';
 
-const MemberDrawer = ({ isOpened, setOpened }) => {
+const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { breakpoint } = useWindowSize();
   const [selectVal, setSelectVal] = useState('의사');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
@@ -86,7 +86,7 @@ const MemberDrawer = ({ isOpened, setOpened }) => {
     const isValidPW = regExpPw.test(member_pw);
     const isValidBirth = regExpBirth.test(member_birth);
 
-    if (isEmailChecked) {
+    if (!isEmailChecked) {
       alert('이메일 중복 체크를 해주세요. ');
       return;
     } else if (!isValidEmail) {
@@ -108,7 +108,7 @@ const MemberDrawer = ({ isOpened, setOpened }) => {
       return;
     }
 
-    const member = {
+    const newMember = {
       member_email,
       member_pw,
       member_name,
@@ -118,7 +118,14 @@ const MemberDrawer = ({ isOpened, setOpened }) => {
       member_addr1,
       member_addr2,
     };
+    console.log(newMember);
+
+    setMember((member) => [...member, newMember]);
+
+    alert('임직원이 추가되었습니다.');
     console.log(member);
+    //setMember(member);
+    setOpened(false);
   };
 
   return (
