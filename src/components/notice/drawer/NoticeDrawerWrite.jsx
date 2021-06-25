@@ -33,7 +33,7 @@ const NoticeDrawerWrite = () => {
       return;
     }
     const imgRegEx = /(?<=<img src=").*?(?=")/gm;
-    const notice_head_image = editorContent.match(imgRegEx);
+    const notice_head_image = editorContent.match(imgRegEx)[0];
     const notice_head_text = editorContent
       .replace(/<(?:.|\n)*?>/gm, '')
       .substring(0, 50);
