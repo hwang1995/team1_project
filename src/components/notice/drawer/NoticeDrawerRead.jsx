@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveStep } from 'redux/features/notice/noticeSlice';
+import { setActiveStep, removeNoticeItem } from 'redux/features/notice/noticeSlice';
 import { BsPencilSquare, BsListUl, BsFillTrashFill } from 'react-icons/bs';
 import parse from 'html-react-parser';
 import StyledButton from 'components/common/button/StyledButton';
@@ -9,6 +9,13 @@ const NoticeDrawerRead = () => {
   const dispatch = useDispatch();
   const noticeItem = useSelector((state) => state.notice.noticeItem);
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
+
+  console.log("currentIndex", currentIndex);
+  const handleDeleteBtn = () => {
+    dispatch(removeNoticeItem);
+    dispatch(setActiveStep('SUCCESS'));
+  };
+
 
   return (
     <Fragment>
@@ -81,7 +88,7 @@ const NoticeDrawerRead = () => {
           <StyledButton
             bgColor="rgb(216,89,56)"
             color="white"
-            onClick={() => dispatch(setActiveStep('MAIN'))}
+            onClick={handleDeleteBtn}
           >
             <BsFillTrashFill style={{ marginRight: '5px' }} />
             삭제

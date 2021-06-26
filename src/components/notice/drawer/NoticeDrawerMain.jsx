@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { TablePagination } from '@material-ui/core';
 import { BsPencilSquare } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
-import parse from 'html-react-parser';
 import {
   setNoticeCurrentIndex,
   setActiveStep,
