@@ -1,12 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  setDiagnosisModal,
-} from 'redux/features/diagnosis/diagnosisSlice';
-import {
-  SwipeableDrawer,
-  Grid,
-} from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { SwipeableDrawer, Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -14,16 +11,17 @@ import useWindowSize from 'hooks/useWindowSize';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
+import PatientModal from '../modal/Modal';
 
-const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
+const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
   const { breakpoint } = useWindowSize();
-  const [confirm, setConfirm] = useState(false);
-  // const [isLoading, setLoading] = useState(false);
+  const [address, setAddress] = useState({});
+  const [isModalOpened, setModalOpened] = useState(false);
+
   const [isPatient, setPatient] = useState({
     patient_id: '',
     patient_name: '',
-    patient_ssn1: '',
-    patient_ssn2: '',
+    patient_birth: moment(new Date()).format('YYYY년 MM월 DD일'),
     patient_addr1: '',
     patient_addr2: '',
     patient_postal: '',
@@ -31,9 +29,18 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
     patient_height: '',
     patient_weight: '',
   });
-  const [isOpenModal, setOpenModal] = useState(false);
 
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    isPatient.patient_postal = address.postalcode;
+    isPatient.patient_addr1 = address.fullAddress;
+  },[isModalOpened])
+
+  useEffect(() => {
+      setPatient({
+        patient_birth: moment(new Date()).format('YYYY년 MM월 DD일'),
+      });
+  }, [isOpened])
 
   useEffect(() => {
     if (breakpoint !== undefined) {
@@ -49,33 +56,81 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
     setOpened(open);
   };
 
-  //submit
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const member = {
-      memberEmail: event.target.memberEmail.value,
-      memberPassword: event.target.memberPassword.value,
-      memberName: event.target.memberName.value,
-      memberBirth: event.target.memberBirth.value,
-    };
-    console.log(member);
-  };
+  const addHandleClick = () => {
+    console.log(isPatient);
+    let isChecked = true;
+    if (isPatient.patient_name === undefined) {
+      isChecked = false;
+      alert('이름을 입력해주세요');
+      return;
+    }
 
-  const ssnHandleClick = () => {
-   if(isPatient.patient_ssn2.length === 7 && isPatient.patient_ssn1.length === 6){
-     setConfirm(true);
-   }else {
-     alert("다시 입력해주세요")
-   }
-  }
+    if (isPatient.patient_birth === '') {
+      isChecked = false;
+      alert('생년월일을 입력해주세요');
+      return;
+    }
+    const reg = /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/;
+    if (!reg.test(isPatient.patient_tel)) {
+      alert('전화번호 형식이 맞지 않습니다.');
+      isChecked = false;
+      return;
+    }
+   
+    if (
+      Number.parseInt(isPatient.patient_height) === NaN ||
+      isPatient.patient_height === undefined
+    ) {
+      console.log(Number.parseInt(isPatient.patient_height));
+      alert('키 형식이 맞지 않습니다.');
+      isChecked = false;
+      return;
+    }
+    if (
+      Number.parseInt(isPatient.patient_weight) === NaN ||
+      isPatient.patient_weight === undefined
+    ) {
+      console.log(typeof isPatient.patient_weight);
+      alert('몸무게 형식이 맞지 않습니다.');
+      isChecked = false;
+      return;
+    }
+    if (isPatient.patient_postal === undefined || isPatient.patient_addr1 === undefined) {
+      alert('주소를 입력해주세요');
+      isChecked = false;
+      return;
+    }
+
+    if (isChecked) {
+      isPatient.patient_id = patientData.length + 1;
+      const newPatient = patientData.concat(isPatient);
+      setPatients(newPatient);
+      setPatient({});
+      setAddress({});
+      setOpened(false);
+    }
+  };
 
   const handleChange = (event) => {
     setPatient({
       ...isPatient,
-      [event.target.name]: event.target.value
-     }
-    )
-  }
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const findAddressHandle = () => {
+    setModalOpened(true);
+  };
+
+  const dateHandleChange = (date) => {
+    console.log('date', new Date());
+    console.log('moment', moment(date).format('YYYY년 MM월 DD일'));
+    const birth = moment(date).format('YYYY년 MM월 DD일');
+    setPatient({
+      ...isPatient,
+      patient_birth: birth,
+    });
+  };
 
   return (
     <Fragment>
@@ -94,6 +149,7 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
                 onClick={() => {
                   setOpened(false);
                   setAddress({});
+                  setPatient({});
                 }}
               />
             </div>
@@ -119,7 +175,11 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
               </StyledTypography>
             </Grid>
             <Grid item xs={9}>
-              <StyledInputBase name="patient_name" onChange={handleChange} />
+              <StyledInputBase
+                name="patient_name"
+                onChange={handleChange}
+                style={{ width: '53%' }}
+              />
             </Grid>
             <Grid
               item
@@ -130,32 +190,17 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
               }}
             >
               <StyledTypography variant="h6" component="h5" weight={5}>
-                주민등록번호
+                생년월일
               </StyledTypography>
             </Grid>
-            <Grid item xs={3}>
-              <StyledInputBase name="patient_ssn1" onChange={handleChange} />
+            <Grid item xs={9}>
+              <DatePicker
+                value={isPatient.patient_birth}
+                customInput={<StyledInputBase />}
+                onChange={dateHandleChange}
+              />
             </Grid>
-            <Grid item xs={1}>
-              <div style={{ textAlign: 'center' }}>
-                <h2>-</h2>
-              </div>
-            </Grid>
-            <Grid item xs={3} >
-              <StyledInputBase name="patient_ssn2" onChange={handleChange} type="password"/>
-            </Grid>
-            <Grid
-              item
-              xs={2}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <StyledButton bgColor="#a9e34b" onClick={ssnHandleClick}>
-                확인
-              </StyledButton>
-            </Grid>
+
             <Grid
               item
               xs={3}
@@ -169,7 +214,11 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
               </StyledTypography>
             </Grid>
             <Grid item xs={9}>
-              <StyledInputBase name="patient_tel" onChange={handleChange} />
+              <StyledInputBase
+                name="patient_tel"
+                onChange={handleChange}
+                style={{ width: '80%' }}
+              />
             </Grid>
             <Grid
               item
@@ -186,8 +235,9 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
             <Grid item xs={9}>
               <StyledInputBase
                 name="patient_height"
-                style={{ width: '60%' }}
+                style={{ width: '53%' }}
                 onChange={handleChange}
+                type="number"
               />
             </Grid>
             <Grid
@@ -205,8 +255,9 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
             <Grid item xs={9}>
               <StyledInputBase
                 name="patient_weight"
-                style={{ width: '60%' }}
+                style={{ width: '53%' }}
                 onChange={handleChange}
+                type="number"
               />
             </Grid>
             <Grid
@@ -224,9 +275,8 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
 
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_postal"
-                value={address.zonecode}
-                onChange={handleChange}
+                placeholder="우편번호"
+                value={address.postalcode || ''}
                 readOnly
               />
             </Grid>
@@ -239,23 +289,16 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
               }}
             >
               <StyledButton
+                onClick={() => findAddressHandle()}
                 bgColor="#a9e34b"
-                onClick={() => {
-                  dispatch(setDiagnosisModal(true));
-                }}
               >
                 주소 찾기
               </StyledButton>
             </Grid>
             <Grid item xs={12}>
               <StyledInputBase
-                name="patient_addr1"
-                value={
-                  address.address !== ''
-                    ? address.address
-                    : address.jibunAddress
-                }
-                onChange={handleChange}
+                value={address.fullAddress || ''}
+                placeholder="주소를 입력해주세요"
                 readOnly
               />
             </Grid>
@@ -273,9 +316,7 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
                 bgColor="#1E4C7C"
                 width="80%"
                 style={{ color: 'white' }}
-                onClick={() => {
-                  console.log('patientData', isPatient);
-                }}
+                onClick={addHandleClick}
               >
                 환자 추가
               </StyledButton>
@@ -283,6 +324,11 @@ const PatientDrawer = ({ isOpened, setOpened, address, setAddress }) => {
           </Grid>
         </ResponsiveContainer>
       </SwipeableDrawer>
+      <PatientModal
+        isModalOpened={isModalOpened}
+        setAddress={setAddress}
+        setModalOpened={setModalOpened}
+      />
     </Fragment>
   );
 };
