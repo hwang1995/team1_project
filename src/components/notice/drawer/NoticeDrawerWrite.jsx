@@ -32,8 +32,8 @@ const NoticeDrawerWrite = () => {
       alert('제목 혹은 내용이 비어있습니다.');
       return;
     }
-    const imgRegEx = /(?<=<img src=").*?(?=")/gm;
-    const notice_head_image = editorContent.match(imgRegEx)[0];
+    const imgRegEx = /img src="|(.*?)"/gm;
+    const notice_head_image = editorContent.match(imgRegEx)[1].replace('"', '');
     const notice_head_text = editorContent
       .replace(/<(?:.|\n)*?>/gm, '')
       .substring(0, 50);

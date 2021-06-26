@@ -7,8 +7,11 @@ import {
   TableBody,
   Hidden,
   Paper,
+  IconButton,
 } from '@material-ui/core';
-
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { GrPowerReset } from 'react-icons/gr';
+import PuffLoader from 'react-spinners/PuffLoader';
 import PageHeader from 'components/common/header/PageHeader';
 import MenuSidebar from 'components/common/sidebar/MenuSidebar';
 import ContentContainer from 'components/common/container/ContentContainer';
@@ -17,6 +20,9 @@ import TitleHeader from 'components/common/header/TitleHeader';
 import diagnosticHistory from './diagnosticHistory';
 import DiagnosticTableHead from 'components/diagnostic/table/DiagnosticTableHead';
 import DiagnosticTableRow from 'components/diagnostic/table/DiagnosticTableRow';
+import DiagnosticDrawer from 'components/diagnostic/drawer/DiagnosticDrawer';
+import useCalendar from 'hooks/useCalendar';
+
 /**
  * 이 페이지 컴포넌트는 진단 검사 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -27,9 +33,7 @@ import DiagnosticTableRow from 'components/diagnostic/table/DiagnosticTableRow';
  */
 const DiagnosticPage = () => {
   const [searchVal, setSearchVal] = useState('');
-  useEffect(() => {
-    console.log(searchVal);
-  }, [searchVal]);
+  const [calInfo, getPrevWeek, getNextWeek, reset] = useCalendar();
 
   return (
     <div>
@@ -50,8 +54,60 @@ const DiagnosticPage = () => {
             <ContentContainer>
               <TitleHeader>
                 <span>진료 | </span>
-                <span>진료 검사 보기</span>
+                <span>진단 검사 보기</span>
               </TitleHeader>
+              <div
+                className="icon-area"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <IconButton
+                  type="button"
+                  size="small"
+                  style={{
+                    border: '1px solid rgba(0,0,0,0.12)',
+                    marginLeft: '0.5rem',
+                    marginRight: '1rem',
+                    padding: '0.5rem',
+                  }}
+                  onClick={reset}
+                >
+                  <GrPowerReset />
+                </IconButton>
+                <IconButton
+                  type="button"
+                  size="small"
+                  style={{
+                    border: '1px solid rgba(0,0,0,0.12)',
+                    marginLeft: '0.5rem',
+                    marginRight: '1rem',
+                    padding: '0.5rem',
+                  }}
+                  onClick={getPrevWeek}
+                >
+                  <IoIosArrowBack />
+                </IconButton>
+
+                <IconButton
+                  type="button"
+                  size="small"
+                  style={{
+                    border: '1px solid rgba(0,0,0,0.12)',
+                    marginLeft: '0.5rem',
+                    marginRight: '1rem',
+                    padding: '0.5rem',
+                  }}
+                  onClick={getNextWeek}
+                >
+                  <IoIosArrowForward />
+                </IconButton>
+
+                <span>
+                  {calInfo.startDate} ~ {calInfo.endDate}
+                </span>
+              </div>
 
               <TableContainer
                 component={Paper}
@@ -70,6 +126,8 @@ const DiagnosticPage = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
+
+              <DiagnosticDrawer />
             </ContentContainer>
           </Grid>
         </Grid>

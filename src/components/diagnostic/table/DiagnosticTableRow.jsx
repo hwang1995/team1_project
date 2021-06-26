@@ -1,10 +1,20 @@
 import React from 'react';
 import { TableRow, TableCell } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import {
+  setDiagnosticDrawer,
+  setDiagnosticDrawerPage,
+} from 'redux/features/diagnostic/diagnosticSlice';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import ColorCircleContainer from 'components/common/container/ColorCircleContainer';
 import StyledButton from 'components/common/button/StyledButton';
-
 const DiagnosticTableRow = ({ data }) => {
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(setDiagnosticDrawer(true));
+    dispatch(setDiagnosticDrawerPage('LIST'));
+  };
   return (
     <TableRow>
       <TableCell size="small">{data.diag_test_id}</TableCell>
@@ -51,7 +61,7 @@ const DiagnosticTableRow = ({ data }) => {
         </div>
       </TableCell>
       <TableCell size="small">
-        <StyledButton bgColor="#004D80" color="white">
+        <StyledButton bgColor="#004D80" color="white" onClick={handleClick}>
           검사 보기
         </StyledButton>
       </TableCell>
