@@ -10,6 +10,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import '@fontsource/roboto';
 import { Fade } from '@material-ui/core';
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import 'moment/locale/ko';
+
+moment.locale('ko');
 
 ReactDOM.render(
   <BrowserRouter>
@@ -23,7 +29,9 @@ ReactDOM.render(
             }}
             TransitionComponent={Fade}
           >
-            <App />
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+              <App />
+            </MuiPickersUtilsProvider>
           </SnackbarProvider>
         </Provider>
       </ThemeProvider>
