@@ -1,12 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import {
-  SwipeableDrawer,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@material-ui/core';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { SwipeableDrawer, Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -14,11 +10,58 @@ import useWindowSize from 'hooks/useWindowSize';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
+import AddressModal from '../modal/Modal';
 
-const PatientUpdateDrawer = ({ isUpdataOpened, setUpdateOpened }) => {
+const PatientUpdateDrawer = ({
+  isUpdateOpened,
+  setUpdateOpened,
+  readPatientData,
+  setReadPatientData,
+  dateRemoveClick,
+}) => {
   const { breakpoint } = useWindowSize();
-  const [selectVal, setSelectVal] = useState('');
-  // const [isLoading, setLoading] = useState(false);
+
+  const [isUpdateModalOpened, setUpdateModalOpened] = useState(false);
+  const [changeView, setChange] = useState(false);
+  const [removeOrUpdate, setStatus] = useState("");
+  const [address, setAddress] = useState({})
+  const [patientInfo, setPatientInfo] = useState({
+    patient_id: '',
+    patient_name: '',
+    patient_birth: '',
+    patient_addr1: '',
+    patient_addr2: '',
+    patient_postal: '',
+    patient_tel: '',
+    patient_height: '',
+    patient_weight: '',
+  });
+  //const [patientName, setPatientName] = use
+
+  
+
+  useEffect(() => {
+    setPatientInfo({
+      ...patientInfo,
+      patient_postal: address.postalcode,
+      patient_addr1: address.fullAddress,
+    });
+  }, [address]);
+
+  useEffect(() => {
+    console.log('start', patientInfo);
+    setPatientInfo({
+      patient_id: readPatientData.patient_id,
+      patient_name: readPatientData.patient_name,
+      patient_birth: readPatientData.patient_birth,
+      patient_addr1: readPatientData.patient_addr1,
+      patient_addr2: readPatientData.patient_addr2,
+      patient_postal: readPatientData.patient_postal,
+      patient_tel: readPatientData.patient_tel,
+      patient_height: readPatientData.patient_height,
+      patient_weight: readPatientData.patient_weight,
+    });
+  }, [isUpdateOpened]);
 
   useEffect(() => {
     if (breakpoint !== undefined) {
@@ -26,7 +69,6 @@ const PatientUpdateDrawer = ({ isUpdataOpened, setUpdateOpened }) => {
     }
   }, [breakpoint]);
 
-  //fuction(open){function(e){}}
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       return;
@@ -34,142 +76,306 @@ const PatientUpdateDrawer = ({ isUpdataOpened, setUpdateOpened }) => {
     setUpdateOpened(open);
   };
 
+  const updateHandleClick = () => {
+    if (
+      patientInfo.patient_name !== readPatientData.patient_name ||
+      patientInfo.patient_birth !== readPatientData.patient_birth ||
+      patientInfo.patient_addr1 !== readPatientData.patient_addr1 ||
+      patientInfo.patient_postal !== readPatientData.patient_postal ||
+      patientInfo.patient_tel !== readPatientData.patient_tel ||
+      patientInfo.patient_height !== readPatientData.patient_height ||
+      patientInfo.patient_weight !== readPatientData.patient_weight ||
+      patientInfo.patient_addr2 !== readPatientData.patient_addr2
+    ) {
+      setReadPatientData(patientInfo);
+      setStatus("update");
+      setChange(true);
+    } else {
+      alert('변경된 사항이 없습니다.');
+    }
+  };
+
+  const deleteHandleClick = () => {
+    setStatus('remove');
+    dateRemoveClick(readPatientData);
+    setChange(true);
+  }
+
+  const updateHandleChange = (event) => {
+    setPatientInfo({
+      ...patientInfo,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const dateUpdateHandleChange = (date) => {
+    const birth = moment(date).format('YYYY년 MM월 DD일');
+    setPatientInfo({
+      ...patientInfo,
+      patient_birth: birth,
+    });
+  };
+
+  const findAddressHandleClick = () => {
+    console.log("클릭 실행")
+    setUpdateModalOpened(true);
+  }
+  
+  const closeHandleClick = () => {
+     setStatus('');
+     setChange(false);
+     setUpdateOpened(false);
+  }
+
+
+  const BackTotheMain = () => {
+    if(removeOrUpdate === "update"){
+      setStatus('');
+      setUpdateOpened(false);
+      setChange(false);
+    }else if (removeOrUpdate === 'remove') {
+      setStatus('');
+      setUpdateOpened(false);
+      setChange(false);
+    }
+   
+  
+  }
+
   return (
     <Fragment>
       <SwipeableDrawer
         anchor="right"
-        open={isUpdataOpened}
+        open={isUpdateOpened}
         onOpen={toggleDrawer(true)}
         onClose={toggleDrawer(false)}
       >
         <ResponsiveContainer breakpoint={breakpoint}>
           <DrawerHeader breakpoint={breakpoint}>
-            <h1>직원 정보 변경</h1>
+            <h1>직원 정보 수정</h1>
             <div>
-              <AiOutlineClose
-                size={32}
-                onClick={() => setUpdateOpened(false)}
-              />
+              <AiOutlineClose size={32} onClick={closeHandleClick} />
             </div>
           </DrawerHeader>
-
-          <Grid container spacing={1} style={{ padding: '1rem' }}>
+          {changeView === false ? (
             <Grid
-              item
-              xs={3}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
+              container
+              spacing={1}
+              alignItems="center"
+              justify="center"
+              style={{ padding: '1rem' }}
             >
-              <StyledTypography variant="h6" component="h5" weight={5}>
-                직책
-              </StyledTypography>
-            </Grid>
-            <Grid item xs={9}>
-              <FormControl style={{ width: '100%' }} variant="outlined">
-                <InputLabel id="form-label">의사</InputLabel>
-                <Select
-                  labelId="form-label"
-                  id="select-label"
-                  label="직책"
-                  value={selectVal}
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  이름
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <StyledInputBase
+                  name="patient_name"
+                  value={patientInfo.patient_name}
+                  onChange={updateHandleChange}
+                  style={{ width: '53%' }}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  생년월일
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <DatePicker
+                  value={patientInfo.patient_birth}
+                  customInput={<StyledInputBase />}
+                  onChange={dateUpdateHandleChange}
+                />
+              </Grid>
+
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  연락처
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <StyledInputBase
+                  name="patient_tel"
+                  value={patientInfo.patient_tel}
+                  onChange={updateHandleChange}
+                  style={{ width: '80%' }}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  키(cm)
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <StyledInputBase
+                  name="patient_height"
+                  style={{ width: '53%' }}
+                  value={patientInfo.patient_height}
+                  onChange={updateHandleChange}
+                  type="number"
+                />
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  몸무게(kg)
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <StyledInputBase
+                  name="patient_weight"
+                  style={{ width: '53%' }}
+                  value={patientInfo.patient_weight}
+                  onChange={updateHandleChange}
+                  type="number"
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  주소
+                </StyledTypography>
+              </Grid>
+
+              <Grid item xs={9}>
+                <StyledInputBase
+                  placeholder="우편번호"
+                  value={patientInfo.patient_postal}
+                  readOnly
+                />
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledButton
+                  onClick={findAddressHandleClick}
+                  bgColor="#a9e34b"
                 >
-                  <MenuItem value="의사" onClick={() => setSelectVal('의사')}>
-                    의사
-                  </MenuItem>
-                  <MenuItem
-                    value="간호사"
-                    onClick={() => setSelectVal('간호사')}
+                  주소 찾기
+                </StyledButton>
+              </Grid>
+              <Grid item xs={12}>
+                <StyledInputBase
+                  placeholder="주소를 입력해주세요"
+                  value={patientInfo.patient_addr1}
+                  readOnly
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <StyledInputBase
+                  name="patient_addr2"
+                  onChange={updateHandleChange}
+                  value={
+                    patientInfo.patient_addr2 === undefined
+                      ? ''
+                      : patientInfo.patient_addr2
+                  }
+                  placeholder="상세 주소를 입력하세요."
+                />
+              </Grid>
+              <Grid item xs={6} style={{ marginTop: '2em' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <StyledButton
+                    bgColor="#1E4C7C"
+                    width="80%"
+                    style={{ color: 'white' }}
+                    onClick={updateHandleClick}
                   >
-                    간호사
-                  </MenuItem>
-                  <MenuItem
-                    value="검사자"
-                    onClick={() => setSelectVal('검사자')}
+                    환자 수정
+                  </StyledButton>
+                </div>
+              </Grid>
+              <Grid item xs={6} style={{ marginTop: '2em' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <StyledButton
+                    bgColor="#1E4C7C"
+                    width="80%"
+                    style={{ color: 'white' }}
+                    onClick={deleteHandleClick}
                   >
-                    검사자
-                  </MenuItem>
-                </Select>
-              </FormControl>
+                    환자 삭제
+                  </StyledButton>
+                </div>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={3}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <StyledTypography variant="h6" component="h5" weight={5}>
-                비밀번호
-              </StyledTypography>
-            </Grid>
-            <Grid item xs={9}>
-              <StyledInputBase />
-            </Grid>
-            <Grid
-              item
-              xs={3}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <StyledTypography variant="h6" component="h5" weight={5}>
-                이름
-              </StyledTypography>
-            </Grid>
-            <Grid item xs={9}>
-              <StyledInputBase />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <StyledTypography variant="h6" component="h5" weight={5}>
-                주소
-              </StyledTypography>
-            </Grid>
-
-            <Grid item xs={9}>
-              <StyledInputBase />
-            </Grid>
-            <Grid
-              item
-              xs={3}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <StyledButton bgColor="lightgray">주소 찾기</StyledButton>
-            </Grid>
-            <Grid item xs={12}>
-              <StyledInputBase />
-            </Grid>
-            <Grid item xs={12}>
-              <StyledInputBase />
-            </Grid>
-          </Grid>
-
-          <div
-            style={{
-              position: 'fixed',
-              bottom: 30,
-              right: 20,
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <StyledButton bgColor="lightgray">정보 변경</StyledButton>
-          </div>
+          ) : (
+            <div style={{ textAlign: 'center' }}>
+              <div>
+                <img src="/assets/image/accept.png" />
+              </div>
+              <div>
+                <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
+                  {removeOrUpdate === 'update' && '수정이 완료되었습니다.'}
+                  {removeOrUpdate === 'remove' && '삭제가 완료되었습니다.'}
+                </h1>
+              </div>
+              <div>
+                <StyledButton
+                  width="60%"
+                  bgColor="#DDB892"
+                  color="white"
+                  onClick={BackTotheMain}
+                >
+                  메인 화면으로 돌아가기
+                </StyledButton>
+              </div>
+            </div>
+          )}
         </ResponsiveContainer>
       </SwipeableDrawer>
+      <AddressModal
+        isModalOpened={isUpdateModalOpened}
+        setModalOpened={setUpdateModalOpened}
+        setAddress={setAddress}
+      />
     </Fragment>
   );
 };
