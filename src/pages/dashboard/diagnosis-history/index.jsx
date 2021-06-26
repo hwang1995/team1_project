@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import {
   Divider,
   Grid,
@@ -11,6 +11,10 @@ import {
   TablePagination,
   Hidden,
 } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setDiagnosisHistoryDrawer
+} from 'redux/features/history/diagnosisSlice';
 import PageHeader from 'components/common/header/PageHeader';
 import MenuSidebar from 'components/common/sidebar/MenuSidebar';
 
@@ -19,11 +23,12 @@ import TitleHeader from 'components/common/header/TitleHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import StyledButton from 'components/common/button/StyledButton';
 import patientData from './patientData';
-import DiagnosticDrawer from '../diagnosis-history/DiagnosticDrawer';
+import DiagnosisHistoryDrawer from './DiagnosisHistoryDrawer';
 
 const DiagnosisHistoryPage = () => {
   const [isOpened, setOpened] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const dispatch = useDispatch();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -31,6 +36,10 @@ const DiagnosisHistoryPage = () => {
   const matchData = patientData.filter((patientData) =>
     patientData.patient_name.includes(searchVal),
   );
+
+  const showAll = (event) => {
+    setSearchVal('');
+  };
 
   const handleChangePage = (e, newPage) => {
     setPage(newPage);
@@ -74,8 +83,17 @@ const DiagnosisHistoryPage = () => {
                     setSearchVal={setSearchVal}
                     placeholder="환자 이름을 입력하세요."
                   />
+                </Grid> 
+                <Grid item xs={3} lg={1}>
+                  <StyledButton
+                    bgColor="#1E4C7C"
+                    color="white"
+                    onClick={showAll}
+                    style={{ marginLeft: '10px', marginTop: '10px' }}
+                  >
+                    전체 환자 목록
+                  </StyledButton>
                 </Grid>
-                <Grid item xs={3} lg={8} />
                 <Grid item xs={12}>
                   <TableContainer style={{ marginTop: '1rem' }}>
                     <Table style={{ minWidth: '600px', overflowX: 'scroll' }}>
@@ -121,9 +139,7 @@ const DiagnosisHistoryPage = () => {
                                   <StyledButton
                                     bgColor="#1E4C7C"
                                     color="white"
-                                    onClick={() =>
-                                      setOpened((prevState) => !prevState)
-                                    }
+                                    onClick={() => dispatch(setDiagnosisHistoryDrawer(true))}
                                   >
                                     상세 보기
                                   </StyledButton>
@@ -136,7 +152,7 @@ const DiagnosisHistoryPage = () => {
                   </TableContainer>
                 </Grid>
               </Grid>
-              <DiagnosticDrawer isOpened={isOpened} setOpened={setOpened} />
+              <DiagnosisHistoryDrawer isOpened={isOpened} setOpened={setOpened} />
               <TablePagination
                 rowsPerPageOptions={[5, 10, 15]}
                 component="div"

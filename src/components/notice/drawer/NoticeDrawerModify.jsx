@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { BsPencilSquare, BsListUl } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
+import { Editor } from '@toast-ui/react-editor';
+import parse from 'html-react-parser';
+
 import {
   setNoticeCurrentIndex,
   modifyNoticeItem,
@@ -19,15 +22,17 @@ const NoticeDrawerModify = () => {
   const currentItem = noticeItem[currentIndex];
   const [inputVal, setInputVal] = useState(currentItem.notice_title);
   const [inputContent, setInputContent] = useState(currentItem.notice_content);
+  const editorRef = useRef(currentItem);
 
   const handleChange = (e) => {
     setInputVal(e.target.value);
   };
 
-  // useEffect(() => {
-  //   setInputVal();
-  //   setInputContent();
-  // }, [currentItem]);
+
+  useEffect(() => {
+    setInputVal();
+    setInputContent();
+  }, [currentItem]);
 
   const handleEditorChange = (e, editor) => {
     const data = editor.getData();
@@ -65,11 +70,16 @@ const NoticeDrawerModify = () => {
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        {/* <CKEditor
-          editor={ClassicEditor}
-          data={inputContent}
-          onChange={handleEditorChange}
-        /> */}
+      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
+        <Editor
+            previewStyle="vertical"
+            height="500px"
+            initialEditType="wysiwyg"
+            language="ko"
+            value={parse(noticeItem[currentIndex].notice_content)}
+            onChange={handleEditorChange}
+            ref={editorRef}/>
+      </h3>
       </div>
       <div
         style={{

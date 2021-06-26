@@ -12,6 +12,7 @@ import StyledContainer from 'components/common/container/StyledContainer';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledButton from 'components/common/button/StyledButton';
 import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
+import EmergencyDrawer from 'components/notice/drawer/EmergencyDrawer';
 // import noticeData from 'components/notice/notice'
 /**
  * 이 페이지 컴포넌트는 대쉬보드의 메인을 보여주기 위해 작성하는 컴포넌트입니다.
@@ -27,21 +28,22 @@ import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
 const noticeItems = [
   {
     notice_id: 1,
-    notice_title: '종현이 멋죠요.',
+    notice_title: '6월 25일은 공휴일입니다.',
     notice_date: '6월 21일',
-    notice_author: 'Dr. Hong',
+    notice_author: '홍종현',
   },
   {
     notice_id: 2,
-    notice_title: '가즈아.',
-    notice_date: '6월 9일',
-    notice_author: 'Dr. Hong',
+    notice_title: '7월 정기 휴뮤일 안내',
+    notice_date: '6월 24일',
+    notice_author: '홍종현',
   },
 ];
 
 const FrontPage = () => {
   const { breakpoint } = useWindowSize();
   const [isOpened, setOpened] = useState(false);
+  const [emergencyOpened, setEmergencyOpened] = useState(false);
   const [value, onChange] = useState(new Date());
 
   useEffect(() => {
@@ -139,8 +141,37 @@ const FrontPage = () => {
                       <Calendar onChange={onChange} value={value} />
                     </div>
                   </Hidden>
+
+                  <StyledContainer bgColor="rgb(234,242,254)" style={{ marginTop: '11rem', marginLeft: '1rem'}}>
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ flex: 3.5 }}>
+                      <StyledTypography color="rgb(63,81,181)" variant="h4" component="h4" weight={7}>
+                        비상연락망
+                      </StyledTypography>
+                    </div>
+                    <div style={{ flex: 1.5 }}>
+                      <StyledButton
+                        bgColor="rgb(234,242,254)"
+                        onClick={() => setEmergencyOpened((prevState) => !prevState)}
+                      >
+                        <AddIcon />추가
+                      </StyledButton>
+                    </div>
+                  </div >
+                  <div style={{ marginTop: '2rem', marginLeft: '0.5rem'}}>
+                  <StyledTypography variant="h5" component="h5" weight={4} ><li>송파구 소방서  :  010-212-8282</li></StyledTypography>
+                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존병원 응급실  :  02-721-8282</li></StyledTypography>
+                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존병원 홍길동 교수님  :  010-9993-8282</li></StyledTypography>
+                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존병원 구급대원  :  010-2132-8282</li></StyledTypography>
+                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존제약 영업사원  :  010-2112-8282</li></StyledTypography>
+                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존헬스케어 영업사원  :  010-1234-8282</li></StyledTypography>
+                  </div>
+                  
+                  </StyledContainer>
+
                 </Grid>
               </Grid>
+              <EmergencyDrawer emergencyOpened={emergencyOpened} setEmergencyOpened={setEmergencyOpened} />
               <NoticeDrawer isOpened={isOpened} setOpened={setOpened} />
             </ContentContainer>
           </Grid>
