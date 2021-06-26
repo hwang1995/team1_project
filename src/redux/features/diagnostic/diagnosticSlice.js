@@ -7,6 +7,7 @@ export const diagnosticSlice = createSlice({
       status: false,
       pageStatus: 'LIST',
     },
+    modalStatus: false,
   },
   reducers: {
     setDiagnosticDrawer(state, action) {
@@ -15,10 +16,16 @@ export const diagnosticSlice = createSlice({
     setDiagnosticDrawerPage(state, action) {
       state.drawerStatus.pageStatus = action.payload;
     },
+    setDiagnosticModal(state, action) {
+      state.modalStatus = action.payload;
+    },
   },
 });
 
-export const { setDiagnosticDrawer, setDiagnosticDrawerPage } =
-  diagnosticSlice.actions;
+export const {
+  setDiagnosticDrawer,
+  setDiagnosticDrawerPage,
+  setDiagnosticModal,
+} = diagnosticSlice.actions;
 
 export default diagnosticSlice.reducer;
