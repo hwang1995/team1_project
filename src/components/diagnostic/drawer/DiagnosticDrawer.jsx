@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   setDiagnosticDrawer,
   setDiagnosticDrawerPage,
+  setDiagnosticModal,
 } from 'redux/features/diagnostic/diagnosticSlice';
 import { AiOutlineClose } from 'react-icons/ai';
 import useWindowSize from 'hooks/useWindowSize';
@@ -24,6 +25,7 @@ import DiagnosticDetailTableHead from '../table/DiagnosticDetailTableHead';
 import DiagnosticDetailTableRows from '../table/DiagnosticDetailTableRows';
 import DiagnosticDetailInputTableHead from '../table/DiagnosticDetailInputTableHead';
 import DiagnosticDetailInputTableRows from '../table/DiagnosticDetailInputTableRows';
+import DiagnosticModal from '../modal/DiagnosticModal';
 
 const getStepContent = (step) => {
   if (step === 'LIST') {
@@ -102,18 +104,25 @@ const DiagnosticDrawer = () => {
           </DrawerHeader>
 
           <StyledButtonGroup size="large" color="primary">
-            <Button>바코드 출력</Button>
+            <Button onClick={() => dispatch(setDiagnosticModal(true))}>
+              바코드 출력
+            </Button>
             <Button
               onClick={() => dispatch(setDiagnosticDrawerPage('RESULT_INPUT'))}
             >
               결과 입력
             </Button>
             <Button>엑셀 저장</Button>
-            <Button>접수 취소</Button>
-            <Button>채혈 완료</Button>
+            <Button onClick={() => dispatch(setDiagnosticModal(true))}>
+              접수 취소
+            </Button>
+            <Button onClick={() => dispatch(setDiagnosticModal(true))}>
+              채혈 완료
+            </Button>
           </StyledButtonGroup>
 
           {getStepContent(pageStatus)}
+          <DiagnosticModal />
         </ResponsiveContainer>
       </SwipeableDrawer>
     </Fragment>

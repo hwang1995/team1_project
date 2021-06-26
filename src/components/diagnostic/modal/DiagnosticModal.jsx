@@ -7,7 +7,6 @@ import {
   IconButton,
   Grid,
 } from '@material-ui/core';
-import { setDiagnosisModal } from 'redux/features/diagnosis/diagnosisSlice';
 import { AiOutlineClose } from 'react-icons/ai';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
@@ -15,6 +14,7 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
+import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -43,7 +43,7 @@ const DiagnosticModal = () => {
 
   const isOpened = useSelector((state) => state.diagnostic.modalStatus);
 
-  const handleClose = () => dispatch(setDiagnosisModal(false));
+  const handleClose = () => dispatch(setDiagnosticModal(false));
   return (
     <Fragment>
       <Modal
@@ -53,7 +53,31 @@ const DiagnosticModal = () => {
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{ timeout: 500 }}
-      ></Modal>
+      >
+        <SpringFade in={isOpened}>
+          <div
+            className={classes.paper}
+            style={{ display: 'flex', flexDirection: 'column' }}
+          >
+            <ResponsiveContainer breakpoint={breakpoint} style={{ flex: 1 }}>
+              <DrawerHeader breakpoint={breakpoint}>
+                <StyledTypography variant="h5" component="h5" weight={7}>
+                  바코드 출력 | 접수 취소 | 채혈 완료
+                </StyledTypography>
+                <div>
+                  <IconButton
+                    onClick={() => dispatch(setDiagnosticModal(false))}
+                  >
+                    <AiOutlineClose size={24} />
+                  </IconButton>
+                </div>
+              </DrawerHeader>
+            </ResponsiveContainer>
+          </div>
+        </SpringFade>
+      </Modal>
     </Fragment>
   );
 };
+
+export default DiagnosticModal;
