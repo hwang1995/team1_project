@@ -26,13 +26,25 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { breakpoint } = useWindowSize();
   const [selectVal, setSelectVal] = useState('의사');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [memberEmail, setMemberEmail] = useState('');
 
   const dispatch = useDispatch();
 
   const isModalOpened = useSelector((state) => state.member.modalStatus);
+
   const { member_postal, member_addr1 } = useSelector(
     (state) => state.member.addressInfo,
   );
+
+  //drawer창 on/off 될때마다 주소값 초기화
+  useEffect(() => {
+    dispatch(
+      setAddressInfo({
+        member_postal: '',
+        member_addr1: '',
+      }),
+    );
+  }, [isOpened]);
 
   useEffect(() => {
     if (breakpoint !== undefined) {
@@ -47,6 +59,28 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     }
     setOpened(open);
   };
+
+  //이메일 중복체크
+  const handleEmailChecked = () => {
+    const isInfo = member.find((member) => member.member_email === memberEmail);
+    if (!isInfo) {
+      alert('확인되었습니다.');
+      setIsEmailChecked(true);
+    } else {
+      alert('중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
+      return;
+    }
+  };
+
+  //이메일 input값 상태저장
+  const handleChange = (event) => {
+    setMemberEmail(event.target.value);
+  };
+
+  //이메일 변경될때마다 중복상태 설정
+  useEffect(() => {
+    setIsEmailChecked(false);
+  }, [memberEmail]);
 
   //submit
   const handleSubmit = (event) => {
@@ -105,6 +139,9 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
       return;
     } else if (member_postal === '' || member_addr1 === '') {
       alert('주소가 공백입니다. 주소 검색을 해주세요.');
+      return;
+    } else if (member_addr2 === '') {
+      alert('상세주소가 공백입니다. 상세주소를 입력해주세요.');
       return;
     }
 
@@ -199,7 +236,11 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 </StyledTypography>
               </Grid>
               <Grid item xs={7}>
-                <StyledInputBase name="memberEmail" />
+                <StyledInputBase
+                  name="memberEmail"
+                  onChange={handleChange}
+                  value={memberEmail}
+                />
               </Grid>
               <Grid
                 item
@@ -211,7 +252,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
               >
                 <StyledButton
                   bgColor="lightgray"
-                  onClick={() => setIsEmailChecked(!isEmailChecked)}
+                  onClick={() => handleEmailChecked()}
                 >
                   중복 체크
                 </StyledButton>

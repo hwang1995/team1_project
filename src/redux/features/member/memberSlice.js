@@ -15,6 +15,7 @@ export const memberSlice = createSlice({
     },
     setAddressInfo(state, action) {
       const { member_postal, member_addr1 } = action.payload;
+      console.log('값 저장', action.payload);
       state.addressInfo = {
         member_postal,
         member_addr1,

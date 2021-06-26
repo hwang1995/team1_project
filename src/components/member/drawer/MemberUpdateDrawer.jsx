@@ -26,36 +26,42 @@ const MemberUpdateDrawer = ({
   member,
 }) => {
   const { breakpoint } = useWindowSize();
+
   const [selectVal, setSelectVal] = useState('');
-  const [memberPw, setMemberPw] = useState('');
-  const [memberName, setMemberName] = useState('');
-  const [memberPostal, setMemberPostal] = useState('');
-  const [memberAddr1, setMemberAddr1] = useState('');
-  const [memberAddr2, setMemberAddr2] = useState('');
-  // const [isLoading, setLoading] = useState(false);
-  //const [isEmailChecked, setIsEmailChecked] = useState(false);
+
+  const [memberInfo, setMemberInfo] = useState({
+    memberName: '',
+    memberPassword: '',
+    memberPostal: '',
+    memberAddr1: '',
+    memberAddr2: '',
+  });
 
   const handleChange = (event) => {
     if (event.target.name === 'memberName') {
-      setMemberName(event.target.value);
+      setMemberInfo({ ...memberInfo, memberName: event.target.value });
     } else if (event.target.name === 'memberPassword') {
-      setMemberPw(event.target.value);
+      setMemberInfo({ ...memberInfo, memberPassword: event.target.value });
     } else if (event.target.name === 'memberAddress1') {
-      setMemberPostal(event.target.value);
+      setMemberInfo({ ...memberInfo, memberPostal: event.target.value });
     } else if (event.target.name === 'memberAddress2') {
-      setMemberAddr1(event.target.value);
+      setMemberInfo({ ...memberInfo, memberAddr1: event.target.value });
     } else if (event.target.name === 'memberAddress3') {
-      setMemberAddr2(event.target.value);
+      setMemberInfo({ ...memberInfo, memberAddr2: event.target.value });
     }
   };
 
   useEffect(() => {
     console.log('isUpdateOpened발생');
-    setMemberPw(memberData.member_pw);
-    setMemberName(memberData.member_name);
-    setMemberPostal(memberData.member_postal);
-    setMemberAddr1(memberData.member_addr1);
-    setMemberAddr2(memberData.member_addr2);
+    setMemberInfo({
+      memberName: memberData.member_name,
+      memberPassword: memberData.member_pw,
+      memberPostal: memberData.member_postal,
+      memberAddr1: memberData.member_addr1,
+      memberAddr2: memberData.member_addr2,
+    });
+    console.log(memberInfo);
+
     let memberAuthority = '';
     if (memberData.member_authority === 'ROLE_DOCTOR') {
       memberAuthority = '의사';
@@ -74,12 +80,20 @@ const MemberUpdateDrawer = ({
   );
 
   useEffect(() => {
-    setMemberPostal(member_postal);
-    setMemberAddr1(member_addr1);
+    setMemberInfo({
+      ...memberInfo,
+      memberPostal: member_postal,
+      memberAddr1: member_addr1,
+    });
   }, [member_postal, member_addr1]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // 비밀번호 정규 표현식
+    // 숫자, 특수문자 각 1회 이상, 영문은 2개 이상 사용하여 8자리 이상 입력
+    const regExpPw =
+      /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
 
     const member_pw = event.target.memberPassword.value;
     const member_name = event.target.memberName.value;
@@ -97,19 +111,29 @@ const MemberUpdateDrawer = ({
     } else if (selectVal === '검사자') {
       member_authority = 'ROLE_INSPECTOR';
     }
-    const newMember = {
-      member_pw,
-      member_name,
-      member_authority,
-      member_postal,
-      member_addr1,
-      member_addr2,
-    };
 
-    console.log(newMember);
+    const isValidPW = regExpPw.test(member_pw);
+
+    if (!isValidPW) {
+      alert(
+        '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
+      );
+      return;
+    } else if (member_name === '') {
+      alert('이름이 공백입니다.');
+      return;
+    } else if (member_postal === '' || member_addr1 === '') {
+      alert('주소가 공백입니다. 주소 검색을 해주세요.');
+      return;
+    } else if (member_addr2 === '') {
+      alert('상세주소가 공백입니다. 상세주소를 입력해주세요.');
+      return;
+    }
 
     const row = member.find((row) => row.member_id === memberData.member_id);
     console.log(row);
+
+    row.member_authority = member_authority;
     row.member_name = member_name;
     row.member_pw = member_pw;
     row.member_postal = member_postal;
@@ -211,7 +235,7 @@ const MemberUpdateDrawer = ({
                 <StyledInputBase
                   name="memberPassword"
                   type="password"
-                  value={memberPw || ''}
+                  value={memberInfo.memberPassword || ''}
                   onChange={handleChange}
                 />
               </Grid>
@@ -230,7 +254,7 @@ const MemberUpdateDrawer = ({
               <Grid item xs={9}>
                 <StyledInputBase
                   name="memberName"
-                  value={memberName || ''}
+                  value={memberInfo.memberName || ''}
                   onChange={handleChange}
                 />
               </Grid>
@@ -251,7 +275,7 @@ const MemberUpdateDrawer = ({
                 <StyledInputBase
                   name="memberAddress1"
                   placeholder="우편 번호"
-                  value={memberPostal || ''}
+                  value={memberInfo.memberPostal || ''}
                   onChange={handleChange}
                   readOnly
                 />
@@ -275,7 +299,7 @@ const MemberUpdateDrawer = ({
                 <StyledInputBase
                   name="memberAddress2"
                   placeholder="주소"
-                  value={memberAddr1 || ''}
+                  value={memberInfo.memberAddr1 || ''}
                   onChange={handleChange}
                   readOnly
                 />
@@ -284,7 +308,7 @@ const MemberUpdateDrawer = ({
                 <StyledInputBase
                   name="memberAddress3"
                   placeholder="상세 주소를 입력하세요."
-                  value={memberAddr2 || ''}
+                  value={memberInfo.memberAddr2 || ''}
                   onChange={handleChange}
                 />
               </Grid>
