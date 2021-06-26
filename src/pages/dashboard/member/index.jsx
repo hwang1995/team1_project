@@ -11,6 +11,7 @@ import {
   TableFooter,
   TablePagination,
   Modal,
+  Paper,
 } from '@material-ui/core';
 //import patientData from './patientData';
 import memberData from './memberData';
@@ -40,6 +41,7 @@ const MemberPage = () => {
 
   const [selectedData, setSelectedData] = useState('');
   const [member, setMember] = useState(memberData);
+
   //page설정 상태관리
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -58,13 +60,21 @@ const MemberPage = () => {
     setPage(0);
   };
 
+  //검색했을때 동작
   useEffect(() => {
     console.log(searchVal);
   }, [searchVal]);
 
   return (
     <div>
-      <header style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'white',
+          zIndex: 1,
+        }}
+      >
         <PageHeader />
         <Divider />
       </header>
@@ -107,92 +117,96 @@ const MemberPage = () => {
                   </StyledButton>
                 </Grid>
                 <Grid item xs={12}>
-                  <TableContainer style={{ marginTop: '1rem' }}>
-                    <Table style={{ minWidth: '600px', overflowX: 'scroll' }}>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell component="td">직책</TableCell>
-                          <TableCell component="td">직원 이름</TableCell>
-                          <TableCell component="td">이메일</TableCell>
-                          <TableCell component="td">주소</TableCell>
-                          <TableCell component="td"></TableCell>
-                          <TableCell component="td"></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {member
-                          .filter(function (element) {
-                            //새로운 배열을 만들어줌
-                            return element.member_name.includes(searchVal);
-                          })
-                          .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-                          .map((data) => (
-                            <Fragment key={data.member_id}>
-                              <TableRow hover="true">
-                                <TableCell component="th">
-                                  {data.member_authority === 'ROLE_DOCTOR'
-                                    ? '의사'
-                                    : ''}
-                                  {data.member_authority === 'ROLE_INSPECTOR'
-                                    ? '검사자'
-                                    : ''}
-                                  {data.member_authority === 'ROLE_NURSE'
-                                    ? '간호사'
-                                    : ''}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.member_name}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.member_email}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.member_addr1} {data.member_addr2}
-                                </TableCell>
-                                <TableCell component="th">
-                                  <StyledButton
-                                    bgColor="rgb(11, 83, 151)"
-                                    color="white"
-                                    onClick={() => {
-                                      setUpdateOpened(
-                                        (prevState) => !prevState,
-                                      );
-                                      setSelectedData(data);
-                                    }}
-                                  >
-                                    변경
-                                  </StyledButton>
-                                </TableCell>
-                                <TableCell component="th">
-                                  <StyledButton
-                                    bgColor="rgb(228, 20, 30)"
-                                    color="white"
-                                    onClick={() => {
-                                      setOpenModal((prevState) => !prevState);
-                                      setSelectedData(data.member_id);
-                                    }}
-                                  >
-                                    삭제
-                                  </StyledButton>
-                                </TableCell>
-                              </TableRow>
-                            </Fragment>
-                          ))}
-                      </TableBody>
-                      <TableFooter>
-                        <TableRow>
-                          <TablePagination
-                            count={member.length}
-                            page={page}
-                            rowsPerPage={rowsPerPage}
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                            rowsPerPageOptions={[5, 10, 25]}
-                          />
-                        </TableRow>
-                      </TableFooter>
-                    </Table>
-                  </TableContainer>
+                  <Paper>
+                    <TableContainer
+                      style={{ marginTop: '1rem', marginBottom: '1rem' }}
+                    >
+                      <Table style={{ minWidth: '600px', overflowX: 'scroll' }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell component="td">직책</TableCell>
+                            <TableCell component="td">직원 이름</TableCell>
+                            <TableCell component="td">이메일</TableCell>
+                            <TableCell component="td">주소</TableCell>
+                            <TableCell component="td"></TableCell>
+                            <TableCell component="td"></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {member
+                            .filter(function (element) {
+                              //새로운 배열을 만들어줌
+                              return element.member_name.includes(searchVal);
+                            })
+                            .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                            .map((data) => (
+                              <Fragment key={data.member_id}>
+                                <TableRow hover="true">
+                                  <TableCell component="th">
+                                    {data.member_authority === 'ROLE_DOCTOR'
+                                      ? '의사'
+                                      : ''}
+                                    {data.member_authority === 'ROLE_INSPECTOR'
+                                      ? '검사자'
+                                      : ''}
+                                    {data.member_authority === 'ROLE_NURSE'
+                                      ? '간호사'
+                                      : ''}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.member_name}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.member_email}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.member_addr1} {data.member_addr2}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    <StyledButton
+                                      bgColor="rgb(11, 83, 151)"
+                                      color="white"
+                                      onClick={() => {
+                                        setUpdateOpened(
+                                          (prevState) => !prevState,
+                                        );
+                                        setSelectedData(data);
+                                      }}
+                                    >
+                                      변경
+                                    </StyledButton>
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    <StyledButton
+                                      bgColor="rgb(228, 20, 30)"
+                                      color="white"
+                                      onClick={() => {
+                                        setOpenModal((prevState) => !prevState);
+                                        setSelectedData(data.member_id);
+                                      }}
+                                    >
+                                      삭제
+                                    </StyledButton>
+                                  </TableCell>
+                                </TableRow>
+                              </Fragment>
+                            ))}
+                        </TableBody>
+                        <TableFooter>
+                          <TableRow>
+                            <TablePagination
+                              count={member.length}
+                              page={page}
+                              rowsPerPage={rowsPerPage}
+                              onChangePage={handleChangePage}
+                              onChangeRowsPerPage={handleChangeRowsPerPage}
+                              rowsPerPageOptions={[5, 10, 25]}
+                            />
+                          </TableRow>
+                        </TableFooter>
+                      </Table>
+                    </TableContainer>
+                  </Paper>
                 </Grid>
               </Grid>
 
@@ -224,6 +238,7 @@ const MemberPage = () => {
                 setOpenModal={setOpenModal}
                 member={member}
                 member_id={selectedData}
+                setMember={setMember}
               />
             </ContentContainer>
           </Grid>

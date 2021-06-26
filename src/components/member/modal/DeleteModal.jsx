@@ -33,11 +33,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeleteModal = ({ isOpenModal, setOpenModal, member_id }) => {
+const DeleteModal = ({
+  isOpenModal,
+  setOpenModal,
+  member_id,
+  member,
+  setMember,
+}) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
 
   const handleClose = () => {
+    setOpenModal(false);
+  };
+
+  const deleteMember = () => {
+    const index = member.findIndex((member) => member.member_id === member_id);
+    member.splice(index, 1);
+    setMember(member);
+    alert('삭제되었습니다.');
     setOpenModal(false);
   };
 
@@ -97,17 +111,17 @@ const DeleteModal = ({ isOpenModal, setOpenModal, member_id }) => {
                 style={{
                   marginTop: '1rem',
                   marginBottom: '1rem',
-                  marginLeft: '10rem',
+                  marginLeft: '12rem',
                   display: 'flex',
                   alignItems: 'center',
                 }}
               >
                 <StyledButton
                   bgColor="blue"
+                  color="white"
                   width="60"
-                  onClick={() => setOpenModal(false)}
+                  onClick={() => deleteMember()}
                   display="flex"
-                  justifyContent="flex-end"
                 >
                   확인
                 </StyledButton>
