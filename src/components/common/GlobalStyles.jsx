@@ -68,6 +68,11 @@ const GlobalStyle = createGlobalStyle`
   background: transparent;
 }
 
+*:focus {
+  outline: none;
+}
+
+
 `;
 
 export default GlobalStyle;

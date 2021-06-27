@@ -14,7 +14,9 @@ import {
   setDiagnosticDrawerPage,
   setDiagnosticModal,
 } from 'redux/features/diagnostic/diagnosticSlice';
+import { FcApproval } from 'react-icons/fc';
 import { AiOutlineClose } from 'react-icons/ai';
+import styled from 'styled-components';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -25,7 +27,25 @@ import DiagnosticDetailTableHead from '../table/DiagnosticDetailTableHead';
 import DiagnosticDetailTableRows from '../table/DiagnosticDetailTableRows';
 import DiagnosticDetailInputTableHead from '../table/DiagnosticDetailInputTableHead';
 import DiagnosticDetailInputTableRows from '../table/DiagnosticDetailInputTableRows';
-import DiagnosticModal from '../modal/DiagnosticModal';
+import DiagnosticBarcodeModal from '../modal/DiagnosticBarcodeModal';
+import DiagnosticBloodDrawModal from '../modal/DIagnosticBloodDrawModal';
+import DiagnosticReceptionModal from '../modal/DiagnosticReceptionModal';
+import StyledButton from 'components/common/button/StyledButton';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+
+const SuccessPage = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 70%;
+  align-items: center;
+  justify-content: center;
+  p {
+    margin-top: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+  }
+`;
 
 const getStepContent = (step) => {
   if (step === 'LIST') {
@@ -61,6 +81,15 @@ const getStepContent = (step) => {
       </TableContainer>
     );
   }
+
+  if (step === 'INPUT_COMPLETED') {
+    return (
+      <SuccessPage>
+        <FcApproval size={300} />
+        <p>진단 검사 결과가 성공적으로 추가되었습니다.</p>
+      </SuccessPage>
+    );
+  }
 };
 
 const DiagnosticDrawer = () => {
@@ -79,6 +108,19 @@ const DiagnosticDrawer = () => {
     dispatch(setDiagnosticDrawer(open));
   };
 
+  const toggleModal = (name, status) => {
+    dispatch(
+      setDiagnosticModal({
+        name,
+        status,
+      }),
+    );
+  };
+
+  const togglePage = (page) => {
+    dispatch(setDiagnosticDrawerPage(page));
+  };
+
   return (
     <Fragment>
       <SwipeableDrawer
@@ -87,42 +129,83 @@ const DiagnosticDrawer = () => {
         onOpen={toggleDrawer(true)}
         onClose={toggleDrawer(false)}
       >
-        <ResponsiveContainer>
+        <ResponsiveContainer
+          style={{
+            height: '100%',
+          }}
+        >
           <DrawerHeader
             breakpoint={breakpoint}
-            style={{ padding: '0.5rem', backgroundColor: 'white' }}
+            style={{ padding: '0.5rem', backgroundColor: 'white', zIndex: 1 }}
           >
             <h1>진단 검사 상세</h1>
             <div>
-              <IconButton>
-                <AiOutlineClose
-                  size={32}
-                  onClick={() => dispatch(setDiagnosticDrawer(false))}
-                />
+              <IconButton onClick={() => dispatch(setDiagnosticDrawer(false))}>
+                <AiOutlineClose size={32} />
               </IconButton>
             </div>
           </DrawerHeader>
+          {pageStatus === 'LIST' && (
+            <StyledButtonGroup size="medium" color="primary">
+              <Button onClick={() => toggleModal('barcode', true)}>
+                바코드 출력
+              </Button>
+              <Button onClick={() => togglePage('RESULT_INPUT')}>
+                결과 입력
+              </Button>
+              <Button>엑셀 저장</Button>
+              <Button onClick={() => toggleModal('reception', true)}>
+                접수 취소
+              </Button>
+              <Button onClick={() => toggleModal('bloodDraw', true)}>
+                채혈 완료
+              </Button>
+            </StyledButtonGroup>
+          )}
 
-          <StyledButtonGroup size="large" color="primary">
-            <Button onClick={() => dispatch(setDiagnosticModal(true))}>
-              바코드 출력
-            </Button>
-            <Button
-              onClick={() => dispatch(setDiagnosticDrawerPage('RESULT_INPUT'))}
-            >
-              결과 입력
-            </Button>
-            <Button>엑셀 저장</Button>
-            <Button onClick={() => dispatch(setDiagnosticModal(true))}>
-              접수 취소
-            </Button>
-            <Button onClick={() => dispatch(setDiagnosticModal(true))}>
-              채혈 완료
-            </Button>
-          </StyledButtonGroup>
+          {pageStatus === 'RESULT_INPUT' && (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <StyledButton
+                bgColor="white"
+                width="10%"
+                style={{
+                  minWidth: '6rem',
+                }}
+                onClick={() => togglePage('LIST')}
+              >
+                <IoIosArrowBack size={16} /> 상세 보기
+              </StyledButton>
+              <StyledButton
+                bgColor="white"
+                width="10%"
+                style={{
+                  minWidth: '6rem',
+                }}
+                onClick={() => togglePage('INPUT_COMPLETED')}
+              >
+                추가 하기 <IoIosArrowForward size={16} />
+              </StyledButton>
+            </div>
+          )}
+          {pageStatus === 'INPUT_COMPLETED' && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <StyledButton
+                bgColor="white"
+                width="10%"
+                style={{
+                  minWidth: '6rem',
+                }}
+                onClick={() => togglePage('LIST')}
+              >
+                상세 보기 <IoIosArrowForward size={16} />
+              </StyledButton>
+            </div>
+          )}
 
           {getStepContent(pageStatus)}
-          <DiagnosticModal />
+          <DiagnosticBarcodeModal />
+          <DiagnosticBloodDrawModal />
+          <DiagnosticReceptionModal />
         </ResponsiveContainer>
       </SwipeableDrawer>
     </Fragment>
