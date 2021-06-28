@@ -15,7 +15,7 @@ const NoticeDrawerSuccess = () => {
         className="right-side"
         style={{ flex: 1, display: 'flex', justifyContent: 'center' }}
       >
-        <img src="/assets/image/verified-account.png" alt="Logo" width="70%" />
+        <img src="/assets/image/verified-account.png" alt="Logo" width="50%" />
       </div>
       {activeStep === 'SUCCESS' && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>

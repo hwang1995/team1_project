@@ -11,7 +11,6 @@ import {
   setEmergencyCurrentIndex,
 } from 'redux/features/emergency/emergencySlice';
 import {
-  InputLabel,
   FormControl,
   Select,
   MenuItem,
@@ -21,6 +20,9 @@ import {
   TableBody,
   TableRow,
 } from '@material-ui/core';
+// import MaskedInput from 'react-text-mask';
+import NumberFormat from 'react-number-format';
+
 
 const EmergencyDrawerWrite = () => {
   const [title, setTitle] = useState('');
@@ -96,10 +98,32 @@ const EmergencyDrawerWrite = () => {
               />
             </TableCell>
             <TableCell size="small">
-              <StyledInputBase
+              {/* <MaskedInput
                 value={tel}
                 onChange={handleChangeTel}
                 placeholder="전화번호를 입력해주세요."
+                mask={[
+                  '(',
+                  /[0-9]/,
+                  /\d/,
+                  /\d/,
+                  ')',
+                  ' ',
+                  /\d/,
+                  /\d/,
+                  /\d/,
+                  '-',
+                  /\d/,
+                  /\d/,
+                  /\d/,
+                  /\d/,
+                ]}
+              /> */}
+              <NumberFormat
+                onChange={handleChangeTel}
+                format="###-###-####"
+                allowEmptyFormatting
+                mask="_"
               />
             </TableCell>
             <TableCell size="small">

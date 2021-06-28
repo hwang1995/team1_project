@@ -7,6 +7,8 @@ import FrontPage from './front';
 import MemberPage from './member';
 import PatientPage from './patient';
 import ReservationPage from './reservation';
+import TutorialPage from './tutorial';
+
 
 /**
  * Dashboard 컴포넌트의 페이지를 정의하고
@@ -34,6 +36,7 @@ const Dashboard = () => {
         <Route path="/dashboard/member" component={MemberPage} />
         <Route path="/dashboard/patient" component={PatientPage} />
         <Route path="/dashboard/reservation" component={ReservationPage} />
+        <Route path="/dashboard/tutorial" component={TutorialPage} />
       </Switch>
     </Fragment>
   );
