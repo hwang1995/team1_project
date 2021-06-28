@@ -1,7 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Postcode from 'react-daum-postcode';
-import { setDiagnosisModal } from 'redux/features/diagnosis/diagnosisSlice';
 import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import SpringFade from 'components/common/fade/SpringFade';

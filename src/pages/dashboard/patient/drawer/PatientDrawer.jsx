@@ -1,9 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useSelector, useDispatch} from "react-redux";
+import { setGenderStatus } from 'redux/features/member/memberSlice';
 import moment from 'moment';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
+import SelectedMan from "../SelectedGender/selectedGender";
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -14,20 +16,26 @@ import StyledButton from 'components/common/button/StyledButton';
 import PatientModal from '../modal/Modal';
 
 const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
+
+  const gender = useSelector((state) => state.member.gender);
+  const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
   const [address, setAddress] = useState({});
   const [isModalOpened, setModalOpened] = useState(false);
+  const [keyboardDate, handleKeyDateChange] = useState(new Date());
+  
 
   const [isPatient, setPatient] = useState({
     patient_id: '',
     patient_name: '',
-    patient_birth: moment(new Date()).format('YYYY년 MM월 DD일'),
+    patient_birth: '',
     patient_addr1: '',
     patient_addr2: '',
     patient_postal: '',
     patient_tel: '',
     patient_height: '',
     patient_weight: '',
+    patient_gender: ''
   });
 
 
@@ -38,7 +46,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
 
   useEffect(() => {
       setPatient({
-        patient_birth: moment(new Date()).format('YYYY년 MM월 DD일'),
+        patient_birth: moment(new Date()).format('YYYY/MM/DD'),
       });
   }, [isOpened])
 
@@ -48,6 +56,15 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     }
   }, [breakpoint]);
 
+  useEffect(() => { 
+    const birth = moment(keyboardDate).format('YYYY/MM/DD/');
+  
+    setPatient({
+      ...isPatient,
+      patient_birth: birth,
+    });
+  },[keyboardDate])
+
   //fuction(open){function(e){}}
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -56,6 +73,8 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     setOpened(open);
   };
 
+ 
+
   const addHandleClick = () => {
     console.log(isPatient);
     let isChecked = true;
@@ -63,6 +82,15 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       isChecked = false;
       alert('이름을 입력해주세요');
       return;
+    }
+
+    if(gender === "") {
+       isChecked = false;
+       alert("성별을 선택해주세요");
+       return
+    }else{
+      console.log("gender",)
+      isPatient.patient_gender = gender;
     }
 
     if (isPatient.patient_birth === '') {
@@ -102,11 +130,13 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     }
 
     if (isChecked) {
+      console.log("result", isPatient)
       isPatient.patient_id = patientData.length + 1;
       const newPatient = patientData.concat(isPatient);
       setPatients(newPatient);
       setPatient({});
       setAddress({});
+      dispatch(setGenderStatus(""));
       setOpened(false);
     }
   };
@@ -122,15 +152,10 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     setModalOpened(true);
   };
 
-  const dateHandleChange = (date) => {
-    console.log('date', new Date());
-    console.log('moment', moment(date).format('YYYY년 MM월 DD일'));
-    const birth = moment(date).format('YYYY년 MM월 DD일');
-    setPatient({
-      ...isPatient,
-      patient_birth: birth,
-    });
-  };
+ 
+
+
+  
 
   return (
     <Fragment>
@@ -142,7 +167,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       >
         <ResponsiveContainer breakpoint={breakpoint}>
           <DrawerHeader breakpoint={breakpoint}>
-            <h1>직원 추가</h1>
+            <h1>환자 추가</h1>
             <div>
               <AiOutlineClose
                 size={32}
@@ -150,6 +175,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
                   setOpened(false);
                   setAddress({});
                   setPatient({});
+                  dispatch(setGenderStatus(""));
                 }}
               />
             </div>
@@ -187,17 +213,47 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                marginTop:"1em"
               }}
             >
-              <StyledTypography variant="h6" component="h5" weight={5}>
+              <StyledTypography
+                variant="h6"
+                component="h5"
+                weight={5}
+                
+              >
+                성별
+              </StyledTypography>
+            </Grid>
+            <Grid item xs={9} style={{ marginTop: '1em' }}>
+              <SelectedMan />
+            </Grid>
+
+            <Grid
+              item
+              xs={3}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <StyledTypography
+                variant="h6"
+                component="h5"
+                weight={5}
+                style={{ marginTop: '1em', marginBottom: '1em' }}
+              >
                 생년월일
               </StyledTypography>
             </Grid>
-            <Grid item xs={9}>
-              <DatePicker
-                value={isPatient.patient_birth}
-                customInput={<StyledInputBase />}
-                onChange={dateHandleChange}
+            <Grid item xs={9} style={{ marginTop: '1em', marginBottom: '1em' }}>
+              <KeyboardDatePicker
+                disableFuture
+                openTo="year"
+                format="yyyy/MM/DD"
+                views={['year', 'month', 'date']}
+                value={keyboardDate}
+                onChange={handleKeyDateChange}
               />
             </Grid>
 

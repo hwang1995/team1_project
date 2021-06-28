@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setGenderStatus } from 'redux/features/member/memberSlice';
 import moment from 'moment';
-import DatePicker from 'react-datepicker';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import 'react-datepicker/dist/react-datepicker.css';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
@@ -11,6 +13,7 @@ import StyledInputBase from 'components/common/input/StyledInputBase';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
 import AddressModal from '../modal/Modal';
+import SelectedUpdateGender from '../SelectedGender/selectedUpdateGender';
 
 const PatientUpdateDrawer = ({
   isUpdateOpened,
@@ -21,10 +24,13 @@ const PatientUpdateDrawer = ({
 }) => {
   const { breakpoint } = useWindowSize();
 
+  const gender = useSelector((state) => state.member.gender);
+  const dispatch = useDispatch();
+
   const [isUpdateModalOpened, setUpdateModalOpened] = useState(false);
   const [changeView, setChange] = useState(false);
-  const [removeOrUpdate, setStatus] = useState("");
-  const [address, setAddress] = useState({})
+  const [removeOrUpdate, setStatus] = useState('');
+  const [address, setAddress] = useState({});
   const [patientInfo, setPatientInfo] = useState({
     patient_id: '',
     patient_name: '',
@@ -35,10 +41,9 @@ const PatientUpdateDrawer = ({
     patient_tel: '',
     patient_height: '',
     patient_weight: '',
+    patient_gender: '',
   });
   //const [patientName, setPatientName] = use
-
-  
 
   useEffect(() => {
     setPatientInfo({
@@ -60,6 +65,7 @@ const PatientUpdateDrawer = ({
       patient_tel: readPatientData.patient_tel,
       patient_height: readPatientData.patient_height,
       patient_weight: readPatientData.patient_weight,
+      patient_gender: readPatientData.patient_gender,
     });
   }, [isUpdateOpened]);
 
@@ -68,6 +74,10 @@ const PatientUpdateDrawer = ({
       console.log('Current breakpoint is', breakpoint);
     }
   }, [breakpoint]);
+
+  useEffect(() => {
+    console.log('readPaient', readPatientData);
+  }, []);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -85,10 +95,15 @@ const PatientUpdateDrawer = ({
       patientInfo.patient_tel !== readPatientData.patient_tel ||
       patientInfo.patient_height !== readPatientData.patient_height ||
       patientInfo.patient_weight !== readPatientData.patient_weight ||
-      patientInfo.patient_addr2 !== readPatientData.patient_addr2
+      patientInfo.patient_addr2 !== readPatientData.patient_addr2 ||
+      readPatientData.patient_gender !== gender
     ) {
+      if (readPatientData.patient_gender !== gender) {
+        patientInfo.patient_gender = gender;
+      }
       setReadPatientData(patientInfo);
-      setStatus("update");
+      setStatus('update');
+      dispatch(setGenderStatus(''));
       setChange(true);
     } else {
       alert('변경된 사항이 없습니다.');
@@ -97,9 +112,10 @@ const PatientUpdateDrawer = ({
 
   const deleteHandleClick = () => {
     setStatus('remove');
+    dispatch(setGenderStatus(''));
     dateRemoveClick(readPatientData);
     setChange(true);
-  }
+  };
 
   const updateHandleChange = (event) => {
     setPatientInfo({
@@ -109,7 +125,7 @@ const PatientUpdateDrawer = ({
   };
 
   const dateUpdateHandleChange = (date) => {
-    const birth = moment(date).format('YYYY년 MM월 DD일');
+    const birth = moment(date).format('YYYY/MM/DD/');
     setPatientInfo({
       ...patientInfo,
       patient_birth: birth,
@@ -117,30 +133,28 @@ const PatientUpdateDrawer = ({
   };
 
   const findAddressHandleClick = () => {
-    console.log("클릭 실행")
+    console.log('클릭 실행');
     setUpdateModalOpened(true);
-  }
-  
-  const closeHandleClick = () => {
-     setStatus('');
-     setChange(false);
-     setUpdateOpened(false);
-  }
+  };
 
+  const closeHandleClick = () => {
+    setStatus('');
+    setChange(false);
+    dispatch(setGenderStatus(''));
+    setUpdateOpened(false);
+  };
 
   const BackTotheMain = () => {
-    if(removeOrUpdate === "update"){
+    if (removeOrUpdate === 'update') {
       setStatus('');
       setUpdateOpened(false);
       setChange(false);
-    }else if (removeOrUpdate === 'remove') {
+    } else if (removeOrUpdate === 'remove') {
       setStatus('');
       setUpdateOpened(false);
       setChange(false);
     }
-   
-  
-  }
+  };
 
   return (
     <Fragment>
@@ -152,7 +166,7 @@ const PatientUpdateDrawer = ({
       >
         <ResponsiveContainer breakpoint={breakpoint}>
           <DrawerHeader breakpoint={breakpoint}>
-            <h1>직원 정보 수정</h1>
+            <h1>환자 정보 수정</h1>
             <div>
               <AiOutlineClose size={32} onClick={closeHandleClick} />
             </div>
@@ -191,16 +205,46 @@ const PatientUpdateDrawer = ({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
+                  marginTop: '1em',
                 }}
               >
                 <StyledTypography variant="h6" component="h5" weight={5}>
+                  성별
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9} style={{ marginTop: '1em' }}>
+                <SelectedUpdateGender
+                  genderValue={patientInfo.patient_gender}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography
+                  variant="h6"
+                  component="h5"
+                  weight={5}
+                  style={{ marginTop: '1em', marginBottom: '1em' }}
+                >
                   생년월일
                 </StyledTypography>
               </Grid>
-              <Grid item xs={9}>
-                <DatePicker
+              <Grid
+                item
+                xs={9}
+                style={{ marginTop: '1em', marginBottom: '1em' }}
+              >
+                <KeyboardDatePicker
+                  disableFuture
+                  openTo="year"
+                  format="yyyy/MM/DD"
+                  views={['year', 'month', 'date']}
                   value={patientInfo.patient_birth}
-                  customInput={<StyledInputBase />}
                   onChange={dateUpdateHandleChange}
                 />
               </Grid>
@@ -314,9 +358,8 @@ const PatientUpdateDrawer = ({
                   name="patient_addr2"
                   onChange={updateHandleChange}
                   value={
-                    patientInfo.patient_addr2 === undefined
-                      ? ''
-                      : patientInfo.patient_addr2
+                    patientInfo.patient_addr2 !== false &&
+                    patientInfo.patient_addr2
                   }
                   placeholder="상세 주소를 입력하세요."
                 />
