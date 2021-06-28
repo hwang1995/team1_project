@@ -21,12 +21,17 @@ import StyledInputBase from 'components/common/input/StyledInputBase';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
 import PostalCodeModal from '../modal/PostalCodeModal';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 
 const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { breakpoint } = useWindowSize();
   const [selectVal, setSelectVal] = useState('의사');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
   const [memberEmail, setMemberEmail] = useState('');
+
+  //생년월일 상태, 날짜 에러메세지(최대 및 최소 값 값 제대로 입력)
+  const [keyboardDate, handleKeyDateChange] = useState(new Date());
+  const [dateErrorMessage, setDateErrorMessage] = useState('');
 
   const dispatch = useDispatch();
 
@@ -52,6 +57,17 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     }
   }, [breakpoint]);
 
+  //생년월일 입력에러시 나오는 문구
+  const handleDateError = (data, error) => {
+    if (data) {
+      console.log(data);
+      setDateErrorMessage(data);
+    } else {
+      console.log('올바른 값을 입력하셨습니다.');
+      setDateErrorMessage('');
+    }
+  };
+
   //fuction(open){function(e){}}
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -62,6 +78,15 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
 
   //이메일 중복체크
   const handleEmailChecked = () => {
+    // 이메일 정규 표현식
+    const regExpEmail =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    const isValidEmail = regExpEmail.test(memberEmail);
+    if (!isValidEmail) {
+      alert('이메일을 올바른 형식으로 입력해주세요.');
+      return;
+    }
     const isInfo = member.find((member) => member.member_email === memberEmail);
     if (!isInfo) {
       alert('확인되었습니다.');
@@ -85,6 +110,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   //submit
   const handleSubmit = (event) => {
     event.preventDefault();
+
     // 이메일 정규 표현식
     const regExpEmail =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -94,9 +120,6 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     const regExpPw =
       /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
 
-    // 생년월일 정규 표현식 (1995-08-10 이런식으로 입력해줘야 됨.)
-    const regExpBirth =
-      /^(19[0-9][0-9]|20\d{2})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/;
     let member_authority = '';
     if (selectVal === '병원장') {
       member_authority = 'ROLE_ADMIN';
@@ -118,7 +141,6 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
 
     const isValidEmail = regExpEmail.test(member_email);
     const isValidPW = regExpPw.test(member_pw);
-    const isValidBirth = regExpBirth.test(member_birth);
 
     if (!isEmailChecked) {
       alert('이메일 중복 체크를 해주세요. ');
@@ -134,8 +156,12 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     } else if (member_name === '') {
       alert('이름이 공백입니다.');
       return;
-    } else if (member_birth === '' || !isValidBirth) {
-      alert('생년월일이 공백이거나 yyyy-mm-dd 형식으로 되어있지 않습니다.');
+    } else if (member_birth === '') {
+      alert('생년월일 값을 입력해주세요.');
+      return;
+    } else if (!(dateErrorMessage === '')) {
+      console.log(dateErrorMessage);
+      alert(dateErrorMessage + ' 다시 한번 확인해주세요^^');
       return;
     } else if (member_postal === '' || member_addr1 === '') {
       alert('주소가 공백입니다. 주소 검색을 해주세요.');
@@ -146,10 +172,11 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     }
 
     const newMember = {
-      member_email,
+      member_id: '임시ID',
       member_pw,
-      member_name,
       member_birth,
+      member_email,
+      member_name,
       member_authority,
       member_postal,
       member_addr1,
@@ -300,7 +327,19 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 </StyledTypography>
               </Grid>
               <Grid item xs={9}>
-                <StyledInputBase name="memberBirth" />
+                <KeyboardDatePicker
+                  name="memberBirth"
+                  disableFuture
+                  openTo="year"
+                  format="yyyy/MM/DD"
+                  views={['year', 'month', 'date']}
+                  value={keyboardDate}
+                  onChange={handleKeyDateChange}
+                  onError={handleDateError}
+                  invalidDateMessage="잘못된 값을 입력하셨습니다."
+                  maxDateMessage="미래의 값은 입력할 수 없습니다."
+                  minDateMessage="1900/01/01부터 입력할 수 있습니다."
+                />
               </Grid>
               <Grid
                 item

@@ -1,7 +1,8 @@
 [
   {
     "member_id": 1,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1993/05/02",
     "member_email": "sihyun@hungry.com",
     "member_name": "박시현",
     "member_authority": "ROLE_DOCTOR",
@@ -11,7 +12,8 @@
   },
   {
     "member_id": 2,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1996/11/26",
     "member_email": "jonghyun@girlfriendsoon.com",
     "member_name": "홍종현",
     "member_authority": "ROLE_DOCTOR",
@@ -21,7 +23,8 @@
   },
   {
     "member_id": 3,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1996/01/13",
     "member_email": "hyeongyun@soso.com",
     "member_name": "김형윤",
     "member_authority": "ROLE_INSPECTOR",
@@ -31,7 +34,8 @@
   },
   {
     "member_id": 4,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1995/06/12",
     "member_email": "sungwook@healthguy.com",
     "member_name": "황성욱",
     "member_authority": "ROLE_NURSE",
@@ -41,7 +45,8 @@
   },
   {
     "member_id": 5,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1992/08/24",
     "member_email": "test55@test55.com",
     "member_name": "김자바",
     "member_authority": "ROLE_DOCTOR",
@@ -51,7 +56,8 @@
   },
   {
     "member_id": 6,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1991/12/30",
     "member_email": "jonghyun@girlfriendsoon.com",
     "member_name": "오렌지",
     "member_authority": "ROLE_DOCTOR",
@@ -61,7 +67,8 @@
   },
   {
     "member_id": 7,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1992/02/09",
     "member_email": "hyeongyun@soso.com",
     "member_name": "박도지",
     "member_authority": "ROLE_INSPECTOR",
@@ -71,7 +78,8 @@
   },
   {
     "member_id": 8,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1999/02/22",
     "member_email": "test888@test888.com",
     "member_name": "888",
     "member_authority": "ROLE_NURSE",
@@ -81,7 +89,8 @@
   },
   {
     "member_id": 9,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1994/06/11",
     "member_email": "비둘기@비둘기.com",
     "member_name": "999",
     "member_authority": "ROLE_INSPECTOR",
@@ -91,7 +100,8 @@
   },
   {
     "member_id": 10,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1993/05/22",
     "member_email": "10번아이디@10번.com",
     "member_name": "황성욱",
     "member_authority": "ROLE_NURSE",
@@ -101,7 +111,8 @@
   },
   {
     "member_id": 11,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1996/05/13",
     "member_email": "testDoctor11@test11.com",
     "member_name": "김성현",
     "member_authority": "ROLE_DOCTOR",
@@ -111,7 +122,8 @@
   },
   {
     "member_id": 12,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1998/08/25",
     "member_email": "goodman@haveagoodday.com",
     "member_name": "고은지",
     "member_authority": "ROLE_DOCTOR",
@@ -121,7 +133,8 @@
   },
   {
     "member_id": 13,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1985/07/11",
     "member_email": "hyeongyun@soso.com",
     "member_name": "정호연",
     "member_authority": "ROLE_INSPECTOR",
@@ -131,7 +144,8 @@
   },
   {
     "member_id": 14,
-    "member_pw": "123",
+    "member_pw": "12345",
+    "member_birth": "1999/01/15",
     "member_email": "dogedoge@coin.com",
     "member_name": "김정현",
     "member_authority": "ROLE_NURSE",
