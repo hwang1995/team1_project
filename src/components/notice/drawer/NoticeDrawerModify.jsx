@@ -11,13 +11,12 @@ import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
 const NoticeDrawerModify = () => {
-
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
   const noticeItem = useSelector((state) => state.notice.noticeItem);
   const currentItem = noticeItem[currentIndex];
   const editorRef = useRef(null);
-  const [inputVal, setInputVal] = useState(currentItem.notice_title);
-  const [inputContent, setInputContent] = useState(currentItem.notice_content);
+  const [inputVal, setInputVal] = useState('');
+  const [inputContent, setInputContent] = useState('');
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -42,7 +41,7 @@ const NoticeDrawerModify = () => {
       notice_head_image = editorContent.match(imgRegEx)[1].replace('"', '');
     }
 
-
+    console.log(inputVal);
     const notice_head_text = editorContent
       .replace(/<(?:.|\n)*?>/gm, '')
       .substring(0, 50);
@@ -57,13 +56,14 @@ const NoticeDrawerModify = () => {
       }),
     );
 
-    console.log("currentItem : ", currentItem);
+    console.log('currentItem : ', currentItem);
     dispatch(setActiveStep('SUCCESS'));
   };
 
   useEffect(() => {
-    console.log(inputVal);
-  }, [inputVal]);
+    setInputVal(currentItem.notice_title);
+    setInputContent(currentItem.notice_content);
+  }, [currentItem]);
 
   return (
     <Fragment>
@@ -81,8 +81,8 @@ const NoticeDrawerModify = () => {
         </div>
       </div>
       <div style={{ marginTop: '2rem' }}>
-      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
-        <Editor
+        <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
+          <Editor
             previewStyle="vertical"
             height="500px"
             initialEditType="wysiwyg"
@@ -91,9 +91,9 @@ const NoticeDrawerModify = () => {
             initialValue={currentItem.notice_content}
             language="ko"
             // onChange={handleEditorChange}
-            ref={editorRef}/>
-
-      </h3>
+            ref={editorRef}
+          />
+        </h3>
       </div>
       <div
         style={{
