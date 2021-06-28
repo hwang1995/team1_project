@@ -36,6 +36,10 @@ const PageContainer = styled.div`
       transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
   }
+
+  * {
+    cursor: pointer;
+  }
 `;
 
 const SidebarContainer = styled.div`
@@ -88,6 +92,10 @@ const SidebarContainer = styled.div`
       margin-left: 0.5rem;
     }
   }
+
+  * {
+    cursor: pointer;
+  }
 `;
 
 const ResponsivePageHeader = () => {
@@ -106,6 +114,9 @@ const ResponsivePageHeader = () => {
     specificPath === 'diagnostic' ||
     specificPath === 'diagnosis-history';
 
+  const isPatient = specificPath === 'patient';
+  const isMember = specificPath === 'member';
+
   const goPage = (page) => {
     history.push(page);
   };
@@ -115,8 +126,10 @@ const ResponsivePageHeader = () => {
   };
 
   useEffect(() => {
-    console.log('responsive header breakpoint is', breakpoint);
-  }, [breakpoint]);
+    if (isDiagnosis || isPatient || isMember) {
+      setLogined(true);
+    }
+  }, []);
 
   const handleOpen = () => {
     dispatch(
@@ -227,7 +240,7 @@ const ResponsivePageHeader = () => {
   };
 
   const getTopHeader = () => {
-    if (isDiagnosis) {
+    if (isDiagnosis || isPatient || isMember) {
       return (
         <Container maxWidth="lg">
           <Grid container spacing={1}>
@@ -285,6 +298,98 @@ const ResponsivePageHeader = () => {
       );
     }
   };
+
+  const getBottomContent = () => {
+    if (isDiagnosis) {
+      return (
+        <Container maxWidth="lg">
+          <Grid container>
+            <Grid item xs={2} className="common-grid">
+              <span className={clsx('big-text', 'bold')}>진료</span>
+            </Grid>
+            <Grid item xs={10} className={clsx('common-grid', 'right-align')}>
+              <span
+                className={clsx('small-text', {
+                  'selected-item': specificPath === 'reservation',
+                })}
+                onClick={() => goPage('/dashboard/reservation')}
+              >
+                진료 접수
+              </span>
+              <span
+                className={clsx('small-text', {
+                  'selected-item': specificPath === 'diagnosis',
+                })}
+                onClick={() => goPage('/dashboard/diagnosis')}
+              >
+                진료 등록
+              </span>
+              <span
+                className={clsx('small-text', {
+                  'selected-item': specificPath === 'diagnostic',
+                })}
+                onClick={() => goPage('/dashboard/diagnostic')}
+              >
+                진료 검사 보기
+              </span>
+              <span
+                className={clsx('small-text', {
+                  'selected-item': specificPath === 'diagnosis-history',
+                })}
+                onClick={() => goPage('/dashboard/diagnosis-history')}
+              >
+                진료 기록 보기
+              </span>
+            </Grid>
+          </Grid>
+        </Container>
+      );
+    }
+
+    if (isPatient) {
+      return (
+        <Container maxWidth="lg">
+          <Grid container>
+            <Grid item xs={2} className="common-grid">
+              <span className={clsx('big-text', 'bold')}>환자</span>
+            </Grid>
+            <Grid item xs={10} className={clsx('common-grid', 'right-align')}>
+              <span
+                className={clsx('small-text', {
+                  'selected-item': specificPath === 'patient',
+                })}
+                onClick={() => goPage('/dashboard/patient')}
+              >
+                환자 관리
+              </span>
+            </Grid>
+          </Grid>
+        </Container>
+      );
+    }
+
+    if (isMember) {
+      return (
+        <Container maxWidth="lg">
+          <Grid container>
+            <Grid item xs={2} className="common-grid">
+              <span className={clsx('big-text', 'bold')}>병원</span>
+            </Grid>
+            <Grid item xs={10} className={clsx('common-grid', 'right-align')}>
+              <span
+                className={clsx('small-text', {
+                  'selected-item': specificPath === 'member',
+                })}
+                onClick={() => goPage('/dashboard/member')}
+              >
+                임직원 관리
+              </span>
+            </Grid>
+          </Grid>
+        </Container>
+      );
+    }
+  };
   return (
     <Fragment>
       {/* 상위 헤더  */}
@@ -299,49 +404,7 @@ const ResponsivePageHeader = () => {
 
       {/* 하위 헤더 */}
       <SidebarContainer>
-        <Hidden xsDown>
-          <Container maxWidth="lg">
-            <Grid container>
-              <Grid item xs={2} className="common-grid">
-                <span className={clsx('big-text', 'bold')}>진료</span>
-              </Grid>
-              <Grid item xs={10} className={clsx('common-grid', 'right-align')}>
-                <span
-                  className={clsx('small-text', {
-                    'selected-item': specificPath === 'reservation',
-                  })}
-                  onClick={() => goPage('/dashboard/reservation')}
-                >
-                  진료 접수
-                </span>
-                <span
-                  className={clsx('small-text', {
-                    'selected-item': specificPath === 'diagnosis',
-                  })}
-                  onClick={() => goPage('/dashboard/diagnosis')}
-                >
-                  진료 등록
-                </span>
-                <span
-                  className={clsx('small-text', {
-                    'selected-item': specificPath === 'diagnostic',
-                  })}
-                  onClick={() => goPage('/dashboard/diagnostic')}
-                >
-                  진료 검사 보기
-                </span>
-                <span
-                  className={clsx('small-text', {
-                    'selected-item': specificPath === 'diagnosis-history',
-                  })}
-                  onClick={() => goPage('/dashboard/diagnosis-history')}
-                >
-                  진료 기록 보기
-                </span>
-              </Grid>
-            </Grid>
-          </Container>
-        </Hidden>
+        <Hidden xsDown>{getBottomContent()}</Hidden>
       </SidebarContainer>
     </Fragment>
   );

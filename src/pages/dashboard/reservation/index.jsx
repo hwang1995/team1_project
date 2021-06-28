@@ -12,7 +12,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import {RiUserSearchFill} from "react-icons/ri";
+import { RiUserSearchFill } from 'react-icons/ri';
 import useWindowSize from 'hooks/useWindowSize';
 
 // Toast UI Calendar Library & monent.js
@@ -29,7 +29,9 @@ import TitleHeader from 'components/common/header/TitleHeader';
 import doctorJson from '../../../pages/temporary/sihyun/json/doctorJson';
 import ReservationDrawer from 'components/reservation/drawer/ReservationDrawer';
 import ReservationReadDrawer from 'components/reservation/drawer/read/ReservationReadDrawer';
-import SearchReservation from "components/reservation/drawer/SearchReservation";
+import SearchReservation from 'components/reservation/drawer/SearchReservation';
+import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
+import PageTransition from 'components/common/transition/PageTransition';
 
 /**
  * 이 페이지 컴포넌트는 진료 에약(접수) 페이지를 작성하기 위한 컴포넌트입니다.
@@ -172,7 +174,7 @@ const ReservationPage = () => {
   const onBeforeCreateSchedule = (e) => {
     console.log('시작시간', moment(e.start.toDate()).format());
     console.log('엔드시간', moment(e.end.toDate()).format());
-    console.log("dataeeee", moment(e.start.toDate()).format("LT"));
+    console.log('dataeeee', moment(e.start.toDate()).format('LT'));
     const weekNum = moment(e.start.toDate(), 'MM-DD-YYYY').week();
     const start = e.start;
     const end = e.end;
@@ -184,7 +186,7 @@ const ReservationPage = () => {
       start.getDate() +
       '일';
     const startTime = moment(start.toDate()).format('LT');
-    const endTime = moment(end.toDate()).format('LT'); 
+    const endTime = moment(end.toDate()).format('LT');
 
     const scheduleStart = moment(start.toDate()).format();
     const scheduleEnd = moment(end.toDate()).format();
@@ -210,8 +212,8 @@ const ReservationPage = () => {
   };
 
   const handeSearchOpenClick = () => {
-      setSearchOpened(true);
-  }
+    setSearchOpened(true);
+  };
 
   return (
     <div>
@@ -223,126 +225,123 @@ const ReservationPage = () => {
           zIndex: 1,
         }}
       >
-        <PageHeader />
+        <ResponsivePageHeader />
         <Divider />
       </header>
       <main>
         <Grid container>
-          <Grid item sm={4} md={3} lg={2}>
-            <Hidden xsDown>
-              <MenuSidebar />
-            </Hidden>
-          </Grid>
-          <Grid item xs={12} sm={8} md={9} lg={10}>
-            <ContentContainer>
-              <TitleHeader>
-                <div style={{ flex: 4 }}>
-                  <span>진료 | </span>
-                  <span>진료 접수</span>
+          <Grid item xs={12}>
+            <PageTransition>
+              <ContentContainer>
+                <TitleHeader>
+                  <div style={{ flex: 4 }}>
+                    <span>진료 | </span>
+                    <span>진료 접수</span>
+                  </div>
+
+                  <FormControl
+                    variant="standard"
+                    style={{ width: '100%', flex: 1 }}
+                  >
+                    <InputLabel id="label-id">Doctor</InputLabel>
+                    <Select
+                      labelId="label-id"
+                      id="select-id"
+                      value={selectId}
+                      onChange={(e) => setSelectId(e.target.value)}
+                      label="Doctor"
+                    >
+                      {doctorJson.map((item) => (
+                        <MenuItem
+                          key={item.member_id}
+                          value={item.member_id}
+                          onClick={() => handleMenuItemClick(item)}
+                        >
+                          {item.member_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </TitleHeader>
+                <div
+                  className="icon-area"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <IconButton
+                    type="button"
+                    size="small"
+                    style={{
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      marginLeft: '0.5rem',
+                      marginRight: '1rem',
+                      padding: '0.5rem',
+                    }}
+                    onClick={handeSearchOpenClick}
+                  >
+                    <RiUserSearchFill />
+                  </IconButton>
+                  <IconButton
+                    type="button"
+                    size="small"
+                    style={{
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      marginRight: '0.5rem',
+                      padding: '0.5rem',
+                    }}
+                    onClick={handlePrevClick}
+                  >
+                    <IoIosArrowBack />
+                  </IconButton>
+
+                  <IconButton
+                    type="button"
+                    size="small"
+                    style={{
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      marginLeft: '0.5rem',
+                      marginRight: '1rem',
+                      padding: '0.5rem',
+                    }}
+                    onClick={handleNextClick}
+                  >
+                    <IoIosArrowForward />
+                  </IconButton>
+
+                  <span>
+                    {titleDate.startDate} ~ {titleDate.endDate}
+                  </span>
                 </div>
 
-                <FormControl
-                  variant="standard"
-                  style={{ width: '100%', flex: 1 }}
-                >
-                  <InputLabel id="label-id">Doctor</InputLabel>
-                  <Select
-                    labelId="label-id"
-                    id="select-id"
-                    value={selectId}
-                    onChange={(e) => setSelectId(e.target.value)}
-                    label="Doctor"
-                  >
-                    {doctorJson.map((item) => (
-                      <MenuItem
-                        key={item.member_id}
-                        value={item.member_id}
-                        onClick={() => handleMenuItemClick(item)}
-                      >
-                        {item.member_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </TitleHeader>
-              <div
-                className="icon-area"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <IconButton
-                  type="button"
-                  size="small"
-                  style={{
-                    border: '1px solid rgba(0,0,0,0.12)',
-                    marginLeft: '0.5rem',
-                    marginRight: '1rem',
-                    padding: '0.5rem',
-                  }}
-                  onClick={handeSearchOpenClick}
-                >
-                  <RiUserSearchFill />
-                </IconButton>
-                <IconButton
-                  type="button"
-                  size="small"
-                  style={{
-                    border: '1px solid rgba(0,0,0,0.12)',
-                    marginRight: '0.5rem',
-                    padding: '0.5rem',
-                  }}
-                  onClick={handlePrevClick}
-                >
-                  <IoIosArrowBack />
-                </IconButton>
+                <div className="calendar-area" style={{ marginTop: '1rem' }}>
+                  <Calendar
+                    height="100%"
+                    view="week"
+                    ref={calendarRef}
+                    onBeforeCreateSchedule={onBeforeCreateSchedule}
+                    onClickSchedule={onClickSchedule}
+                  />
+                </div>
 
-                <IconButton
-                  type="button"
-                  size="small"
-                  style={{
-                    border: '1px solid rgba(0,0,0,0.12)',
-                    marginLeft: '0.5rem',
-                    marginRight: '1rem',
-                    padding: '0.5rem',
-                  }}
-                  onClick={handleNextClick}
-                >
-                  <IoIosArrowForward />
-                </IconButton>
-
-                <span>
-                  {titleDate.startDate} ~ {titleDate.endDate}
-                </span>
-              </div>
-
-              <div className="calendar-area" style={{ marginTop: '1rem' }}>
-                <Calendar
-                  height="100%"
-                  view="week"
-                  ref={calendarRef}
-                  onBeforeCreateSchedule={onBeforeCreateSchedule}
-                  onClickSchedule={onClickSchedule}
+                <ReservationDrawer
+                  isOpened={isOpened}
+                  setOpened={setOpened}
+                  reservationTime={reservationTime}
+                  doctorInfo={doctorInfo}
                 />
-              </div>
-
-              <ReservationDrawer
-                isOpened={isOpened}
-                setOpened={setOpened}
-                reservationTime={reservationTime}
-                doctorInfo={doctorInfo}
-              />
-              <ReservationReadDrawer
-                readOpened={readOpened}
-                setReadOpened={setReadOpened}
-                readPatient={readPatient}
-              />
-              <SearchReservation
-                searchOpened={searchOpened}
-                setSearchOpened={setSearchOpened}
-              />
-            </ContentContainer>
+                <ReservationReadDrawer
+                  readOpened={readOpened}
+                  setReadOpened={setReadOpened}
+                  readPatient={readPatient}
+                />
+                <SearchReservation
+                  searchOpened={searchOpened}
+                  setSearchOpened={setSearchOpened}
+                />
+              </ContentContainer>
+            </PageTransition>
           </Grid>
         </Grid>
       </main>

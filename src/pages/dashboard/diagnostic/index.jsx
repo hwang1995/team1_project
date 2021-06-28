@@ -40,7 +40,6 @@ import DiagnosticSearchModal from 'components/diagnostic/modal/DiagnosticSearchM
  * @returns {JSX.Element}
  */
 const DiagnosticPage = () => {
-
   const dispatch = useDispatch();
 
   const [searchVal, setSearchVal] = useState('');
@@ -56,9 +55,15 @@ const DiagnosticPage = () => {
     <div>
       {/* DiagnosticPage를 작성합니다. 들어가야할 컴포넌트는 위의 주석에 설명되어
       있으니 참조하시면 됩니다. */}
-      <header style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'white',
+          zIndex: 1,
+        }}
+      >
         <ResponsivePageHeader />
-        <Divider />
       </header>
       <main>
         <Grid container>
