@@ -80,7 +80,7 @@ const DiagnosticReceptionModal = () => {
                   </IconButton>
                 </div>
               </DrawerHeader>
-              <Grid container>
+              <Grid container alignItems="center">
                 <Grid item xs={6}>
                   <img
                     src="/assets/image/question.jpeg"

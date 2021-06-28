@@ -11,6 +11,7 @@ export const diagnosticSlice = createSlice({
       barcode: false,
       reception: false,
       bloodDraw: false,
+      search: false,
     },
     diagnosticDataInput: {},
   },
