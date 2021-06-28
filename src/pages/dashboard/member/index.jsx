@@ -134,7 +134,9 @@ const MemberPage = () => {
                         <TableHead>
                           <TableRow>
                             <TableCell component="td">직책</TableCell>
-                            <TableCell component="td">직원 이름</TableCell>
+                            <TableCell component="td">
+                              이름{'&'}생년월일
+                            </TableCell>
                             <TableCell component="td">이메일</TableCell>
                             <TableCell component="td">주소</TableCell>
                             <TableCell component="td"></TableCell>
@@ -165,6 +167,8 @@ const MemberPage = () => {
                                   </TableCell>
                                   <TableCell component="th">
                                     {data.member_name}
+                                    <Divider />
+                                    {data.member_birth}
                                   </TableCell>
                                   <TableCell component="th">
                                     {data.member_email}
@@ -218,7 +222,14 @@ const MemberPage = () => {
                         <TableFooter>
                           <TableRow>
                             <TablePagination
-                              count={member.length}
+                              count={
+                                member.filter(function (element) {
+                                  //새로운 배열을 만들어줌
+                                  return element.member_name.includes(
+                                    searchVal,
+                                  );
+                                }).length
+                              }
                               page={page}
                               rowsPerPage={rowsPerPage}
                               onChangePage={handleChangePage}
