@@ -24,6 +24,7 @@
     "framer-motion": "^4.1.17",
     "html-react-parser": "^1.2.7",
     "immer": "^9.0.3",
+    "material-ui-popup-state": "^1.8.3",
     "moment": "^2.29.1",
     "notistack": "^1.0.9",
     "react": "^17.0.2",
