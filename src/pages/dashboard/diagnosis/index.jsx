@@ -206,7 +206,7 @@ const DiagnosisPage = () => {
                     justifyContent: 'space-between',
                     position: 'fixed',
                     padding: '0.5rem',
-                    width: 'calc(100% - 370px)',
+                    width: 'calc(100% - 100px)',
                     bottom: 10,
                     zIndex: 1,
                   }}

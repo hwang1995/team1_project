@@ -3,7 +3,6 @@ import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container, Grid, Hidden } from '@material-ui/core';
 import { MdLocalHospital } from 'react-icons/md';
-import useWindowSize from 'hooks/useWindowSize';
 
 import clsx from 'clsx';
 
@@ -47,7 +46,7 @@ const SidebarContainer = styled.div`
 
     .big-text {
       font-size: 1.35rem;
-      opacity: 0.7;
+
       &:hover {
         opacity: 1;
         transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -90,6 +89,12 @@ const ResponsivePageHeader = () => {
   const pathnames = location.pathname.split('/');
   const specificPath = pathnames[pathnames.length - 1];
 
+  const isDiagnosis =
+    specificPath === 'reservation' ||
+    specificPath === 'diagnosis' ||
+    specificPath === 'diagnostic' ||
+    specificPath === 'diagnosis-history';
+
   const goPage = (page) => {
     history.push(page);
   };
@@ -118,6 +123,14 @@ const ResponsivePageHeader = () => {
               >
                 <span>진료</span>
               </Grid>
+              <Grid
+                item
+                xs={1}
+                className="common-grid"
+                onClick={() => goPage('/dashboard/patient')}
+              >
+                <span>환자</span>
+              </Grid>
             </Grid>
           </Container>
         </Hidden>
@@ -126,6 +139,7 @@ const ResponsivePageHeader = () => {
       {/* 하위 헤더 */}
       <SidebarContainer>
         <Hidden xsDown>
+          {specificPath === 'reservation'}
           <Container maxWidth="lg">
             <Grid container>
               <Grid item xs={2} className="common-grid">
