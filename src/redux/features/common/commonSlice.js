@@ -12,6 +12,7 @@ export const commonSlice = createSlice({
       hospital_name: '',
     },
     sidebarInfo: {
+      drawer: false,
       diagnosis: false,
       hospital: false,
       patient: false,

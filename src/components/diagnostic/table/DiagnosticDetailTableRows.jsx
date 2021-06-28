@@ -6,20 +6,20 @@ import ColorCircleContainer from 'components/common/container/ColorCircleContain
 const DiagnosticDetailTableRows = ({ data }) => {
   return (
     <TableRow>
-      <TableCell>{data.bundle_code}</TableCell>
-      <TableCell>{data.pres_code}</TableCell>
-      <TableCell>{data.bundle_name}</TableCell>
-      <TableCell>{data.pres_name}</TableCell>
-      <TableCell>
+      <TableCell size="small">{data.bundle_code}</TableCell>
+      <TableCell size="small">{data.pres_code}</TableCell>
+      <TableCell size="small">{data.bundle_name}</TableCell>
+      <TableCell size="small">{data.pres_name}</TableCell>
+      <TableCell size="small">
         {data.diag_test_value === null && 'X'}{' '}
         {data.diag_test_value !== null && data.diag_test_value}
       </TableCell>
-      <TableCell>
+      <TableCell size="small">
         {' '}
         {((data.pres_lower_limit + data.pres_upper_limit) / 2).toFixed(2)}{' '}
         {data.pres_unit}
       </TableCell>
-      <TableCell>
+      <TableCell size="small">
         {data.pres_specimen_name === '' && (
           <StyledTypography variant="subtitle2" component="h5" weight={9}>
             X
@@ -33,7 +33,7 @@ const DiagnosticDetailTableRows = ({ data }) => {
         )}
       </TableCell>
 
-      <TableCell>
+      <TableCell size="small">
         {data.pres_vessel === '' && (
           <StyledTypography variant="subtitle2" component="h5" weight={9}>
             X
@@ -53,9 +53,9 @@ const DiagnosticDetailTableRows = ({ data }) => {
           </div>
         )}
       </TableCell>
-      <TableCell>{data.member_name}</TableCell>
-      <TableCell>{data.inspector_member_name}</TableCell>
-      <TableCell>
+      <TableCell size="small">{data.member_name}</TableCell>
+      <TableCell size="small">{data.inspector_member_name}</TableCell>
+      <TableCell size="small">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <ColorCircleContainer size={10} color={data.diag_test_status} />
           {data.diag_test_status === 'PENDING' && (

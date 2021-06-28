@@ -34,6 +34,8 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import DiagnosticDrawer from 'components/diagnosis/drawer/DiagnosticDrawer';
 import DiagnosisHistoryDrawer from 'components/diagnosis/drawer/DiagnosisHistoryDrawer';
 import DiagnosisModal from 'components/diagnosis/modal/DiagnosisModal';
+import PageTransition from 'components/common/transition/PageTransition';
+import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 
 const getSteps = () => [
   '진료할 환자를 선택해주세요.',
@@ -165,81 +167,77 @@ const DiagnosisPage = () => {
           zIndex: 1,
         }}
       >
-        <PageHeader />
+        <ResponsivePageHeader />
         <Divider />
       </header>
       <main>
         <Grid container>
-          <Grid item xs={false} sm={4} md={3} lg={2}>
-            <Hidden xsDown>
-              <MenuSidebar />
-            </Hidden>
-          </Grid>
+          <Grid item xs={12}>
+            <PageTransition>
+              <ContentContainer>
+                <TitleHeader>
+                  <span>진료 | </span>
+                  <span>진료 등록</span>
+                </TitleHeader>
 
-          <Grid item xs={12} sm={8} md={9} lg={10}>
-            <ContentContainer>
-              <TitleHeader>
-                <span>진료 | </span>
-                <span>진료 등록</span>
-              </TitleHeader>
+                <Stepper activeStep={activeStep}>
+                  {steps.map((label, index) => {
+                    const stepProps = {};
+                    const labelProps = {};
+                    return (
+                      <Step key={label} {...stepProps}>
+                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      </Step>
+                    );
+                  })}
+                </Stepper>
+                <Divider light />
+                {getStepContent(activeStep)}
 
-              <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                  const stepProps = {};
-                  const labelProps = {};
-                  return (
-                    <Step key={label} {...stepProps}>
-                      <StepLabel {...labelProps}>{label}</StepLabel>
-                    </Step>
-                  );
-                })}
-              </Stepper>
-              <Divider light />
-              {getStepContent(activeStep)}
-
-              {/* Medicine Drawer */}
-              <MedicineDrawer />
-              <InjectorDrawer />
-              <DiagnosticDrawer />
-              <DiagnosisHistoryDrawer />
-              <DiagnosisModal />
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  position: 'fixed',
-                  padding: '0.5rem',
-                  width: 'calc(100% - 370px)',
-                  bottom: 10,
-                  zIndex: 1,
-                }}
-              >
-                <IconButton
-                  type="button"
-                  size="small"
+                {/* Medicine Drawer */}
+                <MedicineDrawer />
+                <InjectorDrawer />
+                <DiagnosticDrawer />
+                <DiagnosisHistoryDrawer />
+                <DiagnosisModal />
+                <div
                   style={{
-                    border: '1px solid rgba(0,0,0,0.12)',
-                    marginRight: '0.5rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    position: 'fixed',
                     padding: '0.5rem',
+                    width: 'calc(100% - 100px)',
+                    bottom: 10,
+                    zIndex: 1,
                   }}
-                  onClick={handleBack}
                 >
-                  <IoIosArrowBack />
-                </IconButton>
-                <IconButton
-                  type="button"
-                  size="small"
-                  style={{
-                    border: '1px solid rgba(0,0,0,0.12)',
-                    marginRight: '0.5rem',
-                    padding: '0.5rem',
-                  }}
-                  onClick={handleNext}
-                >
-                  <IoIosArrowForward />
-                </IconButton>
-              </div>
-            </ContentContainer>
+                  <IconButton
+                    type="button"
+                    size="small"
+                    style={{
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      marginRight: '0.5rem',
+                      padding: '0.5rem',
+                    }}
+                    onClick={handleBack}
+                  >
+                    <IoIosArrowBack />
+                  </IconButton>
+                  <IconButton
+                    type="button"
+                    size="small"
+                    style={{
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      marginRight: '0.5rem',
+                      padding: '0.5rem',
+                    }}
+                    onClick={handleNext}
+                  >
+                    <IoIosArrowForward />
+                  </IconButton>
+                </div>
+              </ContentContainer>
+            </PageTransition>
           </Grid>
         </Grid>
       </main>
