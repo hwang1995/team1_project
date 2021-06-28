@@ -1,7 +1,7 @@
 import React, { Fragment} from 'react';
 import { SwipeableDrawer } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -40,9 +40,9 @@ const EmergencyDrawer = ({ emergencyOpened, setEmergencyOpened }) => {
         onOpen={toggleDrawer(true)}
         onClose={toggleDrawer(false)}
       >
-        <ResponsiveContainer>
+        <ResponsiveContainer  breakpoint={breakpoint}>
           <DrawerHeader breakpoint={breakpoint}>
-            <h1>비상연락망</h1>
+            <h1>병원 전화번호</h1>
             <div>
               <AiOutlineClose size={32} onClick={() => setEmergencyOpened(false)} />
             </div>

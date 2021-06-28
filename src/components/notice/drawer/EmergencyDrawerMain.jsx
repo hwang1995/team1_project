@@ -1,23 +1,30 @@
 import React, { Fragment, useState } from 'react';
 import { BsPencilSquare } from 'react-icons/bs';
+import { AiOutlineClose } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   setEmergencyCurrentIndex,
   setActiveStep,
+  removeEmergencyItem
 } from 'redux/features/emergency/emergencySlice';
 import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 import StyledButton from 'components/common/button/StyledButton';
 
 const EmergencyDrawerMain = () => {
   const [searchVal, setSearchVal] = useState('');
-
+  console.log(setSearchVal);
   const dispatch = useDispatch();
   const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
+  const currentIndex = useSelector((state) => state.emergency.emergencyCurrentIndex);
 
   const handleClick = (data) => {
     console.log(data);
     dispatch(setEmergencyCurrentIndex(data.emergency_id - 1));
     // dispatch(setActiveStep('READ'));
+  };
+
+  const handleDeleteBtn = () => {
+    dispatch(removeEmergencyItem(emergencyItem[currentIndex]));
   };
 
   const matchData = emergencyItem.filter((data) =>
@@ -32,7 +39,7 @@ const EmergencyDrawerMain = () => {
           <StyledButton
             bgColor="rgb(226,153,51)"
             color="white"
-            width="100%"
+            width="30%"
             onClick={() => dispatch(setActiveStep('WRITE'))}
           >
             <BsPencilSquare style={{ marginRight: '5px' }} />
@@ -43,24 +50,21 @@ const EmergencyDrawerMain = () => {
       </div>
       <NoticeDrawerItem>
         {matchData
-          .reverse()
           .map((data) => (
             <Fragment>
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <div className="left-side" style={{ flex: 2 }}>
-                  
                   <div className="textTitle-container">
-                    <div
-                      align="left"
+                    <div align="left"
                       onClick={() => {
                         handleClick(data);
-                      }}
-                    >
+                      }} >
                       {data.emergency_name} : {data.emergency_tel}
                     </div>
+                    <div>
+              <AiOutlineClose size={20} onClick={handleDeleteBtn} />
+            </div>
                   </div>
-                  
-                  
                 </div>
               </div>
             </Fragment>

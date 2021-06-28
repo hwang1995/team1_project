@@ -27,7 +27,6 @@ const NoticeDrawerWrite = () => {
     const now = new Date().toLocaleDateString();
     const noticeIndex = noticeItem.length;
     const editorContent = editorRef.current.getInstance().getHTML();
-
     if (editorContent === '' || title === '') {
       alert('제목 혹은 내용이 비어있습니다.');
       return;
@@ -49,7 +48,7 @@ const NoticeDrawerWrite = () => {
         notice_title: title,
         notice_date: now,
         notice_content: editorContent,
-        notice_author: '홍금보',
+        notice_author: '김형윤',
         notice_head_text,
         notice_head_image,
       }),

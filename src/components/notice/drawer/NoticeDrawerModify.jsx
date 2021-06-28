@@ -2,51 +2,62 @@ import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { BsPencilSquare, BsListUl } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
 import { Editor } from '@toast-ui/react-editor';
-import parse from 'html-react-parser';
-
+// import parse from 'html-react-parser';
 import {
-  setNoticeCurrentIndex,
   modifyNoticeItem,
   setActiveStep,
 } from 'redux/features/notice/noticeSlice';
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 
 const NoticeDrawerModify = () => {
-  const dispatch = useDispatch();
 
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
   const noticeItem = useSelector((state) => state.notice.noticeItem);
   const currentItem = noticeItem[currentIndex];
+  const editorRef = useRef(null);
   const [inputVal, setInputVal] = useState(currentItem.notice_title);
   const [inputContent, setInputContent] = useState(currentItem.notice_content);
-  const editorRef = useRef(currentItem);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setInputVal(e.target.value);
   };
-
 
   useEffect(() => {
     setInputVal();
     setInputContent();
   }, [currentItem]);
 
-  const handleEditorChange = (e, editor) => {
-    const data = editor.getData();
-    setInputContent(data);
-  };
+  // const handleEditorChange = (e, editor) => {
+  //   setInputContent(e.target.value);
+  // };
 
   const handleModifyBtn = () => {
+    const editorContent = editorRef.current.getInstance().getHTML();
+    const imgRegEx = /img src="|(.*?)"/gm;
+    const imgRegExResult = editorContent.match(imgRegEx);
+    let notice_head_image = '';
+    if (imgRegExResult !== null) {
+      notice_head_image = editorContent.match(imgRegEx)[1].replace('"', '');
+    }
+
+
+    const notice_head_text = editorContent
+      .replace(/<(?:.|\n)*?>/gm, '')
+      .substring(0, 50);
+
     dispatch(
       modifyNoticeItem({
         ...currentItem,
         notice_title: inputVal,
-        notice_content: inputContent,
+        notice_content: editorContent,
+        notice_head_text,
+        notice_head_image,
       }),
     );
+
+    console.log("currentItem : ", currentItem);
     dispatch(setActiveStep('SUCCESS'));
   };
 
@@ -75,10 +86,13 @@ const NoticeDrawerModify = () => {
             previewStyle="vertical"
             height="500px"
             initialEditType="wysiwyg"
+            name="notice_content"
+            // value={inputContent}
+            initialValue={currentItem.notice_content}
             language="ko"
-            value={parse(noticeItem[currentIndex].notice_content)}
-            onChange={handleEditorChange}
+            // onChange={handleEditorChange}
             ref={editorRef}/>
+
       </h3>
       </div>
       <div

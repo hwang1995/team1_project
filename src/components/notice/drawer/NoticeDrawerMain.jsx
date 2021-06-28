@@ -10,6 +10,8 @@ import SearchBox from 'components/common/search/SearchBox';
 import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 import StyledButton from 'components/common/button/StyledButton';
 
+
+
 const NoticeDrawerMain = () => {
   const [searchVal, setSearchVal] = useState('');
   const [page, setPage] = React.useState(0);
@@ -47,6 +49,8 @@ const NoticeDrawerMain = () => {
     data.notice_title.includes(searchVal),
   );
 
+  console.log("matchData:",matchData);
+
   return (
     <Fragment>
       <div style={{ marginTop: '3rem', display: 'flex' }}>
@@ -62,7 +66,7 @@ const NoticeDrawerMain = () => {
             글쓰기
           </StyledButton>
         </div>
-        <div style={{ flex: 4 }}>
+        <div style={{ flex: 3 }}>
           <SearchBox
             onChange={handleChange}
             setSearchVal={setSearchVal}
@@ -75,20 +79,16 @@ const NoticeDrawerMain = () => {
           .reverse()
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
-          .map((data) => (
+          .map((data) => ( 
             <Fragment>
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <div className="left-side" style={{ flex: 2 }}>
                   <div className="avatar-container">
-                    <img
-                      src="/assets/image/doctorface.png"
-                      alt="Logo"
-                      width="25"
-                    />
                     <h4 style={{ marginLeft: '5px' }}>{data.notice_author}</h4>
                   </div>
                   <div className="textTitle-container">
                     <div
+                      // key={data.notice_id}
                       align="left"
                       onClick={() => {
                         handleClick(data);
@@ -104,9 +104,16 @@ const NoticeDrawerMain = () => {
                     <div align="left">{data.notice_date}</div>
                   </div>
                 </div>
-                <div className="right-side" style={{ flex: 1 }}>
-                  <img src={data.notice_head_image} alt="Logo" width="100%" />
-                </div>
+                {data.notice_head_image ? (
+                      <div className="right-side" style={{ flex: 1 }}>
+                       <img src={data.notice_head_image} alt="Logo" width="100%" />
+                      </div>
+                      ) : (
+                      <div className="right-side" style={{ flex: 1 }}>
+                        
+                      </div>
+                      )}
+                
               </div>
             </Fragment>
           ))}
