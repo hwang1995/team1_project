@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { changePage, chaneInputVal } from "redux/features/reservation/reservationSlice";
-import { SwipeableDrawer, Grid } from '@material-ui/core';
+import { SwipeableDrawer } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';

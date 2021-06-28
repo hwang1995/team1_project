@@ -8,6 +8,7 @@ export const memberSlice = createSlice({
       member_postal: '',
       member_addr1: '',
     },
+    gender: ''
   },
   reducers: {
     setModalStatus(state, action) {
@@ -21,9 +22,12 @@ export const memberSlice = createSlice({
         member_addr1,
       };
     },
+    setGenderStatus(state, action) {
+      state.gender = action.payload;
+    }
   },
 });
 
-export const { setModalStatus, setAddressInfo } = memberSlice.actions;
+export const { setModalStatus, setAddressInfo, setGenderStatus } = memberSlice.actions;
 
 export default memberSlice.reducer;

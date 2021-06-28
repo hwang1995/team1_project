@@ -18,6 +18,7 @@ import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import StyledButton from 'components/common/button/StyledButton';
 import SearchBox from 'components/common/search/SearchBox';
+import DeleteModal from "./modal/DeleteModal";
 
 /**
  * 이 페이지 컴포넌트는 환자 관리 페이지를 작성하기 위한 컴포넌트입니다.
@@ -33,6 +34,7 @@ const PatientPage = () => {
   const [isUpdateOpened, setUpdateOpened] = useState(false);
   const [readPatientData,setReadPatientData] = useState({});
   const [patientData, setPatients] = useState([]);
+  const [deleteOpened,setDeleteOpened] = useState(false);
 
   
   useEffect(() => { /// 수정
@@ -58,6 +60,16 @@ const PatientPage = () => {
       return true;
     })
     setPatients(removeDataInfo);
+  };
+  const dateIndexRemoveClick = (data) => {
+    const removeDataInfo = patientData.filter((patientInfo) => {
+      if (patientInfo.patient_id === data.patient_id) {
+        return false;
+      }
+      return true;
+    });
+    setPatients(removeDataInfo);
+    setDeleteOpened(true);
   };
 
  const setSearchVal = (inputVal) => {
@@ -92,7 +104,7 @@ const PatientPage = () => {
               </TitleHeader>
               <br />
               <Grid container>
-                <Grid item xs={9} lg={4}>
+                <Grid item xs={9} lg={6}>
                   <SearchBox
                     setSearchVal={setSearchVal}
                     placeholder="환자 이름을 입력해주세요."
@@ -101,7 +113,7 @@ const PatientPage = () => {
                 <Grid
                   item
                   xs={3}
-                  lg={8}
+                  lg={6}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -121,19 +133,39 @@ const PatientPage = () => {
                 </Grid>
                 {patientData.length === 0 ? (
                   <Grid item xs={12}>
-                    <div style={{ textAlign: 'center', display: 'flex', marginTop:"1.5em", alignItems:"center" }}>
-                      <div style={{ flex:2 }}>
-                        <h1 style={{ fontWeight: 'bold' }}>
+                    <Grid container alignItems="center" justify="center">
+                      <Grid
+                        item
+                        xs={5}
+                        md={5}
+                        lg={6}
+                        xl={6}
+                        style={{
+                          textAlign: 'center',
+                        }}
+                      >
+                        <h1
+                          style={{
+                            fontWeight: 'bold',
+                          }}
+                        >
                           데이터가 없습니다
                         </h1>
-                      </div>
-                      <div style={{ flex: 3 }}>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={7}
+                        md={7}
+                        lg={6}
+                        xl={6}
+                        style={{ marginTop: '2em' }}
+                      >
                         <img
                           src="/assets/image/pleaseSearching.png"
-                          width="70%"
+                          width="60%"
                         />
-                      </div>
-                    </div>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 ) : (
                   <Grid item xs={12}>
@@ -187,7 +219,7 @@ const PatientPage = () => {
                                     bgColor="rgb(228, 20, 30)"
                                     color="white"
                                     onClick={() => {
-                                      dateRemoveClick(data);
+                                      dateIndexRemoveClick(data);
                                     }}
                                   >
                                     삭제
@@ -202,23 +234,27 @@ const PatientPage = () => {
                   </Grid>
                 )}
               </Grid>
-              <PatientDrawer
-                isOpened={isOpened}
-                setOpened={setOpened}
-                setPatients={setPatients}
-                patientData={patientData}
-              />
-              <PatientUpdateDrawer
-                isUpdateOpened={isUpdateOpened}
-                setUpdateOpened={setUpdateOpened}
-                readPatientData={readPatientData}
-                setReadPatientData={setReadPatientData}
-                dateRemoveClick={dateRemoveClick}
-              />
             </ContentContainer>
           </Grid>
         </Grid>
       </main>
+      <PatientDrawer
+        isOpened={isOpened}
+        setOpened={setOpened}
+        setPatients={setPatients}
+        patientData={patientData}
+      />
+      <PatientUpdateDrawer
+        isUpdateOpened={isUpdateOpened}
+        setUpdateOpened={setUpdateOpened}
+        readPatientData={readPatientData}
+        setReadPatientData={setReadPatientData}
+        dateRemoveClick={dateRemoveClick}
+      />
+      <DeleteModal
+        deleteOpened={deleteOpened}
+        setDeleteOpened={setDeleteOpened}
+      />
     </div>
   );
 };
