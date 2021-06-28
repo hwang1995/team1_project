@@ -36,12 +36,10 @@ const MainPage = () => {
       <StyledUl>
         <p>
           {' '}
-          주의 사항! 절대로 이 페이지에 우선 어떠한 컴포넌트도 배치하지 마시고, 개인용
-          테스트 페이지 줄테니 참고만 하세요.
+          주의 사항! 절대로 이 페이지에 우선 어떠한 컴포넌트도 배치하지 마시고,
+          개인용 테스트 페이지 줄테니 참고만 하세요.
         </p>
-        <p>
-          건드린 사람은 벌금 50,000원
-        </p>
+        <p>건드린 사람은 벌금 50,000원</p>
         <li>
           <Link to="/dashboard/">- Dashboard</Link>
         </li>
@@ -60,6 +58,9 @@ const MainPage = () => {
         </li>
         <li>
           <Link to="/dashboard/reservation">- ReservationPage</Link>
+        </li>
+        <li>
+          <Link to="/dashboard/tutorial">- TutorialPage</Link>
         </li>
       </StyledUl>
     </div>

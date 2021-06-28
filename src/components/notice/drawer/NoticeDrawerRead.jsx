@@ -1,21 +1,20 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveStep, removeNoticeItem } from 'redux/features/notice/noticeSlice';
+import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import { BsPencilSquare, BsListUl, BsFillTrashFill } from 'react-icons/bs';
 import parse from 'html-react-parser';
 import StyledButton from 'components/common/button/StyledButton';
+import DeleteModal from 'components/notice/modal/DeleteModal';
+
 
 const NoticeDrawerRead = () => {
   const dispatch = useDispatch();
   const noticeItem = useSelector((state) => state.notice.noticeItem);
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
+  const [isOpenModal, setOpenModal] = useState(false);
+
 
   console.log("currentIndex", currentIndex)
-  const handleDeleteBtn = () => {
-    dispatch(removeNoticeItem(noticeItem[currentIndex]));
-    dispatch(setActiveStep('DELETE'))
-  };
-
 
   return (
     <Fragment>
@@ -54,13 +53,16 @@ const NoticeDrawerRead = () => {
       </div>
       <hr />
 
-      <h2 style={{ fontWeight: '500', padding: '1rem'}}>
-
-      {noticeItem[currentIndex].notice_head_image ? (
-                              <img src={noticeItem[currentIndex].notice_head_image} alt="Logo" width="100%" />
-                      ) : ( <div></div>
-                      )}
-        
+      <h2 style={{ fontWeight: '500', padding: '1rem' }}>
+        {noticeItem[currentIndex].notice_head_image ? (
+          <img
+            src={noticeItem[currentIndex].notice_head_image}
+            alt="Logo"
+            width="100%"
+          />
+        ) : (
+          <div></div>
+        )}
 
         {parse(noticeItem[currentIndex].notice_head_text)}
       </h2>
@@ -95,8 +97,15 @@ const NoticeDrawerRead = () => {
           <StyledButton
             bgColor="rgb(216,89,56)"
             color="white"
-            onClick={handleDeleteBtn}
+            onClick={() => {
+              setOpenModal((prevState) => !prevState);
+            }}
           >
+            <DeleteModal
+              isOpenModal={isOpenModal}
+              setOpenModal={setOpenModal}
+              notice_id={currentIndex}
+            />
             <BsFillTrashFill style={{ marginRight: '5px' }} />
             삭제
           </StyledButton>

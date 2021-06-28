@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Divider, Grid, Hidden, List } from '@material-ui/core';
+import { Grid, Hidden, List } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { GrPowerReset } from 'react-icons/gr';
 
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import useWindowSize from 'hooks/useWindowSize';
 import NoticeItem from 'components/dashboard/NoticeItem';
-import PageHeader from 'components/common/header/PageHeader';
-import MenuSidebar from 'components/common/sidebar/MenuSidebar';
 import ContentContainer from 'components/common/container/ContentContainer';
 import StyledContainer from 'components/common/container/StyledContainer';
 import StyledTypography from 'components/common/typography/StyledTypography';
@@ -92,7 +89,7 @@ const FrontPage = () => {
             <PageTransition>
               <ContentContainer>
                 <Grid container>
-                  <Grid item xs={12} sm={8}>
+                  <Grid item xs={12} sm={8} lg={8}>
                     <StyledContainer
                       bgColor="#EAF2FE"
                       padding="1.5"
@@ -164,7 +161,7 @@ const FrontPage = () => {
                       ))}
                     </List>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={4} lg={4}>
                     <Hidden xsDown>
                       <div
                         style={{
@@ -176,8 +173,8 @@ const FrontPage = () => {
                       >
                         <DatePicker
                           autoOk
+                          clearText="CANCEL"
                           color="secondary"
-                          orientation="landscape"
                           variant="static"
                           openTo="date"
                           value={date}
@@ -215,7 +212,6 @@ const FrontPage = () => {
                       <div
                         style={{
                           display: 'flex',
-                          marginTop: '15px',
                           alignItems: 'center',
                         }}
                       >
