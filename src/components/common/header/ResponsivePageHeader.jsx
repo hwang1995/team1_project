@@ -116,6 +116,7 @@ const ResponsivePageHeader = () => {
 
   const isPatient = specificPath === 'patient';
   const isMember = specificPath === 'member';
+  const isDashboard = specificPath === 'dashboard';
 
   const goPage = (page) => {
     history.push(page);
@@ -126,7 +127,7 @@ const ResponsivePageHeader = () => {
   };
 
   useEffect(() => {
-    if (isDiagnosis || isPatient || isMember) {
+    if (isDiagnosis || isPatient || isMember || isDashboard) {
       setLogined(true);
     }
   }, []);
@@ -240,7 +241,7 @@ const ResponsivePageHeader = () => {
   };
 
   const getTopHeader = () => {
-    if (isDiagnosis || isPatient || isMember) {
+    if (isDiagnosis || isPatient || isMember || isDashboard) {
       return (
         <Container maxWidth="lg">
           <Grid container spacing={1}>
@@ -388,6 +389,10 @@ const ResponsivePageHeader = () => {
           </Grid>
         </Container>
       );
+    }
+
+    if (isDashboard) {
+      return <Container maxWidth="lg"></Container>;
     }
   };
   return (

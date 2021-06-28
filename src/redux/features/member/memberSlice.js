@@ -8,7 +8,8 @@ export const memberSlice = createSlice({
       member_postal: '',
       member_addr1: '',
     },
-    gender: ''
+    gender: '',
+    imageModalStatus: false,
   },
   reducers: {
     setModalStatus(state, action) {
@@ -24,10 +25,19 @@ export const memberSlice = createSlice({
     },
     setGenderStatus(state, action) {
       state.gender = action.payload;
-    }
+    },
+
+    setImageModalStatus(state, action) {
+      state.imageModalStatus = action.payload;
+    },
   },
 });
 
-export const { setModalStatus, setAddressInfo, setGenderStatus } = memberSlice.actions;
+export const {
+  setModalStatus,
+  setAddressInfo,
+  setGenderStatus,
+  setImageModalStatus,
+} = memberSlice.actions;
 
 export default memberSlice.reducer;

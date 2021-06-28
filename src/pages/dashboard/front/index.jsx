@@ -17,6 +17,9 @@ import StyledButton from 'components/common/button/StyledButton';
 import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
 import EmergencyDrawer from 'components/notice/drawer/EmergencyDrawer';
 import SearchBox from 'components/common/search/SearchBox';
+import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
+import PageTransition from 'components/common/transition/PageTransition';
+import { DatePicker } from '@material-ui/pickers';
 
 // import noticeData from 'components/notice/notice'
 /**
@@ -49,7 +52,7 @@ const FrontPage = () => {
   const { breakpoint } = useWindowSize();
   const [isOpened, setOpened] = useState(false);
   const [emergencyOpened, setEmergencyOpened] = useState(false);
-  const [value, onChange] = useState(new Date());
+  const [date, changeDate] = useState(new Date());
   const [searchVal, setSearchVal] = useState('');
 
   const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
@@ -64,7 +67,7 @@ const FrontPage = () => {
   };
 
   const matchData = emergencyItem.filter((data) =>
-    data.emergency_name.includes(searchVal)
+    data.emergency_name.includes(searchVal),
   );
 
   const showAll = (event) => {
@@ -73,186 +76,207 @@ const FrontPage = () => {
 
   return (
     <div>
-      <header style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>
-        <PageHeader />
-        <Divider />
+      <header
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'white',
+          zIndex: 2,
+        }}
+      >
+        <ResponsivePageHeader />
       </header>
       <main>
         <Grid container>
-          <Grid item xs={false} sm={4} md={3} lg={2}>
-            {breakpoint !== 'xs' ? <MenuSidebar /> : ''}
-          </Grid>
-          <Grid item xs={12} sm={8} md={9} lg={10}>
-            <ContentContainer>
-              <Grid container>
-                <Grid item xs={12} sm={8}>
-                  <StyledContainer
-                    bgColor="#EAF2FE"
-                    padding="1.5"
-                    style={{
-                      display: 'flex',
-                    }}
-                  >
-                    <div
-                      style={{
-                        flex: 3,
-                      }}
-                    >
-                      <StyledTypography
-                        variant="h4"
-                        component="h4"
-                        weight={9}
-                        color="primary"
-                      >
-                        ABC Hospital
-                      </StyledTypography>
-
-                      <StyledTypography
-                        variant="h6"
-                        component="h6"
-                        weight={7}
-                        style={{
-                          marginTop: '1rem',
-                        }}
-                      >
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Rerum eveniet nulla impedit ipsam, totam iusto officiis
-                        autem maiores necessitatibus molestias fugit ut ab
-                        pariatur aspernatur. Dolorum esse et nulla voluptas.
-                      </StyledTypography>
-                    </div>
-
-                    <img
-                      src="/assets/image/dashboard_1.png"
-                      width="10%"
-                      alt="Dashboard"
-                      style={{
-                        flex: 1,
-                      }}
-                    />
-                  </StyledContainer>
-                  <div style={{ marginTop: '3rem', display: 'flex' }}>
-                    <div style={{ flex: 4 }}>
-                      <StyledTypography variant="h4" component="h4" weight={7}>
-                        공지사항
-                      </StyledTypography>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <StyledButton
-                        bgColor="white"
-                        onClick={() => setOpened((prevState) => !prevState)}
-                      >
-                        <AddIcon />더 보기
-                      </StyledButton>
-                    </div>
-                  </div>
-                  <List component="nav">
-                    {noticeItems.map((data) => (
-                      <NoticeItem key={data.notice_id} data={data} />
-                    ))}
-                  </List>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Hidden xsDown>
-                    <div
+          <Grid item xs={12}>
+            <PageTransition>
+              <ContentContainer>
+                <Grid container>
+                  <Grid item xs={12} sm={8}>
+                    <StyledContainer
+                      bgColor="#EAF2FE"
+                      padding="1.5"
                       style={{
                         display: 'flex',
-                        justifyContent: 'center',
                       }}
                     >
-                      <Calendar
-                        onChange={onChange}
-                        value={value}
-                      />
-                    </div>
-                  </Hidden>
-
-                  <StyledContainer
-                    bgColor="rgb(234,242,254)"
-                    style={{ marginTop: '16rem', marginLeft: '1rem' }}
-                  >
-                    <div style={{ display: 'flex' }}>
-                      <div style={{ flex: 3.5 }}>
+                      <div
+                        style={{
+                          flex: 3,
+                        }}
+                      >
                         <StyledTypography
-                          color="rgb(63,81,181)"
                           variant="h4"
                           component="h4"
-                          weight={8}
+                          weight={9}
+                          color="primary"
                         >
-                          전화번호부
+                          ABC Hospital
+                        </StyledTypography>
+
+                        <StyledTypography
+                          variant="h6"
+                          component="h6"
+                          weight={7}
+                          style={{
+                            marginTop: '1rem',
+                          }}
+                        >
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. Rerum eveniet nulla impedit ipsam, totam iusto
+                          officiis autem maiores necessitatibus molestias fugit
+                          ut ab pariatur aspernatur. Dolorum esse et nulla
+                          voluptas.
                         </StyledTypography>
                       </div>
-                      <div style={{ flex: 1.5 }}>
+
+                      <img
+                        src="/assets/image/dashboard_1.png"
+                        width="10%"
+                        alt="Dashboard"
+                        style={{
+                          flex: 1,
+                        }}
+                      />
+                    </StyledContainer>
+                    <div style={{ marginTop: '3rem', display: 'flex' }}>
+                      <div style={{ flex: 4 }}>
+                        <StyledTypography
+                          variant="h4"
+                          component="h4"
+                          weight={7}
+                        >
+                          공지사항
+                        </StyledTypography>
+                      </div>
+                      <div style={{ flex: 1 }}>
                         <StyledButton
-                          bgColor="rgb(234,242,254)"
-                          onClick={() =>
-                            setEmergencyOpened((prevState) => !prevState)
-                          }
+                          bgColor="white"
+                          onClick={() => setOpened((prevState) => !prevState)}
                         >
                           <AddIcon />더 보기
                         </StyledButton>
                       </div>
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        marginTop: '15px',
-                        alignItems: 'center',
-                      }}
+                    <List component="nav">
+                      {noticeItems.map((data) => (
+                        <NoticeItem key={data.notice_id} data={data} />
+                      ))}
+                    </List>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Hidden xsDown>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          minHeight: '400px',
+                        }}
+                      >
+                        <DatePicker
+                          autoOk
+                          color="secondary"
+                          orientation="landscape"
+                          variant="static"
+                          openTo="date"
+                          value={date}
+                          onChange={changeDate}
+                        />
+                      </div>
+                    </Hidden>
+
+                    <StyledContainer
+                      bgColor="rgb(234,242,254)"
+                      style={{ marginTop: '4.3rem', marginLeft: '0.7rem' }}
                     >
-                      <div style={{ flex: 9 }}>
-                        <SearchBox
-                          onChange={handleChange}
-                          setSearchVal={setSearchVal}
-                          placeholder="이름을 입력해주세요."
-                        />
+                      <div style={{ display: 'flex', padding: '1rem' }}>
+                        <div style={{ flex: 3.5 }}>
+                          <StyledTypography
+                            color="rgb(63,81,181)"
+                            variant="h4"
+                            component="h4"
+                            weight={8}
+                          >
+                            전화번호부
+                          </StyledTypography>
+                        </div>
+                        <div style={{ flex: 1.5 }}>
+                          <StyledButton
+                            bgColor="rgb(234,242,254)"
+                            onClick={() =>
+                              setEmergencyOpened((prevState) => !prevState)
+                            }
+                          >
+                            <AddIcon />더 보기
+                          </StyledButton>
+                        </div>
                       </div>
-                      <div>
-                        <GrPowerReset
-                          size={20}
-                          style={{ marginLeft: '10px' }}
-                          onClick={showAll}
-                        />
+                      <div
+                        style={{
+                          display: 'flex',
+                          marginTop: '15px',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div style={{ flex: 9 }}>
+                          <SearchBox
+                            onChange={handleChange}
+                            setSearchVal={setSearchVal}
+                            placeholder="이름을 입력해주세요."
+                          />
+                        </div>
+                        <div
+                          style={{
+                            paddingLeft: '0.5rem',
+                          }}
+                        >
+                          <GrPowerReset
+                            size={20}
+                            style={{ marginLeft: '10px' }}
+                            onClick={showAll}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div style={{ marginLeft: '0.3rem' }}>
-                      {matchData
-                        .filter((data, index) => {
-                          if (index < 6) {
-                            return true;
-                          }
-                          return false;
-                        })
-                        .map((data) => (
-                          <div style={{ display: 'flex', padding: '0.5rem' }}>
-                            <StyledTypography
-                              variant="h6"
-                              component="h6"
-                              weight={6}
-                              style={{ flex: 1.5 }}
-                            >
-                              {data.emergency_name} :
-                            </StyledTypography>
-                            <StyledTypography
-                              variant="h6"
-                              component="h6"
-                              weight={6}
-                              style={{ flex: 1 }}
-                            >
-                              {data.emergency_tel}
-                            </StyledTypography>
-                          </div>
-                        ))}
-                    </div>
-                  </StyledContainer>
+                      <div style={{ marginLeft: '0.3rem' }}>
+                        {matchData
+                          .filter((data, index) => {
+                            if (index < 6) {
+                              return true;
+                            }
+                            return false;
+                          })
+                          .map((data) => (
+                            <div style={{ display: 'flex', padding: '0.5rem' }}>
+                              <StyledTypography
+                                variant="h6"
+                                component="h6"
+                                weight={6}
+                                style={{ flex: 1.5 }}
+                              >
+                                {data.emergency_name} :
+                              </StyledTypography>
+                              <StyledTypography
+                                variant="h6"
+                                component="h6"
+                                weight={6}
+                                style={{ flex: 1 }}
+                              >
+                                {data.emergency_tel}
+                              </StyledTypography>
+                            </div>
+                          ))}
+                      </div>
+                    </StyledContainer>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <EmergencyDrawer
-                emergencyOpened={emergencyOpened}
-                setEmergencyOpened={setEmergencyOpened}
-              />
-              <NoticeDrawer isOpened={isOpened} setOpened={setOpened} />
-            </ContentContainer>
+                <EmergencyDrawer
+                  emergencyOpened={emergencyOpened}
+                  setEmergencyOpened={setEmergencyOpened}
+                />
+                <NoticeDrawer isOpened={isOpened} setOpened={setOpened} />
+              </ContentContainer>
+            </PageTransition>
           </Grid>
         </Grid>
       </main>

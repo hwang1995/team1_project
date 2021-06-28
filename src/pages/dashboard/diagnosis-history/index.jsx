@@ -1,6 +1,5 @@
 import React, { useState, Fragment } from 'react';
 import {
-  Divider,
   Grid,
   Table,
   TableContainer,
@@ -9,21 +8,17 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  Hidden,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import {
-  setDiagnosisHistoryDrawer
-} from 'redux/features/history/diagnosisSlice';
-import PageHeader from 'components/common/header/PageHeader';
-import MenuSidebar from 'components/common/sidebar/MenuSidebar';
-
+import { setDiagnosisHistoryDrawer } from 'redux/features/history/diagnosisSlice';
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import StyledButton from 'components/common/button/StyledButton';
 import patientData from './patientData';
 import DiagnosisHistoryDrawer from './DiagnosisHistoryDrawer';
+import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
+import PageTransition from 'components/common/transition/PageTransition';
 
 const DiagnosisHistoryPage = () => {
   const [isOpened, setOpened] = useState(false);
@@ -60,109 +55,112 @@ const DiagnosisHistoryPage = () => {
           zIndex: 1,
         }}
       >
-        <PageHeader />
-        <Divider />
+        <ResponsivePageHeader />
       </header>
       <main>
         <Grid container>
-          <Grid item xs={0} sm={4} md={3} lg={2}>
-            <Hidden xsDown>
-              <MenuSidebar />
-            </Hidden>
-          </Grid>
-          <Grid item xs={12} sm={8} md={9} lg={10}>
-            <ContentContainer>
-              <TitleHeader>
-                <span>진료 | </span>
-                <span>진료 기록 보기</span>
-              </TitleHeader>
-              <br />
-              <Grid container>
-                <Grid item xs={9} lg={4}>
-                  <SearchBox
-                    setSearchVal={setSearchVal}
-                    placeholder="환자 이름을 입력하세요."
-                  />
-                </Grid> 
-                <Grid item xs={3} lg={1}>
-                  <StyledButton
-                    bgColor="#1E4C7C"
-                    color="white"
-                    onClick={showAll}
-                    style={{ marginLeft: '10px', marginTop: '10px' }}
-                  >
-                    전체 환자 목록
-                  </StyledButton>
+          <Grid item xs={12}>
+            <PageTransition>
+              <ContentContainer>
+                <TitleHeader>
+                  <span>진료 | </span>
+                  <span>진료 기록 보기</span>
+                </TitleHeader>
+                <br />
+                <Grid container>
+                  <Grid item xs={9} lg={4}>
+                    <SearchBox
+                      setSearchVal={setSearchVal}
+                      placeholder="환자 이름을 입력하세요."
+                    />
+                  </Grid>
+                  <Grid item xs={3} lg={1}>
+                    <StyledButton
+                      bgColor="#1E4C7C"
+                      color="white"
+                      onClick={showAll}
+                      style={{ marginLeft: '10px', marginTop: '10px' }}
+                    >
+                      전체 환자 목록
+                    </StyledButton>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TableContainer style={{ marginTop: '1rem' }}>
+                      <Table style={{ minWidth: '600px', overflowX: 'scroll' }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell component="td">순번</TableCell>
+                            <TableCell component="td">이름</TableCell>
+                            <TableCell component="td">생년월일</TableCell>
+                            <TableCell component="td">성별</TableCell>
+                            <TableCell component="td">연락처</TableCell>
+                            <TableCell component="td">주소</TableCell>
+                            <TableCell component="td"></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {matchData
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
+                            )
+                            .map((data) => (
+                              <Fragment>
+                                <TableRow>
+                                  <TableCell component="th">
+                                    {data.patient_id}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.patient_name}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.patient_ssn}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.patient_gender}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.patient_tel}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    {data.patient_addr1}
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    <StyledButton
+                                      bgColor="#1E4C7C"
+                                      color="white"
+                                      onClick={() =>
+                                        dispatch(
+                                          setDiagnosisHistoryDrawer(true),
+                                        )
+                                      }
+                                    >
+                                      상세 보기
+                                    </StyledButton>
+                                  </TableCell>
+                                </TableRow>
+                              </Fragment>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <TableContainer style={{ marginTop: '1rem' }}>
-                    <Table style={{ minWidth: '600px', overflowX: 'scroll' }}>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell component="td">순번</TableCell>
-                          <TableCell component="td">이름</TableCell>
-                          <TableCell component="td">생년월일</TableCell>
-                          <TableCell component="td">성별</TableCell>
-                          <TableCell component="td">연락처</TableCell>
-                          <TableCell component="td">주소</TableCell>
-                          <TableCell component="td"></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {matchData
-                          .slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage,
-                          )
-                          .map((data) => (
-                            <Fragment>
-                              <TableRow>
-                                <TableCell component="th">
-                                  {data.patient_id}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.patient_name}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.patient_ssn}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.patient_gender}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.patient_tel}
-                                </TableCell>
-                                <TableCell component="th">
-                                  {data.patient_addr1}
-                                </TableCell>
-                                <TableCell component="th">
-                                  <StyledButton
-                                    bgColor="#1E4C7C"
-                                    color="white"
-                                    onClick={() => dispatch(setDiagnosisHistoryDrawer(true))}
-                                  >
-                                    상세 보기
-                                  </StyledButton>
-                                </TableCell>
-                              </TableRow>
-                            </Fragment>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
-              </Grid>
-              <DiagnosisHistoryDrawer isOpened={isOpened} setOpened={setOpened} />
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 15]}
-                component="div"
-                count={matchData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
-            </ContentContainer>
+                <DiagnosisHistoryDrawer
+                  isOpened={isOpened}
+                  setOpened={setOpened}
+                />
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 15]}
+                  component="div"
+                  count={matchData.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+              </ContentContainer>
+            </PageTransition>
           </Grid>
         </Grid>
       </main>

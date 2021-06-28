@@ -4,11 +4,12 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   setActiveStep,
-  removeEmergencyItem
+  removeEmergencyItem,
 } from 'redux/features/emergency/emergencySlice';
 import {
   Table,
-  TableBody, TableRow,
+  TableBody,
+  TableRow,
   TableHead,
   TableCell,
 } from '@material-ui/core';
@@ -20,8 +21,9 @@ const EmergencyDrawerMain = () => {
   console.log(setSearchVal);
   const dispatch = useDispatch();
   const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
-  const currentIndex = useSelector((state) => state.emergency.emergencyCurrentIndex);
-
+  const currentIndex = useSelector(
+    (state) => state.emergency.emergencyCurrentIndex,
+  );
 
   const handleDeleteBtn = () => {
     dispatch(removeEmergencyItem(emergencyItem[currentIndex]));
@@ -36,8 +38,10 @@ const EmergencyDrawerMain = () => {
       <div style={{ marginTop: '1rem', marginBottom: '1rem', display: 'flex' }}>
         <div style={{ flex: 1, alignSelf: 'center', marginRight: '20px' }}>
           <StyledButton
-            bgColor="#9b49af"
             color="white"
+            style={{
+              background: 'linear-gradient(to right, #000046, #1cb5e0)',
+            }}
             width="30%"
             onClick={() => dispatch(setActiveStep('WRITE'))}
           >
@@ -46,32 +50,32 @@ const EmergencyDrawerMain = () => {
           </StyledButton>
         </div>
       </div>
-      {matchData.map((data) => (
-        <Fragment key={data.emergency_id}>
-          <Table style={{ minWidth: '500px', overflowX: 'scroll' }}>
-            <TableHead>
-              <TableCell size="small" style={{ minWidth: '120px' }}>
-                <StyledTypography variant="subtitle1" component="h5" weight={7}>
-                  이름
-                </StyledTypography>
-              </TableCell>
-              <TableCell size="small" style={{ minWidth: '150px' }}>
-                <StyledTypography variant="subtitle1" component="h5" weight={7}>
-                  전화번호
-                </StyledTypography>
-              </TableCell>
-              <TableCell size="small" style={{ minWidth: '80px' }}>
-                <StyledTypography variant="subtitle1" component="h5" weight={7}>
-                  분류
-                </StyledTypography>
-              </TableCell>
-              <TableCell size="small" style={{ minWidth: '100px' }}>
-                <StyledTypography variant="subtitle1" component="h5" weight={7}>
-                  삭제
-                </StyledTypography>
-              </TableCell>
-            </TableHead>
-            <TableBody>
+      <Table style={{ minWidth: '500px', overflowX: 'scroll' }}>
+        <TableHead>
+          <TableCell size="small" style={{ minWidth: '120px' }}>
+            <StyledTypography variant="subtitle1" component="h5" weight={7}>
+              이름
+            </StyledTypography>
+          </TableCell>
+          <TableCell size="small" style={{ minWidth: '150px' }}>
+            <StyledTypography variant="subtitle1" component="h5" weight={7}>
+              전화번호
+            </StyledTypography>
+          </TableCell>
+          <TableCell size="small" style={{ minWidth: '80px' }}>
+            <StyledTypography variant="subtitle1" component="h5" weight={7}>
+              분류
+            </StyledTypography>
+          </TableCell>
+          <TableCell size="small" style={{ minWidth: '100px' }}>
+            <StyledTypography variant="subtitle1" component="h5" weight={7}>
+              삭제
+            </StyledTypography>
+          </TableCell>
+        </TableHead>
+        <TableBody>
+          {matchData.map((data) => (
+            <Fragment key={data.emergency_id}>
               <TableRow>
                 <TableCell size="small" style={{ minWidth: '100px' }}>
                   {data.emergency_name}
@@ -84,10 +88,10 @@ const EmergencyDrawerMain = () => {
                   </div>
                 </TableCell>
               </TableRow>
-            </TableBody>
-          </Table>
-        </Fragment>
-      ))}
+            </Fragment>
+          ))}
+        </TableBody>
+      </Table>
     </Fragment>
   );
 };

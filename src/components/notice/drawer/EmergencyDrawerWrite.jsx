@@ -45,7 +45,7 @@ const EmergencyDrawerWrite = () => {
   const handleAdd = () => {
     const emergencyIndex = emergencyItem.length;
 
-    if (tel === '' || title === '' ) {
+    if (tel === '' || title === '') {
       alert('이름 혹은 전화번호 비어있습니다.');
       return;
     }
@@ -64,7 +64,6 @@ const EmergencyDrawerWrite = () => {
 
     dispatch(setEmergencyCurrentIndex(emergencyIndex));
     dispatch(setActiveStep('MAIN'));
-
   };
 
   return (
@@ -123,29 +122,32 @@ const EmergencyDrawerWrite = () => {
         style={{
           marginTop: '20px',
           display: 'flex',
+          justifyContent: 'flex-end',
         }}
       >
-        <div style={{ flex: '2', marginRight: '10px' }}>
-          <StyledButton
-            bgColor="rgb(226,153,51)"
-            color="white"
-            onClick={handleAdd}
-          >
-            <BsPencilSquare style={{ marginRight: '5px' }} />
-            전화번호 등록
-          </StyledButton>
-        </div>
-        <div style={{ flex: '2' }}>
-          <StyledButton
-            bgColor="rgb(8,78,127)"
-            color="white"
-            onClick={() => dispatch(setActiveStep('MAIN'))}
-          >
-            <BsListUl style={{ marginRight: '5px' }} />
-            목록
-          </StyledButton>
-        </div>
-        <div style={{ flex: '6' }}></div>
+        <StyledButton
+          bgColor="rgb(226,153,51)"
+          color="white"
+          onClick={handleAdd}
+          style={{
+            maxWidth: '150px',
+          }}
+        >
+          <BsPencilSquare style={{ marginRight: '5px' }} />
+          전화번호 등록
+        </StyledButton>
+
+        <StyledButton
+          bgColor="rgb(8,78,127)"
+          color="white"
+          onClick={() => dispatch(setActiveStep('MAIN'))}
+          style={{
+            maxWidth: '150px',
+          }}
+        >
+          <BsListUl style={{ marginRight: '5px' }} />
+          목록
+        </StyledButton>
       </div>
     </Fragment>
   );

@@ -393,6 +393,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 />
               </Grid>
             </Grid>
+
             <div
               style={{
                 position: 'fixed',

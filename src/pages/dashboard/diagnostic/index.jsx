@@ -1,11 +1,9 @@
 import React, { useState, Fragment } from 'react';
 import {
-  Divider,
   Grid,
   Table,
   TableContainer,
   TableBody,
-  Hidden,
   Paper,
   IconButton,
 } from '@material-ui/core';
@@ -15,9 +13,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { GrPowerReset } from 'react-icons/gr';
 import { motion } from 'framer-motion';
-import PuffLoader from 'react-spinners/PuffLoader';
-import PageHeader from 'components/common/header/PageHeader';
-import MenuSidebar from 'components/common/sidebar/MenuSidebar';
+
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 
