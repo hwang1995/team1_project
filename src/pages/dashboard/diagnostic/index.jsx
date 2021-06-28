@@ -9,6 +9,8 @@ import {
   Paper,
   IconButton,
 } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { GrPowerReset } from 'react-icons/gr';
@@ -27,6 +29,7 @@ import DiagnosticDrawer from 'components/diagnostic/drawer/DiagnosticDrawer';
 import useCalendar from 'hooks/useCalendar';
 import PageTransition from 'components/common/transition/PageTransition';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
+import DiagnosticSearchModal from 'components/diagnostic/modal/DiagnosticSearchModal';
 
 /**
  * 이 페이지 컴포넌트는 진단 검사 페이지를 작성하기 위한 컴포넌트입니다.
@@ -37,6 +40,9 @@ import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader'
  * @returns {JSX.Element}
  */
 const DiagnosticPage = () => {
+
+  const dispatch = useDispatch();
+
   const [searchVal, setSearchVal] = useState('');
   const [calInfo, getPrevWeek, getNextWeek, reset] = useCalendar();
 
@@ -84,6 +90,15 @@ const DiagnosticPage = () => {
                         marginLeft: '0.5rem',
                         marginRight: '0.5rem',
                         padding: '0.5rem',
+                      }}
+                      onClick={() => {
+                        console.log('gogo');
+                        dispatch(
+                          setDiagnosticModal({
+                            name: 'search',
+                            status: true,
+                          }),
+                        );
                       }}
                     >
                       <AiOutlineSearch />
@@ -181,6 +196,7 @@ const DiagnosticPage = () => {
           </Grid>
         </Grid>
       </main>
+      <DiagnosticSearchModal />
     </div>
   );
 };
