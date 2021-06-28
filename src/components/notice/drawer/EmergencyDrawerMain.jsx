@@ -3,11 +3,16 @@ import { BsPencilSquare } from 'react-icons/bs';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  setEmergencyCurrentIndex,
   setActiveStep,
   removeEmergencyItem
 } from 'redux/features/emergency/emergencySlice';
-import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
+import {
+  Table,
+  TableBody, TableRow,
+  TableHead,
+  TableCell,
+} from '@material-ui/core';
+import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledButton from 'components/common/button/StyledButton';
 
 const EmergencyDrawerMain = () => {
@@ -17,11 +22,6 @@ const EmergencyDrawerMain = () => {
   const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
   const currentIndex = useSelector((state) => state.emergency.emergencyCurrentIndex);
 
-  const handleClick = (data) => {
-    console.log(data);
-    dispatch(setEmergencyCurrentIndex(data.emergency_id - 1));
-    // dispatch(setActiveStep('READ'));
-  };
 
   const handleDeleteBtn = () => {
     dispatch(removeEmergencyItem(emergencyItem[currentIndex]));
@@ -33,11 +33,10 @@ const EmergencyDrawerMain = () => {
 
   return (
     <Fragment>
-      <div style={{ marginTop: '3rem', display: 'flex'}}>
-        {/* <button onClick={() => setActiveStep('what')}>hello world</button> */}
+      <div style={{ marginTop: '1rem', marginBottom: '1rem', display: 'flex' }}>
         <div style={{ flex: 1, alignSelf: 'center', marginRight: '20px' }}>
           <StyledButton
-            bgColor="rgb(226,153,51)"
+            bgColor="#9b49af"
             color="white"
             width="30%"
             onClick={() => dispatch(setActiveStep('WRITE'))}
@@ -46,31 +45,49 @@ const EmergencyDrawerMain = () => {
             추가하기
           </StyledButton>
         </div>
-        
       </div>
-      <NoticeDrawerItem>
-        {matchData
-          .map((data) => (
-            <Fragment>
-              <div style={{ display: 'flex', marginTop: '10px' }}>
-                <div className="left-side" style={{ flex: 2 }}>
-                  <div className="textTitle-container">
-                    <div align="left"
-                      onClick={() => {
-                        handleClick(data);
-                      }} >
-                      {data.emergency_name} : {data.emergency_tel}
-                    </div>
-                    <div>
-              <AiOutlineClose size={20} onClick={handleDeleteBtn} />
-            </div>
+      {matchData.map((data) => (
+        <Fragment key={data.emergency_id}>
+          <Table style={{ minWidth: '500px', overflowX: 'scroll' }}>
+            <TableHead>
+              <TableCell size="small" style={{ minWidth: '120px' }}>
+                <StyledTypography variant="subtitle1" component="h5" weight={7}>
+                  이름
+                </StyledTypography>
+              </TableCell>
+              <TableCell size="small" style={{ minWidth: '150px' }}>
+                <StyledTypography variant="subtitle1" component="h5" weight={7}>
+                  전화번호
+                </StyledTypography>
+              </TableCell>
+              <TableCell size="small" style={{ minWidth: '80px' }}>
+                <StyledTypography variant="subtitle1" component="h5" weight={7}>
+                  분류
+                </StyledTypography>
+              </TableCell>
+              <TableCell size="small" style={{ minWidth: '100px' }}>
+                <StyledTypography variant="subtitle1" component="h5" weight={7}>
+                  삭제
+                </StyledTypography>
+              </TableCell>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell size="small" style={{ minWidth: '100px' }}>
+                  {data.emergency_name}
+                </TableCell>
+                <TableCell size="small">{data.emergency_tel}</TableCell>
+                <TableCell size="small">{data.emergency_line}</TableCell>
+                <TableCell size="small">
+                  <div>
+                    <AiOutlineClose size={20} onClick={handleDeleteBtn} />
                   </div>
-                </div>
-              </div>
-            </Fragment>
-          ))}
-      </NoticeDrawerItem>
-      
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Fragment>
+      ))}
     </Fragment>
   );
 };
