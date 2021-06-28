@@ -12,6 +12,7 @@ import {
   TablePagination,
   Modal,
   Paper,
+  Button,
 } from '@material-ui/core';
 //import patientData from './patientData';
 import memberData from './memberData';
@@ -25,6 +26,7 @@ import MemberDrawer from 'components/member/drawer/MemberDrawer';
 import StyledButton from 'components/common/button/StyledButton';
 import MemberUpdateDrawer from 'components/member/drawer/MemberUpdateDrawer';
 import DeleteModal from 'components/member/modal/DeleteModal';
+import { BiRefresh } from 'react-icons/bi';
 /**
  * 이 페이지 컴포넌트는 임직원 관리 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -58,6 +60,13 @@ const MemberPage = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  //비밀번호 초기화
+  const handleInitPassword = (data) => {
+    const initialPW = '12345';
+    data.member_pw = initialPW;
+    alert(data.member_name + '님의 비밀번호가 초기화되었습니다. ( 12345 )');
   };
 
   //검색했을때 동작
@@ -130,6 +139,7 @@ const MemberPage = () => {
                             <TableCell component="td">주소</TableCell>
                             <TableCell component="td"></TableCell>
                             <TableCell component="td"></TableCell>
+                            <TableCell component="td"></TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -178,7 +188,7 @@ const MemberPage = () => {
                                   </TableCell>
                                   <TableCell component="th">
                                     <StyledButton
-                                      bgColor="rgb(228, 20, 30)"
+                                      bgColor="rgba(165, 10, 17, 0.637)"
                                       color="white"
                                       onClick={() => {
                                         setOpenModal((prevState) => !prevState);
@@ -187,6 +197,19 @@ const MemberPage = () => {
                                     >
                                       삭제
                                     </StyledButton>
+                                  </TableCell>
+                                  <TableCell component="th">
+                                    <Button
+                                      size="small"
+                                      bgColor="rgba(11, 131, 31, 0.795)"
+                                      color="white"
+                                      onClick={() => {
+                                        handleInitPassword(data);
+                                      }}
+                                      endIcon={<BiRefresh />}
+                                    >
+                                      비밀번호 초기화
+                                    </Button>
                                   </TableCell>
                                 </TableRow>
                               </Fragment>

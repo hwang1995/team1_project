@@ -18,9 +18,9 @@ import PostalCodeModal from '../modal/PostalCodeModal';
 import { setModalStatus } from 'redux/features/member/memberSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
-/*관리자관점 임직원 정보수정 컴포넌트*/
+/*개인 정보수정 컴포넌트*/
 
-const MemberUpdateDrawer = ({
+const MemberUpdateOwner = ({
   isUpdateOpened,
   setUpdateOpened,
   memberData,
@@ -63,16 +63,6 @@ const MemberUpdateDrawer = ({
       memberAddr2: memberData.member_addr2,
     });
     console.log(memberInfo);
-
-    let memberAuthority = '';
-    if (memberData.member_authority === 'ROLE_DOCTOR') {
-      memberAuthority = '의사';
-    } else if (memberData.member_authority === 'ROLE_NURSE') {
-      memberAuthority = '간호사';
-    } else if (memberData.member_authority === 'ROLE_INSPECTOR') {
-      memberAuthority = '검사자';
-    }
-    setSelectVal(memberAuthority);
   }, [isUpdateOpened]);
 
   const dispatch = useDispatch();
@@ -97,32 +87,20 @@ const MemberUpdateDrawer = ({
     const regExpPw =
       /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
 
-    //const member_pw = event.target.memberPassword.value;
+    const member_pw = event.target.memberPassword.value;
     const member_name = event.target.memberName.value;
     const member_postal = event.target.memberAddress1.value;
     const member_addr1 = event.target.memberAddress2.value;
     const member_addr2 = event.target.memberAddress3.value;
 
-    let member_authority = '';
-    if (selectVal === '병원장') {
-      member_authority = 'ROLE_ADMIN';
-    } else if (selectVal === '의사') {
-      member_authority = 'ROLE_DOCTOR';
-    } else if (selectVal === '간호사') {
-      member_authority = 'ROLE_NURSE';
-    } else if (selectVal === '검사자') {
-      member_authority = 'ROLE_INSPECTOR';
-    }
+    const isValidPW = regExpPw.test(member_pw);
 
-    //const isValidPW = regExpPw.test(member_pw);
-
-    // if (!isValidPW) {
-    //   alert(
-    //     '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
-    //   );
-    //   return;
-    // }
-    if (member_name === '') {
+    if (!isValidPW) {
+      alert(
+        '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
+      );
+      return;
+    } else if (member_name === '') {
       alert('이름이 공백입니다.');
       return;
     } else if (member_postal === '' || member_addr1 === '') {
@@ -136,9 +114,8 @@ const MemberUpdateDrawer = ({
     const row = member.find((row) => row.member_id === memberData.member_id);
     console.log(row);
 
-    row.member_authority = member_authority;
     row.member_name = member_name;
-    //row.member_pw = member_pw;
+    row.member_pw = member_pw;
     row.member_postal = member_postal;
     row.member_addr1 = member_addr1;
     row.member_addr2 = member_addr2;
@@ -192,45 +169,6 @@ const MemberUpdateDrawer = ({
                 }}
               >
                 <StyledTypography variant="h6" component="h5" weight={5}>
-                  직책
-                </StyledTypography>
-              </Grid>
-              <Grid item xs={9}>
-                <FormControl style={{ width: '100%' }} variant="outlined">
-                  <InputLabel id="form-label">의사</InputLabel>
-                  <Select
-                    labelId="form-label"
-                    id="select-label"
-                    label="직책"
-                    value={selectVal}
-                  >
-                    <MenuItem value="의사" onClick={() => setSelectVal('의사')}>
-                      의사
-                    </MenuItem>
-                    <MenuItem
-                      value="간호사"
-                      onClick={() => setSelectVal('간호사')}
-                    >
-                      간호사
-                    </MenuItem>
-                    <MenuItem
-                      value="검사자"
-                      onClick={() => setSelectVal('검사자')}
-                    >
-                      검사자
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              {/* <Grid
-                item
-                xs={3}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <StyledTypography variant="h6" component="h5" weight={5}>
                   비밀번호
                 </StyledTypography>
               </Grid>
@@ -241,7 +179,7 @@ const MemberUpdateDrawer = ({
                   value={memberInfo.memberPassword || ''}
                   onChange={handleChange}
                 />
-              </Grid> */}
+              </Grid>
               <Grid
                 item
                 xs={3}
@@ -338,4 +276,4 @@ const MemberUpdateDrawer = ({
   );
 };
 
-export default MemberUpdateDrawer;
+export default MemberUpdateOwner;
