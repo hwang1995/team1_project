@@ -17,6 +17,12 @@ export const commonSlice = createSlice({
       hospital: false,
       patient: false,
     },
+    headerInfo: {
+      drawer: false,
+      diagnosis: false,
+      hospital: false,
+      patient: false,
+    },
   },
   reducers: {
     setLoginInfo(state, action) {
@@ -26,9 +32,14 @@ export const commonSlice = createSlice({
       const { name, status } = action.payload;
       state.sidebarInfo[name] = status;
     },
+    setHeaderInfo(state, action) {
+      const { name, status } = action.payload;
+      state.headerInfo[name] = status;
+    },
   },
 });
 
-export const { setLoginInfo, setSidebarInfo } = commonSlice.actions;
+export const { setLoginInfo, setSidebarInfo, setHeaderInfo } =
+  commonSlice.actions;
 
 export default commonSlice.reducer;

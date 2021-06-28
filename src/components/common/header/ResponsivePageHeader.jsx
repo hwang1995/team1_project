@@ -1,10 +1,17 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container, Grid, Hidden } from '@material-ui/core';
 import { MdLocalHospital } from 'react-icons/md';
-
+import { IoLogIn, IoLogOut } from 'react-icons/io5';
+import { HiOutlineViewList } from 'react-icons/hi';
+import { motion } from 'framer-motion';
 import clsx from 'clsx';
+
+import useWindowSize from 'hooks/useWindowSize';
+import { useDispatch } from 'react-redux';
+import { setHeaderInfo } from 'redux/features/common/commonSlice';
+import MobileDrawer from './drawer/MobileDrawer';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -84,8 +91,12 @@ const SidebarContainer = styled.div`
 `;
 
 const ResponsivePageHeader = () => {
+  const { breakpoint } = useWindowSize();
   const location = useLocation();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const [isLogined, setLogined] = useState(false);
+
   const pathnames = location.pathname.split('/');
   const specificPath = pathnames[pathnames.length - 1];
 
@@ -98,48 +109,197 @@ const ResponsivePageHeader = () => {
   const goPage = (page) => {
     history.push(page);
   };
+
+  const handleLogin = () => {
+    setLogined((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    console.log('responsive header breakpoint is', breakpoint);
+  }, [breakpoint]);
+
+  const handleOpen = () => {
+    dispatch(
+      setHeaderInfo({
+        name: 'drawer',
+        status: true,
+      }),
+    );
+  };
+
+  const getMobileNotLoginedHeader = () => {
+    return (
+      <Container>
+        <Grid container spacing={1}>
+          <Grid
+            item
+            xs={2}
+            className="common-grid"
+            style={{ justifyContent: 'flex-start' }}
+            onClick={handleOpen}
+          >
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <HiOutlineViewList size={24} color="white" />
+            </motion.div>
+
+            {/* Full Screen Drawer를 보여줄 수 있는 Button을 넣는다. */}
+          </Grid>
+          <Grid item xs={8} className="common-grid">
+            <MdLocalHospital size={24} color="white" />
+          </Grid>
+          <Grid
+            item
+            xs={2}
+            className="common-grid"
+            style={{ justifyContent: 'flex-end' }}
+            onClick={handleLogin}
+          >
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <IoLogIn color="white" size={24} />
+            </motion.div>
+          </Grid>
+        </Grid>
+
+        <MobileDrawer />
+      </Container>
+    );
+  };
+
+  const getMobileTopHeader = () => {
+    return (
+      <Container>
+        <Grid container spacing={1}>
+          <Grid
+            item
+            xs={2}
+            className="common-grid"
+            style={{ justifyContent: 'flex-start' }}
+          >
+            <HiOutlineViewList size={24} color="white" />
+            {/* Full Screen Drawer를 보여줄 수 있는 Button을 넣는다. */}
+          </Grid>
+          <Grid item xs={8} className="common-grid">
+            <MdLocalHospital size={24} color="white" />
+          </Grid>
+          <Grid
+            item
+            xs={2}
+            className="common-grid"
+            style={{ justifyContent: 'flex-end' }}
+            onClick={handleLogin}
+          >
+            <IoLogOut color="white" size={24} />
+          </Grid>
+        </Grid>
+      </Container>
+    );
+  };
+
+  // Desktop Header
+  const getNotLoginedHeader = () => {
+    return (
+      <Container maxWidth="lg">
+        <Grid container spacing={1}>
+          <Grid
+            item
+            sm={2}
+            md={1}
+            className="common-grid"
+            style={{ justifyContent: 'flex-start' }}
+            onClick={() => goPage('/')}
+          >
+            <MdLocalHospital size={24} color="white" />
+          </Grid>
+          <Grid item sm={8} md={10} className="common-grid"></Grid>
+          <Grid
+            item
+            sm={2}
+            md={1}
+            className="common-grid"
+            style={{ justifyContent: 'flex-end' }}
+            onClick={handleLogin}
+          >
+            <IoLogIn color="white" size={24} />
+          </Grid>
+        </Grid>
+      </Container>
+    );
+  };
+
+  const getTopHeader = () => {
+    if (isDiagnosis) {
+      return (
+        <Container maxWidth="lg">
+          <Grid container spacing={1}>
+            <Grid
+              item
+              sm={2}
+              md={1}
+              className="common-grid"
+              style={{ justifyContent: 'flex-start' }}
+              onClick={() => goPage('/dashboard')}
+            >
+              <MdLocalHospital size={24} color="white" />
+            </Grid>
+            <Grid
+              item
+              sm={2}
+              md={1}
+              className="common-grid"
+              onClick={() => goPage('/dashboard/reservation')}
+            >
+              <span>진료</span>
+            </Grid>
+            <Grid
+              item
+              sm={2}
+              md={1}
+              className="common-grid"
+              onClick={() => goPage('/dashboard/patient')}
+            >
+              <span>환자</span>
+            </Grid>
+            <Grid
+              item
+              sm={2}
+              md={1}
+              className="common-grid"
+              onClick={() => goPage('/dashboard/member')}
+            >
+              <span>임직원</span>
+            </Grid>
+            <Grid
+              item
+              sm={4}
+              md={8}
+              className="common-grid"
+              style={{
+                justifyContent: 'flex-end',
+              }}
+              onClick={handleLogin}
+            >
+              <IoLogOut color="white" size={24} />
+            </Grid>
+          </Grid>
+        </Container>
+      );
+    }
+  };
   return (
     <Fragment>
       {/* 상위 헤더  */}
       <PageContainer>
+        <Hidden smUp>
+          {!isLogined ? getMobileNotLoginedHeader() : getMobileTopHeader()}
+        </Hidden>
         <Hidden xsDown>
-          {' '}
-          <Container maxWidth="lg">
-            <Grid container spacing={1}>
-              <Grid
-                item
-                xs={1}
-                className="common-grid"
-                style={{ justifyContent: 'flex-start' }}
-                onClick={() => goPage('/dashboard')}
-              >
-                <MdLocalHospital size={24} color="white" />
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                className="common-grid"
-                onClick={() => goPage('/dashboard/reservation')}
-              >
-                <span>진료</span>
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                className="common-grid"
-                onClick={() => goPage('/dashboard/patient')}
-              >
-                <span>환자</span>
-              </Grid>
-            </Grid>
-          </Container>
+          {!isLogined ? getNotLoginedHeader() : getTopHeader()}
         </Hidden>
       </PageContainer>
 
       {/* 하위 헤더 */}
       <SidebarContainer>
         <Hidden xsDown>
-          {specificPath === 'reservation'}
           <Container maxWidth="lg">
             <Grid container>
               <Grid item xs={2} className="common-grid">

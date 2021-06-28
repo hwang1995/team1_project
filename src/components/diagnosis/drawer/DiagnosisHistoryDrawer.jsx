@@ -31,7 +31,6 @@ const DiagnosisHistoryDrawer = () => {
 
   const { data } = diagnosisHistory;
 
-  console.log(data);
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       return;
