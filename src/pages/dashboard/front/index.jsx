@@ -64,7 +64,7 @@ const FrontPage = () => {
   };
 
   const matchData = emergencyItem.filter((data) =>
-    data.emergency_name.includes(searchVal),
+    data.emergency_name.includes(searchVal)
   );
 
   const showAll = (event) => {
@@ -160,13 +160,16 @@ const FrontPage = () => {
                         justifyContent: 'center',
                       }}
                     >
-                      <Calendar onChange={onChange} value={value} />
+                      <Calendar
+                        onChange={onChange}
+                        value={value}
+                      />
                     </div>
                   </Hidden>
 
                   <StyledContainer
                     bgColor="rgb(234,242,254)"
-                    style={{ marginTop: '9rem', marginLeft: '1rem' }}
+                    style={{ marginTop: '16rem', marginLeft: '1rem' }}
                   >
                     <div style={{ display: 'flex' }}>
                       <div style={{ flex: 3.5 }}>
@@ -174,9 +177,9 @@ const FrontPage = () => {
                           color="rgb(63,81,181)"
                           variant="h4"
                           component="h4"
-                          weight={7}
+                          weight={8}
                         >
-                          병원 전화번호
+                          전화번호부
                         </StyledTypography>
                       </div>
                       <div style={{ flex: 1.5 }}>
@@ -186,47 +189,60 @@ const FrontPage = () => {
                             setEmergencyOpened((prevState) => !prevState)
                           }
                         >
-                          <AddIcon />
-                          추가
+                          <AddIcon />더 보기
                         </StyledButton>
                       </div>
                     </div>
-                    <div style={{ display:'flex', marginTop: "15px", alignItems: 'center'}}>
-                      <div style={{flex: 9}}>
-                      <SearchBox
-                        onChange={handleChange}
-                        setSearchVal={setSearchVal}
-                        placeholder="이름을 입력해주세요."
-                      />
+                    <div
+                      style={{
+                        display: 'flex',
+                        marginTop: '15px',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <div style={{ flex: 9 }}>
+                        <SearchBox
+                          onChange={handleChange}
+                          setSearchVal={setSearchVal}
+                          placeholder="이름을 입력해주세요."
+                        />
                       </div>
                       <div>
-                        <GrPowerReset size={20} 
-                          style={{marginLeft : '10px'}}
-                          onClick={showAll}/>
+                        <GrPowerReset
+                          size={20}
+                          style={{ marginLeft: '10px' }}
+                          onClick={showAll}
+                        />
                       </div>
                     </div>
-                    <div style={{ marginTop: '1rem', marginLeft: '0.3rem' }}>
+                    <div style={{ marginLeft: '0.3rem' }}>
                       {matchData
+                        .filter((data, index) => {
+                          if (index < 6) {
+                            return true;
+                          }
+                          return false;
+                        })
                         .map((data) => (
-                        <div style={{ display: 'flex', padding: '0.5rem' }}>
-                          <StyledTypography
-                            variant="h5"
-                            component="h5"
-                            weight={5}
-                            style={{ flex: 1.5 }}
-                          >
-                            {data.emergency_name} :{' '}
-                          </StyledTypography>{' '}
-                          <StyledTypography
-                            variant="h5"
-                            component="h5"
-                            weight={4}
-                            style={{ flex: 1 }}
-                          >
-                            {data.emergency_tel}{' '}
-                          </StyledTypography>
-                        </div>
-                      ))}
+                          <div style={{ display: 'flex', padding: '0.5rem' }}>
+                            <StyledTypography
+                              variant="h6"
+                              component="h6"
+                              weight={6}
+                              style={{ flex: 1.5 }}
+                            >
+                              {data.emergency_name} :
+                            </StyledTypography>
+                            <StyledTypography
+                              variant="h6"
+                              component="h6"
+                              weight={6}
+                              style={{ flex: 1 }}
+                            >
+                              {data.emergency_tel}
+                            </StyledTypography>
+                          </div>
+                        ))}
                     </div>
                   </StyledContainer>
                 </Grid>
