@@ -28,15 +28,21 @@ const EmergencyDrawerWrite = () => {
   const handleAdd = () => {
     const emergencyIndex = emergencyItem.length;
 
+    if (tel === '' || title === '') {
+      alert('이름 혹은 전화번호가 비어있습니다.');
+      return;
+    }
     dispatch(
       addEmergencyItem({
         emergency_id: emergencyIndex + 1,
-        emergency_title: title,
+        emergency_name: title,
         emergency_tel: tel,
       }),
     );
 
     dispatch(setEmergencyCurrentIndex(emergencyIndex));
+    dispatch(setActiveStep('MAIN'));
+
   };
 
   return (
@@ -54,7 +60,7 @@ const EmergencyDrawerWrite = () => {
         </div>
         <div style={{ flex: 6 }}>
           <StyledInputBase
-            value={title}
+            value={tel}
             onChange={handleChangeTel}
             placeholder="전화번호를 입력해주세요."
           />

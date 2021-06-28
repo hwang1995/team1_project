@@ -10,10 +10,10 @@ const NoticeDrawerRead = () => {
   const noticeItem = useSelector((state) => state.notice.noticeItem);
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
 
-  console.log("currentIndex", currentIndex);
+  console.log("currentIndex", currentIndex)
   const handleDeleteBtn = () => {
-    dispatch(removeNoticeItem);
-    dispatch(setActiveStep('SUCCESS'));
+    dispatch(removeNoticeItem(noticeItem[currentIndex]));
+    dispatch(setActiveStep('DELETE'))
   };
 
 
@@ -28,14 +28,14 @@ const NoticeDrawerRead = () => {
       </div>
       <div style={{ display: 'flex', marginTop: '10px' }}>
         <div className="left-side" style={{ flex: 1 }}>
-          <img src="/assets/image/doctorface.png" alt="Logo" width="100%" />
+          <img src="/assets/image/doctorface.png" alt="Logo" width="70%" />
         </div>
         <div
           className="left-side"
           style={{
             flex: 9,
             display: 'flex',
-            marginLeft: '10px',
+            marginLeft: '5px',
             flexDirection: 'column',
             justifyContent: 'center',
           }}
@@ -54,9 +54,16 @@ const NoticeDrawerRead = () => {
       </div>
       <hr />
 
-      <h3 style={{ fontWeight: '400', padding: '0.5rem' }}>
-        {parse(noticeItem[currentIndex].notice_content)}
-      </h3>
+      <h2 style={{ fontWeight: '500', padding: '1rem'}}>
+
+      {noticeItem[currentIndex].notice_head_image ? (
+                              <img src={noticeItem[currentIndex].notice_head_image} alt="Logo" width="100%" />
+                      ) : ( <div></div>
+                      )}
+        
+
+        {parse(noticeItem[currentIndex].notice_head_text)}
+      </h2>
       <hr />
       <div
         style={{

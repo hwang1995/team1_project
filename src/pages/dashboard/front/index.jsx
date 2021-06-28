@@ -1,6 +1,9 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { Divider, Grid, Hidden, List, ListItem } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Divider, Grid, Hidden, List } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { GrPowerReset } from 'react-icons/gr';
+
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import useWindowSize from 'hooks/useWindowSize';
@@ -13,6 +16,8 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledButton from 'components/common/button/StyledButton';
 import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
 import EmergencyDrawer from 'components/notice/drawer/EmergencyDrawer';
+import SearchBox from 'components/common/search/SearchBox';
+
 // import noticeData from 'components/notice/notice'
 /**
  * 이 페이지 컴포넌트는 대쉬보드의 메인을 보여주기 위해 작성하는 컴포넌트입니다.
@@ -45,10 +50,27 @@ const FrontPage = () => {
   const [isOpened, setOpened] = useState(false);
   const [emergencyOpened, setEmergencyOpened] = useState(false);
   const [value, onChange] = useState(new Date());
+  const [searchVal, setSearchVal] = useState('');
+
+  const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
 
   useEffect(() => {
     console.log('변화가 일어났어요.', isOpened);
   }, [isOpened]);
+
+  const handleChange = (e) => {
+    setSearchVal(e.target.value);
+    console.log(e.target.value);
+  };
+
+  const matchData = emergencyItem.filter((data) =>
+    data.emergency_name.includes(searchVal),
+  );
+
+  const showAll = (event) => {
+    setSearchVal('');
+  };
+
   return (
     <div>
       <header style={{ position: 'sticky', top: 0, backgroundColor: 'white' }}>
@@ -142,36 +164,77 @@ const FrontPage = () => {
                     </div>
                   </Hidden>
 
-                  <StyledContainer bgColor="rgb(234,242,254)" style={{ marginTop: '11rem', marginLeft: '1rem'}}>
-                  <div style={{ display: 'flex' }}>
-                    <div style={{ flex: 3.5 }}>
-                      <StyledTypography color="rgb(63,81,181)" variant="h4" component="h4" weight={7}>
-                        비상연락망
-                      </StyledTypography>
+                  <StyledContainer
+                    bgColor="rgb(234,242,254)"
+                    style={{ marginTop: '9rem', marginLeft: '1rem' }}
+                  >
+                    <div style={{ display: 'flex' }}>
+                      <div style={{ flex: 3.5 }}>
+                        <StyledTypography
+                          color="rgb(63,81,181)"
+                          variant="h4"
+                          component="h4"
+                          weight={7}
+                        >
+                          병원 전화번호
+                        </StyledTypography>
+                      </div>
+                      <div style={{ flex: 1.5 }}>
+                        <StyledButton
+                          bgColor="rgb(234,242,254)"
+                          onClick={() =>
+                            setEmergencyOpened((prevState) => !prevState)
+                          }
+                        >
+                          <AddIcon />
+                          추가
+                        </StyledButton>
+                      </div>
                     </div>
-                    <div style={{ flex: 1.5 }}>
-                      <StyledButton
-                        bgColor="rgb(234,242,254)"
-                        onClick={() => setEmergencyOpened((prevState) => !prevState)}
-                      >
-                        <AddIcon />추가
-                      </StyledButton>
+                    <div style={{ display:'flex', marginTop: "15px", alignItems: 'center'}}>
+                      <div style={{flex: 9}}>
+                      <SearchBox
+                        onChange={handleChange}
+                        setSearchVal={setSearchVal}
+                        placeholder="이름을 입력해주세요."
+                      />
+                      </div>
+                      <div>
+                        <GrPowerReset size={20} 
+                          style={{marginLeft : '10px'}}
+                          onClick={showAll}/>
+                      </div>
                     </div>
-                  </div >
-                  <div style={{ marginTop: '2rem', marginLeft: '0.5rem'}}>
-                  <StyledTypography variant="h5" component="h5" weight={4} ><li>송파구 소방서  :  010-212-8282</li></StyledTypography>
-                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존병원 응급실  :  02-721-8282</li></StyledTypography>
-                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존병원 홍길동 교수님  :  010-9993-8282</li></StyledTypography>
-                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존병원 구급대원  :  010-2132-8282</li></StyledTypography>
-                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존제약 영업사원  :  010-2112-8282</li></StyledTypography>
-                  <StyledTypography variant="h5" component="h5" weight={4} ><li>더존헬스케어 영업사원  :  010-1234-8282</li></StyledTypography>
-                  </div>
-                  
+                    <div style={{ marginTop: '1rem', marginLeft: '0.3rem' }}>
+                      {matchData
+                        .map((data) => (
+                        <div style={{ display: 'flex', padding: '0.5rem' }}>
+                          <StyledTypography
+                            variant="h5"
+                            component="h5"
+                            weight={5}
+                            style={{ flex: 1.5 }}
+                          >
+                            {data.emergency_name} :{' '}
+                          </StyledTypography>{' '}
+                          <StyledTypography
+                            variant="h5"
+                            component="h5"
+                            weight={4}
+                            style={{ flex: 1 }}
+                          >
+                            {data.emergency_tel}{' '}
+                          </StyledTypography>
+                        </div>
+                      ))}
+                    </div>
                   </StyledContainer>
-
                 </Grid>
               </Grid>
-              <EmergencyDrawer emergencyOpened={emergencyOpened} setEmergencyOpened={setEmergencyOpened} />
+              <EmergencyDrawer
+                emergencyOpened={emergencyOpened}
+                setEmergencyOpened={setEmergencyOpened}
+              />
               <NoticeDrawer isOpened={isOpened} setOpened={setOpened} />
             </ContentContainer>
           </Grid>

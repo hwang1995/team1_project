@@ -1,7 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import { SwipeableDrawer } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -13,9 +14,10 @@ import NoticeDrawerRead from './NoticeDrawerRead';
 import NoticeDrawerModify from './NoticeDrawerModify';
 
 
+
+
 const NoticeDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
-
   const activeStep = useSelector((state) => state.notice.activeStep);
 
   const toggleDrawer = (open) => (e) => {
@@ -37,13 +39,15 @@ const NoticeDrawer = ({ isOpened, setOpened }) => {
         return <NoticeDrawerModify />;
       case 'SUCCESS':
         return <NoticeDrawerSuccess />;
+      case 'DELETE':
+        return <NoticeDrawerSuccess />;
       default:
         return <NoticeDrawerMain />;
     }
   };
 
   return (
-    <Fragment>
+    <Fragment >
       <SwipeableDrawer
         anchor="right"
         open={isOpened}

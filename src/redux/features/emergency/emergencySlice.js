@@ -7,34 +7,30 @@ export const emergencySlice = createSlice({
     emergencyItem: [
       {
         emergency_id: 1,
-        emergency_name: '송파구 소방서',
-        emergency_tel: '010-212-8282',
+        emergency_name: '병원 대표번호',
+        emergency_tel: '02-212-8282',
       },
       {
         emergency_id: 2,
+        emergency_name: '송파구 보건소',
+        emergency_tel: '02-2147-3455',
+      },
+      {
+        emergency_id: 3,
         emergency_name: '더존병원 응급실',
         emergency_tel: '02-721-8282',
       },
       {
-        emergency_id: 3,
-        emergency_name: '더존병원 홍길동 교수님',
+        emergency_id: 4,
+        emergency_name: '더존병원 홍길동 교수',
         emergency_tel: '010-9993-8282',
       },
       {
-        emergency_id: 4,
+        emergency_id: 5,
         emergency_name: '더존병원 구급대원',
         emergency_tel: '010-2132-8282',
       },
-      {
-        emergency_id: 5,
-        emergency_name: '더존제약 영업사원',
-        emergency_tel: '010-2112-8282',
-      },
-      {
-        emergency_id: 6,
-        emergency_name: '더존헬스케어 영업사원',
-        emergency_tel: '010-1234-8282',
-      },
+      
     ],
     emergencyCurrentIndex: 0,
   },

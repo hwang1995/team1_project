@@ -27,6 +27,11 @@ const NoticeDrawerSuccess = () => {
           <h2 style={{ fontWeight: '800' }}>게시물 수정이 완료 되었습니다.</h2>
         </div>
       )}
+      {activeStep === 'DELETE' && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <h2 style={{ fontWeight: '800' }}>게시물 삭제가 완료 되었습니다.</h2>
+        </div>
+      )}
 
       <div
         style={{
@@ -34,17 +39,21 @@ const NoticeDrawerSuccess = () => {
           display: 'flex',
         }}
       >
-        {' '}
         <div style={{ flex: '2' }}></div>
-        <div style={{ flex: '2', marginRight: '10px' }}>
+        {activeStep !== 'DELETE' && (
+                  <div style={{ flex: '2', marginRight: '10px' }}>
+
           <StyledButton
-            bgColor="rgb(8,78,127)"
-            color="white"
-            onClick={() => dispatch(setActiveStep('READ'))}
-          >
-            작성 게시물 보기
-          </StyledButton>
+          bgColor="rgb(8,78,127)"
+          color="white"
+          onClick={() => dispatch(setActiveStep('READ'))}
+        >
+          작성 게시물 보기
+        </StyledButton>
         </div>
+
+        )}
+          
         <div style={{ flex: '2' }}>
           <StyledButton
             bgColor="rgb(8,78,127)"
