@@ -1,0 +1,34 @@
+[
+  {
+    "member_id": 1,
+    "member_email": "abc@naver.com",
+    "member_name": "황성욱",
+    "doctor_room": "진료실1",
+    "member_authority": "ROLE_DOCTOR",
+    "hospital_name": "안녕병원"
+  },
+  {
+    "member_id": 2,
+    "member_email": "def@naver.com",
+    "member_name": "김형윤",
+    "doctor_room": "진료실2",
+    "member_authority": "ROLE_DOCTOR",
+    "hospital_name": "안녕병원"
+  },
+  {
+    "member_id": 3,
+    "member_email": "ghi@naver.com",
+    "member_name": "박시현",
+    "doctor_room": "진료실3",
+    "member_authority": "ROLE_DOCTOR",
+    "hospital_name": "안녕병원"
+  },
+  {
+    "member_id": 4,
+    "member_email": "ghi@naver.com",
+    "member_name": "홍종현",
+    "doctor_room": "진료실4",
+    "member_authority": "ROLE_DOCTOR",
+    "hospital_name": "안녕병원"
+  }
+]

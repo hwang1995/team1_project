@@ -1,0 +1,79 @@
+[
+  {
+    "notice_id": 1,
+    "notice_title": "안녕하세요1",
+    "notice_author": "황성욱",
+    "notice_content": "일정을 참고하시고 원활한 진료를 받으세요.",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 2,
+    "notice_title": "안녕하세요2",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 3,
+    "notice_title": "안녕하세요3",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 4,
+    "notice_title": "안녕하세요4",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 5,
+    "notice_title": "안녕하세요5",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 6,
+    "notice_title": "안녕하세요6",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 7,
+    "notice_title": "안녕하세요7",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 8,
+    "notice_title": "안녕하세요7",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 9,
+    "notice_title": "안녕하세요7",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 10,
+    "notice_title": "안녕하세요7",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  },
+  {
+    "notice_id": 11,
+    "notice_title": "안녕하세요7",
+    "notice_author": "황성욱",
+    "notice_content": "펭하",
+    "notice_date": "6월 8일"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "patient_id": 1,
+    "patient_name": "황성욱",
+    "patient_gender": "남자",
+    "patient_birth": "1995-08-10"
+  },
+  {
+    "patient_id": 2,
+    "patient_name": "김형윤",
+    "patient_gender": "남자",
+    "patient_birth": "1996-01-18"
+  },
+  {
+    "patient_id": 3,
+    "patient_name": "박시현",
+    "patient_gender": "남자",
+    "patient_birth": "1993-08-25"
+  },
+  {
+    "patient_id": 4,
+    "patient_name": "카리나",
+    "patient_gender": "여자",
+    "patient_birth": "2000-04-11"
+  },
+  {
+    "patient_id": 5,
+    "patient_name": "윈터",
+    "patient_gender": "여자",
+    "patient_birth": "2001-01-01"
+  },
+  {
+    "patient_id": 6,
+    "patient_name": "홍종현",
+    "patient_gender": "남자",
+    "patient_birth": "1996-06-28"
+  }
+]

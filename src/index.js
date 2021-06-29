@@ -1,18 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
+import { SnackbarProvider } from 'notistack';
 import store from './redux/store';
+import muiTheme from './components/common/CustomTheme';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-import { StylesProvider } from '@material-ui/core/styles';
+import '@fontsource/roboto';
+import { Fade } from '@material-ui/core';
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import 'moment/locale/ko';
+
+moment.locale('ko');
 
 ReactDOM.render(
   <BrowserRouter>
     <StylesProvider injectFirst>
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <ThemeProvider theme={muiTheme}>
+        <Provider store={store}>
+          <SnackbarProvider
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            TransitionComponent={Fade}
+          >
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+              <App />
+            </MuiPickersUtilsProvider>
+          </SnackbarProvider>
+        </Provider>
+      </ThemeProvider>
     </StylesProvider>
   </BrowserRouter>,
   document.getElementById('root'),

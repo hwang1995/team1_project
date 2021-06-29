@@ -1,0 +1,695 @@
+[
+  {
+    "medicine_id": 1,
+    "medicine_code": "NIZA15",
+    "medicine_name": "AXID Cap 150mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 2,
+    "medicine_code": "IRES",
+    "medicine_name": "IRESSA Tab 250mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 3,
+    "medicine_code": "ROPIN1",
+    "medicine_name": "ONIROL Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 4,
+    "medicine_code": "ROXN",
+    "medicine_name": "ROXAN Cap 75mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 5,
+    "medicine_code": "RT150",
+    "medicine_name": "URANTAC Tab 150mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 6,
+    "medicine_code": "SILY14",
+    "medicine_name": "LEGALON 140 Cap 140mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 7,
+    "medicine_code": "SIMV2",
+    "medicine_name": "SIMVALORD Tab 20mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 8,
+    "medicine_code": "RFD45",
+    "medicine_name": "RIFODEX Tab 450mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 9,
+    "medicine_code": "PSEUDA",
+    "medicine_name": "SUDAFED Tab 60mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 10,
+    "medicine_code": "PXF",
+    "medicine_name": "PERENTAL Tab 400mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 11,
+    "medicine_code": "PYRIDO",
+    "medicine_name": "MESTINON Tab 60mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 12,
+    "medicine_code": "QU100",
+    "medicine_name": "SEROQUEL Tab 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 13,
+    "medicine_code": "RAC",
+    "medicine_name": "ISOTINON Cap 10mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 14,
+    "medicine_code": "RAMI5",
+    "medicine_name": "TRITACE Tab 5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 15,
+    "medicine_code": "REPAG1",
+    "medicine_name": "REPANORM Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 16,
+    "medicine_code": "RFD15",
+    "medicine_name": "RIFODEX Cap 150mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 17,
+    "medicine_code": "RISP1",
+    "medicine_name": "RIPERIDON Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 18,
+    "medicine_code": "ZADIT",
+    "medicine_name": "ZADITEN Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 19,
+    "medicine_code": "CAROLF",
+    "medicine_name": "CAROL-F Tab",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 20,
+    "medicine_code": "CFX-P",
+    "medicine_name": "SUPRAX Gran 50mg/g",
+    "medicine_type": "내복약",
+    "medicine_unit": "G"
+  },
+  {
+    "medicine_id": 21,
+    "medicine_code": "CILOST",
+    "medicine_name": "PLETAAL Tab 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 22,
+    "medicine_code": "CLOZ2",
+    "medicine_name": "CLOZARIL Tab 25mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 23,
+    "medicine_code": "JTELD4",
+    "medicine_name": "PRITOR PLUS Tab 40mg (GSK)",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 24,
+    "medicine_code": "JTELD8",
+    "medicine_name": "PRITOR PLUS Tab 80mg (GSK)",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 25,
+    "medicine_code": "JMESO",
+    "medicine_name": "MESOCAN Cap 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 26,
+    "medicine_code": "ZONI",
+    "medicine_name": "EXCEGRAN Tab 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 27,
+    "medicine_code": "ENTACA",
+    "medicine_name": "COMTAN Tab 200mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 28,
+    "medicine_code": "PAS-K",
+    "medicine_name": "PAS Granule 3.3g/pk",
+    "medicine_type": "내복약",
+    "medicine_unit": "PK"
+  },
+  {
+    "medicine_id": 29,
+    "medicine_code": "ONDA",
+    "medicine_name": "ZOFRAN ZYDIS Tab 8mg (GSK)",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 30,
+    "medicine_code": "JANDRO",
+    "medicine_name": "ANDROCUR Tab 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 31,
+    "medicine_code": "JIBUST",
+    "medicine_name": "IBUSTRIN Tab 200mg -",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 32,
+    "medicine_code": "JDIACE",
+    "medicine_name": "ATRODAR Cap 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 33,
+    "medicine_code": "JGVAN5",
+    "medicine_name": "GLUCOVANCE Tab 500/5mg (Merck)",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 34,
+    "medicine_code": "JGVAN2",
+    "medicine_name": "GLUCOVANCE Tab 500/2.5mg (Merc",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 35,
+    "medicine_code": "JTAGENF",
+    "medicine_name": "TAGEN-F Cap",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 36,
+    "medicine_code": "JOLOPA",
+    "medicine_name": "ALLELOCK Tab 5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 37,
+    "medicine_code": "TRETIN",
+    "medicine_name": "VESANOID Cap 10mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 38,
+    "medicine_code": "JGYNO-K",
+    "medicine_name": "PROGYNOVA Tab 2mg 28T/PK",
+    "medicine_type": "내복약",
+    "medicine_unit": "PK"
+  },
+  {
+    "medicine_id": 39,
+    "medicine_code": "JCONCER",
+    "medicine_name": "CONCERTA OROS Tab 18mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 40,
+    "medicine_code": "AUGD-S",
+    "medicine_name": "AUGMENTIN DUO Syr 228mg/5ml",
+    "medicine_type": "내복약",
+    "medicine_unit": "ML"
+  },
+  {
+    "medicine_id": 41,
+    "medicine_code": "JEPRO",
+    "medicine_name": "TEVETEN Tab 600mg -",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 42,
+    "medicine_code": "JEVOP",
+    "medicine_name": "EVOPRIM Soft Cap 40mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 43,
+    "medicine_code": "JBARN5",
+    "medicine_name": "OLDECA Cap 5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 44,
+    "medicine_code": "JVIT-S",
+    "medicine_name": "PRIVITUSS LIQUID Susp",
+    "medicine_type": "내복약",
+    "medicine_unit": "ML"
+  },
+  {
+    "medicine_id": 45,
+    "medicine_code": "JCFDT-P",
+    "medicine_name": "MEIACT FINE Gran 100mg/g",
+    "medicine_type": "내복약",
+    "medicine_unit": "G"
+  },
+  {
+    "medicine_id": 46,
+    "medicine_code": "JPRAVA2",
+    "medicine_name": "MEVALOTIN Tab 20mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 47,
+    "medicine_code": "JPRAVA4",
+    "medicine_name": "MEVALOTIN Tab 40mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 48,
+    "medicine_code": "JVOGL3",
+    "medicine_name": "BASEN Tab 0.3mg (CJ)-",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 49,
+    "medicine_code": "JKETAS",
+    "medicine_name": "KETAS Cap 10mg -",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 50,
+    "medicine_code": "IMID5",
+    "medicine_name": "TANATRIL Tab 5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 51,
+    "medicine_code": "IMP",
+    "medicine_name": "IMIPRAMINE Tab 25mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 52,
+    "medicine_code": "INAH",
+    "medicine_name": "YUHANZID Tab 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 53,
+    "medicine_code": "INHIB",
+    "medicine_name": "INHIBASE Tab 2.5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 54,
+    "medicine_code": "ISDN4",
+    "medicine_name": "ISOKET RETARD Tab 40mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 55,
+    "medicine_code": "ISOKET",
+    "medicine_name": "ISOKET RETARD Cap 120mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 56,
+    "medicine_code": "ITOP",
+    "medicine_name": "GANATON Tab 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 57,
+    "medicine_code": "ITZOL",
+    "medicine_name": "SPORANOX Cap 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 58,
+    "medicine_code": "IXEL50",
+    "medicine_name": "IXEL Cap 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 59,
+    "medicine_code": "GABA1",
+    "medicine_name": "GABAPENIN Cap 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 60,
+    "medicine_code": "GINK8",
+    "medicine_name": "GINEXIN-F Tab 80mg (SK)",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 61,
+    "medicine_code": "GLIM1",
+    "medicine_name": "AMARYL Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 62,
+    "medicine_code": "GRANI",
+    "medicine_name": "KYTRIL Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 63,
+    "medicine_code": "HC",
+    "medicine_name": "HYDROCORTISIONE Tab 10mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 64,
+    "medicine_code": "JALEN7",
+    "medicine_name": "FOSALEN Tab 70mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 65,
+    "medicine_code": "JANAS",
+    "medicine_name": "ARIMIDEX Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 66,
+    "medicine_code": "JAROT10",
+    "medicine_name": "ALMARL Tab 10mg (CJ)",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 67,
+    "medicine_code": "JCLIAN",
+    "medicine_name": "CLIANE 28T/pk -",
+    "medicine_type": "내복약",
+    "medicine_unit": "PK"
+  },
+  {
+    "medicine_id": 68,
+    "medicine_code": "FLUCO",
+    "medicine_name": "FLUCOPAM Cap 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 69,
+    "medicine_code": "PBT",
+    "medicine_name": "PHENOBARBITAL Tab 30mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 70,
+    "medicine_code": "TIBO",
+    "medicine_name": "LIVIAL Tab 2.5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 71,
+    "medicine_code": "JDDS",
+    "medicine_name": "DAPSONE Tab 25mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 72,
+    "medicine_code": "FAMC",
+    "medicine_name": "FAMVIR Tab 250mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 73,
+    "medicine_code": "FERO",
+    "medicine_name": "FEROBA-YOU Tab",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 74,
+    "medicine_code": "FEX3",
+    "medicine_name": "ALLEGRA Tab 30mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 75,
+    "medicine_code": "BCT",
+    "medicine_name": "SEPTRIN Tab",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 76,
+    "medicine_code": "DEPAS",
+    "medicine_name": "DEPAS Tab 0.5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 77,
+    "medicine_code": "ISOMAC",
+    "medicine_name": "ISOMACK RETARD Cap 20mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 78,
+    "medicine_code": "BSV",
+    "medicine_name": "BISOLVON Tab 8mg )",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 79,
+    "medicine_code": "SELBEX",
+    "medicine_name": "WITH Cap 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 80,
+    "medicine_code": "LMS",
+    "medicine_name": "LAMISIL Tab 125mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 81,
+    "medicine_code": "ZYLO",
+    "medicine_name": "ALLOPURINOL Tab 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 82,
+    "medicine_code": "THEO2",
+    "medicine_name": "THEOLAN-B Cap 200mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 83,
+    "medicine_code": "THIAT",
+    "medicine_name": "THIATON Cap 10mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 84,
+    "medicine_code": "TICLOP",
+    "medicine_name": "TICLODON Tab 250mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 85,
+    "medicine_code": "TIRO",
+    "medicine_name": "ANTIMODIC Tab 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 86,
+    "medicine_code": "TIZA",
+    "medicine_name": "SIRDALUD Tab 1mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 87,
+    "medicine_code": "TM100",
+    "medicine_name": "TEMODAL Cap 100mg (MSD)",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 88,
+    "medicine_code": "TM250",
+    "medicine_name": "TEMODAL Cap 250mg (MSD)",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 89,
+    "medicine_code": "TOFI",
+    "medicine_name": "GRANDAXIN Tab 50mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 90,
+    "medicine_code": "ELMI",
+    "medicine_name": "JELMIRON Cap 100mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 91,
+    "medicine_code": "PROPRA",
+    "medicine_name": "TEPRA Tab 40mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 92,
+    "medicine_code": "TM20",
+    "medicine_name": "TEMODAL Cap 20mg (MSD)",
+    "medicine_type": "내복약",
+    "medicine_unit": "C"
+  },
+  {
+    "medicine_id": 93,
+    "medicine_code": "ANAX5",
+    "medicine_name": "ALPRAM Tab 0.5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 94,
+    "medicine_code": "MESAL",
+    "medicine_name": "SALOFALK Tab 250mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 95,
+    "medicine_code": "JXEFO",
+    "medicine_name": "XEFO Tab  4mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 96,
+    "medicine_code": "XELO50",
+    "medicine_name": "XELODA Tab 500mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 97,
+    "medicine_code": "ZA5",
+    "medicine_name": "ZAROXOLYN Tab 5mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  },
+  {
+    "medicine_id": 98,
+    "medicine_code": "ZADISY",
+    "medicine_name": "ZADITEN Syr 0.2mg/1ml",
+    "medicine_type": "내복약",
+    "medicine_unit": "ML"
+  },
+  {
+    "medicine_id": 99,
+    "medicine_code": "CIPRO",
+    "medicine_name": "CIPROBAY Tab 250mg",
+    "medicine_type": "내복약",
+    "medicine_unit": "T"
+  }
+]
