@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import {
-  Divider,
   Grid,
   Table,
   TableContainer,
@@ -9,16 +8,14 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import PatientDrawer from './drawer/PatientDrawer';
-import PatientUpdateDrawer from './drawer/PatientUpdateDrawer';
-import PageHeader from 'components/common/header/PageHeader';
-import MenuSidebar from 'components/common/sidebar/MenuSidebar';
+import PatientDrawer from '../../../components/patient/drawer/PatientDrawer';
+import PatientUpdateDrawer from '../../../components/patient/drawer/PatientUpdateDrawer';
 import useWindowSize from 'hooks/useWindowSize';
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import StyledButton from 'components/common/button/StyledButton';
 import SearchBox from 'components/common/search/SearchBox';
-import DeleteModal from './modal/DeleteModal';
+import DeleteModal from 'components/patient/modal/DeleteModal';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
 
@@ -48,7 +45,6 @@ const PatientPage = () => {
         return patientInfo;
       }
     });
-    console.log('newinfodata', newInfoData);
     setPatients(newInfoData);
   }, [readPatientData]);
 
@@ -62,18 +58,11 @@ const PatientPage = () => {
     setPatients(removeDataInfo);
   };
   const dateIndexRemoveClick = (data) => {
-    const removeDataInfo = patientData.filter((patientInfo) => {
-      if (patientInfo.patient_id === data.patient_id) {
-        return false;
-      }
-      return true;
-    });
-    setPatients(removeDataInfo);
+    dateRemoveClick(data);
     setDeleteOpened(true);
   };
 
   const setSearchVal = (inputVal) => {
-    console.log('inputVal', inputVal);
     const newInfoData = patientData.filter((patientInfo) => {
       if (patientInfo.patient_name === inputVal) {
         return true;
@@ -166,6 +155,7 @@ const PatientPage = () => {
                           <img
                             src="/assets/image/pleaseSearching.png"
                             width="60%"
+                            alt="searching"
                           />
                         </Grid>
                       </Grid>

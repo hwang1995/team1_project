@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { makeStyles, Modal, Backdrop, } from '@material-ui/core';
 import SpringFade from 'components/common/fade/SpringFade';
 import Grid from "@material-ui/core/Grid";
@@ -32,9 +32,6 @@ const DeleteModal = ({ deleteOpened, setDeleteOpened }) => {
 
   const handleClose = () => setDeleteOpened(false);
 
-  useEffect(() => {
-    console.log("실행gksekdlTOrldi", deleteOpened)
-  },[])
 
   return (
     <Fragment>

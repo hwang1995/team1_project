@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import Postcode from 'react-daum-postcode';
 import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -27,18 +27,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddressModal = ({ isModalOpened, setModalOpened,setAddress }) => {
+const AddressModal = ({ isModalOpened, setModalOpened,addressClick }) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
 
-  // Redux 정보 가져오기
-  //const isOpened = useSelector((state) => state.diagnosis.modalStatus);
-  useEffect(() => {
-    console.log("isModalOpened", isModalOpened);
-  }, [isModalOpened])
+ 
 
   const handleComplete = (data) => {
-    //setAddress(data);
+    
     let fullAddress = data.address;
     let extraAddress = '';
 
@@ -54,10 +50,8 @@ const AddressModal = ({ isModalOpened, setModalOpened,setAddress }) => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
     const postalcode = data.zonecode;
-    console.log(fullAddress);
-    console.log(extraAddress);
-    console.log(data.zonecode);
-    setAddress({ fullAddress, extraAddress, postalcode });
+ 
+    addressClick({ fullAddress, postalcode });
      
     setModalOpened(false);
   };

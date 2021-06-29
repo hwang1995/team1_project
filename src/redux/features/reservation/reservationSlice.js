@@ -9,7 +9,6 @@ export const reservationSlice = createSlice({
   },
   reducers: {
     changePage(state, action) {
-      //const page  = action.payload;
       state.pageStatus = action.payload;
     },
     chaneInputVal(state, action) {
@@ -29,7 +28,6 @@ export const reservationSlice = createSlice({
         }
       })
      state.reservationInfo = newReservationInfo;
-     console.log("update 후", state.reservationInfo);
     },
     removeReservationTime(state, action) {
       const newReservationInfo = state.reservationInfo.filter((reservationInfo) => {
@@ -39,7 +37,6 @@ export const reservationSlice = createSlice({
         return true;
       })
        state.reservationInfo = newReservationInfo;
-      console.log('remove 후', state.reservationInfo);
     }
   },
 });

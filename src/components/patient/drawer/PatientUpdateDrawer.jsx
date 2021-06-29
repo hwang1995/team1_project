@@ -30,44 +30,21 @@ const PatientUpdateDrawer = ({
   const [isUpdateModalOpened, setUpdateModalOpened] = useState(false);
   const [changeView, setChange] = useState(false);
   const [removeOrUpdate, setStatus] = useState('');
-  const [address, setAddress] = useState({});
   const [patientInfo, setPatientInfo] = useState({
-    patient_id: '',
-    patient_name: '',
-    patient_birth: '',
-    patient_addr1: '',
-    patient_addr2: '',
-    patient_postal: '',
-    patient_tel: '',
-    patient_height: '',
-    patient_weight: '',
-    patient_gender: '',
+    patient_id: "",
+    patient_name: "",
+    patient_birth: "",
+    patient_addr1: "",
+    patient_addr2: "",
+    patient_postal: "",
+    patient_tel: "",
+    patient_height: "",
+    patient_weight: "",
+    patient_gender: "",
   });
-  //const [patientName, setPatientName] = use
 
-  useEffect(() => {
-    setPatientInfo({
-      ...patientInfo,
-      patient_postal: address.postalcode,
-      patient_addr1: address.fullAddress,
-    });
-  }, [address]);
 
-  useEffect(() => {
-    console.log('start', patientInfo);
-    setPatientInfo({
-      patient_id: readPatientData.patient_id,
-      patient_name: readPatientData.patient_name,
-      patient_birth: readPatientData.patient_birth,
-      patient_addr1: readPatientData.patient_addr1,
-      patient_addr2: readPatientData.patient_addr2,
-      patient_postal: readPatientData.patient_postal,
-      patient_tel: readPatientData.patient_tel,
-      patient_height: readPatientData.patient_height,
-      patient_weight: readPatientData.patient_weight,
-      patient_gender: readPatientData.patient_gender,
-    });
-  }, [isUpdateOpened]);
+
 
   useEffect(() => {
     if (breakpoint !== undefined) {
@@ -76,8 +53,11 @@ const PatientUpdateDrawer = ({
   }, [breakpoint]);
 
   useEffect(() => {
-    console.log('readPaient', readPatientData);
-  }, []);
+    console.log("실행", readPatientData);
+    setPatientInfo(readPatientData);
+  }, [readPatientData])
+
+
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -108,6 +88,14 @@ const PatientUpdateDrawer = ({
     } else {
       alert('변경된 사항이 없습니다.');
     }
+  };
+
+  const addressClick = ({ fullAddress, postalcode }) => {
+      setPatientInfo({
+        ...patientInfo,
+        patient_postal: postalcode,
+        patient_addr1: fullAddress,
+      });
   };
 
   const deleteHandleClick = () => {
@@ -149,7 +137,8 @@ const PatientUpdateDrawer = ({
       setStatus('');
       setUpdateOpened(false);
       setChange(false);
-    } else if (removeOrUpdate === 'remove') {
+    } 
+     if (removeOrUpdate === 'remove') {
       setStatus('');
       setUpdateOpened(false);
       setChange(false);
@@ -417,7 +406,7 @@ const PatientUpdateDrawer = ({
       <AddressModal
         isModalOpened={isUpdateModalOpened}
         setModalOpened={setUpdateModalOpened}
-        setAddress={setAddress}
+        addressClick={addressClick}
       />
     </Fragment>
   );
