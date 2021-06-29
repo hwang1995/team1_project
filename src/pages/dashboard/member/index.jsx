@@ -13,6 +13,8 @@ import {
   Modal,
   Paper,
   Button,
+  IconButton,
+  Avatar,
 } from '@material-ui/core';
 //import patientData from './patientData';
 import memberData from './memberData';
@@ -27,6 +29,7 @@ import StyledButton from 'components/common/button/StyledButton';
 import MemberUpdateDrawer from 'components/member/drawer/MemberUpdateDrawer';
 import DeleteModal from 'components/member/modal/DeleteModal';
 import { BiRefresh } from 'react-icons/bi';
+import { FiRefreshCcw } from 'react-icons/fi';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
 /**
@@ -66,14 +69,24 @@ const MemberPage = () => {
 
   //비밀번호 초기화
   const handleInitPassword = (data) => {
-    const initialPW = '12345';
+    const initialPW = 'douzone123!';
     data.member_pw = initialPW;
-    alert(data.member_name + '님의 비밀번호가 초기화되었습니다. ( 12345 )');
+    alert(
+      data.member_name +
+        '님의 비밀번호가 초기화되었습니다. (' +
+        initialPW +
+        ')',
+    );
   };
 
+  const handleRefresh = () => {
+    setPage(0);
+    setSearchVal('');
+  };
   //검색했을때 동작
   useEffect(() => {
     console.log(searchVal);
+    setPage(0);
   }, [searchVal]);
 
   return (
@@ -105,10 +118,20 @@ const MemberPage = () => {
                       placeholder="임직원 이름을 입력해주세요."
                     />
                   </Grid>
+                  <Grid item xs={1} lg={2}>
+                    <IconButton
+                      color="primary"
+                      size="medium"
+                      onClick={handleRefresh}
+                      style={{ marginLeft: '20px', marginTop: '10px' }}
+                    >
+                      <FiRefreshCcw />
+                    </IconButton>
+                  </Grid>
                   <Grid
                     item
-                    xs={3}
-                    lg={8}
+                    xs={2}
+                    lg={6}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -134,15 +157,70 @@ const MemberPage = () => {
                         >
                           <TableHead>
                             <TableRow>
-                              <TableCell component="td">직책</TableCell>
-                              <TableCell component="td">
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '40px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                직책
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '50px',
+                                  overflowX: 'scroll',
+                                }}
+                              ></TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
                                 이름{'&'}생년월일
                               </TableCell>
-                              <TableCell component="td">이메일</TableCell>
-                              <TableCell component="td">주소</TableCell>
-                              <TableCell component="td"></TableCell>
-                              <TableCell component="td"></TableCell>
-                              <TableCell component="td"></TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                이메일
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '200px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                주소
+                              </TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              ></TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              ></TableCell>
+                              <TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              ></TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -165,6 +243,9 @@ const MemberPage = () => {
                                         'ROLE_INSPECTOR' && '검사자'}
                                       {data.member_authority === 'ROLE_NURSE' &&
                                         '간호사'}
+                                    </TableCell>
+                                    <TableCell component="th">
+                                      <Avatar src={data.member_image} />
                                     </TableCell>
                                     <TableCell component="th">
                                       <p
