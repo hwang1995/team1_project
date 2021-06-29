@@ -106,7 +106,7 @@ const FrontPage = () => {
                           weight={9}
                           color="primary"
                         >
-                          ABC Hospital
+                          DOUZONE Hospital
                         </StyledTypography>
 
                         <StyledTypography
@@ -117,11 +117,32 @@ const FrontPage = () => {
                             marginTop: '1rem',
                           }}
                         >
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Rerum eveniet nulla impedit ipsam, totam iusto
-                          officiis autem maiores necessitatibus molestias fugit
-                          ut ab pariatur aspernatur. Dolorum esse et nulla
-                          voluptas.
+                          <p>&nbsp;</p>
+                          <p>
+                            &nbsp; &nbsp;서울더존병원은 1989년 6월 개원 이래
+                            끊임없는 연구개발과 임상 진료에 대한 아낌없는 투자로
+                            세계적 수준의 의료성과를 달성해 왔다.
+                          </p>
+                          <p>&nbsp;</p>
+                          <p>
+                            &nbsp; &nbsp; 또한 ‘생명 존중의 정신’과 이웃과
+                            아픔을 함께 하는 ‘나눔 정신’을 실천함으로써 존경받는
+                            병원으로 사회적 책임을 다해오고 있다. 최고의 의료
+                            수준과 첨단 의료 장비를 갖추고 선진 외국의 의료와
+                            어깨를 나란히 하면서 우리나라의 의료 발전을 이끌고
+                            있다.
+                          </p>
+                          <p>&nbsp;</p>
+                          <p>
+                            &nbsp; &nbsp; 서울더존병원은 연건평 8만5천여평 총
+                            2,715 병상의 국내 최대 병원 이다. 선진의료체계를
+                            기반으로 한 최고 의료진과 최적의 진료 시스템, 최첨단
+                            의료 장비를 갖추고 고객만족을 실천하며 우리나라의
+                            의료 발전을 선도해 왔다. 그 결과 이제 서울더존병원은
+                            1일 평균 외래환자 11,680명, 재원환자 2,427명,
+                            응급환자 256명을 진료하며, 연간 66,838여건의
+                            고난이도 수술을 시행 하고있다.
+                          </p>
                         </StyledTypography>
                       </div>
 
@@ -140,6 +161,7 @@ const FrontPage = () => {
                           variant="h4"
                           component="h4"
                           weight={7}
+                          style={{ marginLeft: '12px' }}
                         >
                           공지사항
                         </StyledTypography>

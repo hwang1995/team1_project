@@ -2,7 +2,6 @@ import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import React, { Fragment, useState } from 'react';
-
 import { BsListUl, BsPencilSquare } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -128,7 +127,7 @@ const EmergencyDrawerWrite = () => {
             </TableCell>
             <TableCell size="small">
               <FormControl style={{ width: '100%' }} variant="outlined">
-                <Select label="직책" onChange={handleChangeLine} value={line}>
+                <Select onChange={handleChangeLine} value={line}>
                   <MenuItem value={line} onClick={() => setLine('내선')}>
                     내선
                   </MenuItem>

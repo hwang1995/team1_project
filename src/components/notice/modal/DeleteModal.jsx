@@ -4,12 +4,7 @@ import {
   setActiveStep,
   removeNoticeItem,
 } from 'redux/features/notice/noticeSlice';
-import {
-  makeStyles,
-  Modal,
-  Backdrop,
-  IconButton,
-} from '@material-ui/core';
+import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose, AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsFillTrashFill } from 'react-icons/bs';
 import SpringFade from 'components/common/fade/SpringFade';
@@ -37,8 +32,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
 }));
-
-
 
 const DeleteModal = ({ isOpenModal, setOpenModal, notice_id }) => {
   const dispatch = useDispatch();
@@ -103,8 +96,8 @@ const DeleteModal = ({ isOpenModal, setOpenModal, notice_id }) => {
                   >
                     정말로 삭제하겠습니까?
                   </StyledTypography>
+                  <img src="/assets/image/notFound.png" alt="Logo" width="50%" />
                 </h2>
-                <img src="assets/image/notfound.png" alt="Logo" width="100%" />
               </div>
               <div
                 style={{
