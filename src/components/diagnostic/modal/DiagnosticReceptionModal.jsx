@@ -16,7 +16,6 @@ import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
 import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
-import StyledButton from 'components/common/button/StyledButton';
 
 const useStyles = makeStyles((theme) => ({
   modal: {

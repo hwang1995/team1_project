@@ -5,7 +5,6 @@ import AddIcon from '@material-ui/icons/Add';
 import { GrPowerReset } from 'react-icons/gr';
 
 import 'react-calendar/dist/Calendar.css';
-import useWindowSize from 'hooks/useWindowSize';
 import NoticeItem from 'components/dashboard/NoticeItem';
 import ContentContainer from 'components/common/container/ContentContainer';
 import StyledContainer from 'components/common/container/StyledContainer';
@@ -46,7 +45,6 @@ const noticeItems = [
 ];
 
 const FrontPage = () => {
-  const { breakpoint } = useWindowSize();
   const [isOpened, setOpened] = useState(false);
   const [emergencyOpened, setEmergencyOpened] = useState(false);
   const [date, changeDate] = useState(new Date());

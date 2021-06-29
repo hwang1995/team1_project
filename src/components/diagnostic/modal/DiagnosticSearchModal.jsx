@@ -1,7 +1,13 @@
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, Modal, Backdrop, IconButton, Grid, List, ListItem, ListItemText, Divider } from '@material-ui/core';
-import {DataGrid, GridRowsProp, GridColDef} from "@material-ui/data-grid";
+import {
+  makeStyles,
+  Modal,
+  Backdrop,
+  IconButton,
+  Grid,
+} from '@material-ui/core';
+import { DataGrid } from '@material-ui/data-grid';
 import { AiOutlineClose } from 'react-icons/ai';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
@@ -45,9 +51,9 @@ const DiagnosticSearchModal = () => {
         status: false,
       }),
     );
-  }
+  };
 
-  const rows= [
+  const rows = [
     { id: 1, name: '정지훈', birth: '93-08-25' },
     { id: 2, name: '박지훈', birth: '95-11-16' },
     { id: 3, name: '김형윤', birth: '97-03-11' },
@@ -92,7 +98,7 @@ const DiagnosticSearchModal = () => {
                   <SearchBox />
                 </Grid>
                 <Grid item xs={12} style={{ marginTop: '2em' }}>
-                  <div style={{height: 300, width:"100%"}}>
+                  <div style={{ height: 300, width: '100%' }}>
                     <DataGrid rows={rows} columns={columns} />
                   </div>
                 </Grid>

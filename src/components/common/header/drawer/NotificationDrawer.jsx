@@ -1,13 +1,12 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
-import { Drawer, IconButton, Collapse, Container } from '@material-ui/core';
+import { Drawer, IconButton } from '@material-ui/core';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { IoIosInformationCircle, IoIosWarning } from 'react-icons/io';
-import { useHistory } from 'react-router-dom';
 import useWindowSize from 'hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
 import { setHeaderInfo } from 'redux/features/common/commonSlice';
-import PageTransition from 'components/common/transition/PageTransition';
+
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';

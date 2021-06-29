@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import {
   Grid,
   Table,
@@ -7,7 +7,7 @@ import {
   Paper,
   IconButton,
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
@@ -38,7 +38,6 @@ import DiagnosticSearchModal from 'components/diagnostic/modal/DiagnosticSearchM
 const DiagnosticPage = () => {
   const dispatch = useDispatch();
 
-  const [searchVal, setSearchVal] = useState('');
   const [calInfo, getPrevWeek, getNextWeek, reset] = useCalendar();
 
   const buttonSetting = {

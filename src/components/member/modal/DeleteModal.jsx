@@ -1,11 +1,5 @@
 import React, { Fragment } from 'react';
-import {
-  makeStyles,
-  Modal,
-  Backdrop,
-  IconButton,
-  Grid,
-} from '@material-ui/core';
+import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';

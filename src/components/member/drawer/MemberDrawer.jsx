@@ -7,7 +7,6 @@ import {
   Select,
   MenuItem,
   TextField,
-  Avatar,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
@@ -92,7 +91,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
         member_addr1: '',
       }),
     );
-  }, [isOpened]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (breakpoint !== undefined) {

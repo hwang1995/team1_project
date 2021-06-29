@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import PatientDrawer from '../../../components/patient/drawer/PatientDrawer';
 import PatientUpdateDrawer from '../../../components/patient/drawer/PatientUpdateDrawer';
-import useWindowSize from 'hooks/useWindowSize';
+
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import StyledButton from 'components/common/button/StyledButton';
@@ -28,7 +28,6 @@ import PageTransition from 'components/common/transition/PageTransition';
  * @returns {JSX.Element}
  */
 const PatientPage = () => {
-  const { breakpoint } = useWindowSize();
   const [isOpened, setOpened] = useState(false);
   const [isUpdateOpened, setUpdateOpened] = useState(false);
   const [readPatientData, setReadPatientData] = useState({});

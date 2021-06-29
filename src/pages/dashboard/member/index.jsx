@@ -10,7 +10,6 @@ import {
   TableRow,
   TableFooter,
   TablePagination,
-  Modal,
   Paper,
   Button,
   IconButton,
@@ -19,7 +18,6 @@ import {
 //import patientData from './patientData';
 import memberData from './memberData';
 import { useSnackbar } from 'notistack';
-import useWindowSize from 'hooks/useWindowSize';
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import SearchBox from 'components/common/search/SearchBox';
@@ -40,7 +38,6 @@ import PageTransition from 'components/common/transition/PageTransition';
  * @returns {JSX.Element}
  */
 const MemberPage = () => {
-  const { breakpoint } = useWindowSize();
   const [isOpened, setOpened] = useState(false);
   const [isUpdateOpened, setUpdateOpened] = useState(false);
   const [searchVal, setSearchVal] = useState('');

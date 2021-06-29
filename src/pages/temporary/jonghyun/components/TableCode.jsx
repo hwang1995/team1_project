@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'; //리액트 임포트
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react'; //리액트 임포트
+
 import {
   Table,
   TableBody,

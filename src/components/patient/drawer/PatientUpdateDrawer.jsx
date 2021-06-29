@@ -384,7 +384,7 @@ const PatientUpdateDrawer = ({
           ) : (
             <div style={{ textAlign: 'center' }}>
               <div>
-                <img src="/assets/image/accept.png" />
+                <img src="/assets/image/accept.png" alt="accept" />
               </div>
               <div>
                 <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>

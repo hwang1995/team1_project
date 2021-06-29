@@ -125,7 +125,7 @@ function CalendarCom() {
         console.log('의사세팅');
       }
     },
-    [doctorInfo],
+    [doctorInfo, reservationTime],
   );
   return (
     <>

@@ -12,7 +12,7 @@ import {
   Hidden,
 } from '@material-ui/core';
 import styled from 'styled-components';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AiOutlineClose } from 'react-icons/ai';
 import { RiHospitalLine, RiLockPasswordLine } from 'react-icons/ri';
 import { HiOutlineMail } from 'react-icons/hi';
@@ -22,7 +22,6 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import useInput from 'hooks/useInput';
-import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -86,11 +85,6 @@ const AuthModal = () => {
   const { breakpoint } = useWindowSize();
 
   const history = useHistory();
-  const location = useLocation();
-
-  const pathnames = location.pathname
-    .split('/')
-    .filter((data) => (data !== '' ? true : false));
 
   const hospital_code = useInput('');
   const member_email = useInput('');
