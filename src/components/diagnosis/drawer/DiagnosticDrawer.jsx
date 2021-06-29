@@ -157,7 +157,7 @@ const DiagnosticDrawer = () => {
                 {diagnosticInfo.length === 0 && (
                   <Fragment>
                     <StyledTypography variant="h5" component="h5" weight={9}>
-                      [임시] 여기에는 추가된 진단 검사 목록이 나타납니다.
+                      여기에는 추가된 진단 검사 목록이 나타납니다.
                     </StyledTypography>
                   </Fragment>
                 )}

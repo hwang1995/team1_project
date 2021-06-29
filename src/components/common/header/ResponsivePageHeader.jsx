@@ -1,38 +1,27 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import { useLocation, useHistory, Link } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  Container,
-  Grid,
-  Hidden,
-  MenuItem,
-  IconButton,
-  Divider,
-} from '@material-ui/core';
+import { Container, Grid, Hidden } from '@material-ui/core';
 import { MdLocalHospital } from 'react-icons/md';
-import { IoLogIn, IoLogOut } from 'react-icons/io5';
+import { AiOutlineQuestion } from 'react-icons/ai';
+import { IoLogIn, IoLogOut, IoNotificationsOutline } from 'react-icons/io5';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
-import Menu from 'material-ui-popup-state/HoverMenu';
-import {
-  usePopupState,
-  bindHover,
-  bindMenu,
-} from 'material-ui-popup-state/hooks';
 
 import useWindowSize from 'hooks/useWindowSize';
-import { useDispatch } from 'react-redux';
-import { setHeaderInfo } from 'redux/features/common/commonSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setHeaderInfo, setLoginInfo } from 'redux/features/common/commonSlice';
 import MobileDrawer from './drawer/MobileDrawer';
-import { AiOutlineQuestion } from 'react-icons/ai';
+
+import NotificationDrawer from './drawer/NotificationDrawer';
+import AuthModal from 'components/auth/modal/AuthModal';
 
 const PageContainer = styled.div`
   width: 100%;
   height: 100%;
   max-height: 50px;
   background-color: #000;
-  /* background-color: rgb(54, 54, 54); */
   display: flex;
   font-family: --apple-system, BlinkMacSystemFont, 'Spoqa Han Sans Neo', 'Lato';
   .common-grid {
@@ -118,17 +107,19 @@ const ResponsivePageHeader = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const authInfo = useSelector((state) => state.common.loginInfo);
   const [isLogined, setLogined] = useState(false);
+
+  useEffect(() => {
+    if (authInfo.member_email !== '') {
+      setLogined(true);
+    }
+  }, [authInfo]);
 
   const pathnames = location.pathname
     .split('/')
     .filter((data) => (data !== '' ? true : false));
   const specificPath = pathnames[pathnames.length - 1];
-
-  const diagnosisState = usePopupState({
-    variant: 'popover',
-    popupId: 'diagnosisMenu',
-  });
 
   const isDiagnosis =
     specificPath === 'reservation' ||
@@ -140,6 +131,7 @@ const ResponsivePageHeader = () => {
   const isMember = specificPath === 'member';
   const isDashboard = specificPath === 'dashboard';
   const isTutorial = specificPath === 'tutorial';
+  const isMainPage = pathnames.length === 0;
 
   const goPage = useCallback(
     (page) => {
@@ -149,14 +141,29 @@ const ResponsivePageHeader = () => {
   );
 
   const handleLogin = () => {
-    setLogined((prevState) => !prevState);
+    dispatch(
+      setHeaderInfo({
+        name: 'auth',
+        status: true,
+      }),
+    );
+    // setLogined((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    if (isDiagnosis || isPatient || isMember || isDashboard || isTutorial) {
-      setLogined(true);
-    }
-  }, []);
+  const handleLogout = () => {
+    dispatch(
+      setLoginInfo({
+        member_id: 0,
+        member_email: '',
+        member_name: '',
+        member_authority: '',
+        hospital_code: '',
+        hospital_name: '',
+      }),
+    );
+    setLogined(false);
+    history.push('/');
+  };
 
   const handleOpen = () => {
     dispatch(
@@ -199,8 +206,6 @@ const ResponsivePageHeader = () => {
             </motion.div>
           </Grid>
         </Grid>
-
-        <MobileDrawer />
       </Container>
     );
   };
@@ -214,8 +219,12 @@ const ResponsivePageHeader = () => {
             xs={2}
             className="common-grid"
             style={{ justifyContent: 'flex-start' }}
+            onClick={handleOpen}
           >
-            <HiOutlineViewList size={24} color="white" />
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <HiOutlineViewList size={24} color="white" />
+            </motion.div>
+
             {/* Full Screen Drawer를 보여줄 수 있는 Button을 넣는다. */}
           </Grid>
           <Grid item xs={8} className="common-grid">
@@ -226,9 +235,11 @@ const ResponsivePageHeader = () => {
             xs={2}
             className="common-grid"
             style={{ justifyContent: 'flex-end' }}
-            onClick={handleLogin}
+            onClick={handleLogout}
           >
-            <IoLogOut color="white" size={24} />
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <IoLogOut color="white" size={24} />
+            </motion.div>
           </Grid>
         </Grid>
       </Container>
@@ -267,7 +278,14 @@ const ResponsivePageHeader = () => {
   };
 
   const getTopHeader = () => {
-    if (isDiagnosis || isPatient || isMember || isDashboard || isTutorial) {
+    if (
+      isDiagnosis ||
+      isPatient ||
+      isMember ||
+      isDashboard ||
+      isTutorial ||
+      isMainPage
+    ) {
       return (
         <Container maxWidth="lg">
           <Grid container spacing={1}>
@@ -287,33 +305,7 @@ const ResponsivePageHeader = () => {
               md={1}
               className="common-grid"
               onClick={() => history.push('/dashboard/reservation')}
-              {...bindHover(diagnosisState)}
             >
-              <Menu
-                {...bindMenu(diagnosisState)}
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                  vertical: 45,
-                  horizontal: 30,
-                }}
-                transformOrigin={{ veritcal: 'top', horizontal: 'left' }}
-              >
-                <MenuItem component="a" href="/dashboard/reservation">
-                  진료 접수
-                </MenuItem>
-
-                <MenuItem component="a" href="/dashboard/diagnosis">
-                  진료 등록
-                </MenuItem>
-
-                <MenuItem component="a" href="/dashboard/diagnostic">
-                  진단 검사 보기
-                </MenuItem>
-
-                <MenuItem component="a" href="/dashboard/diagnosis-history">
-                  진료 기록 보기
-                </MenuItem>
-              </Menu>
               <span>진료</span>
             </Grid>
             <Grid
@@ -337,20 +329,34 @@ const ResponsivePageHeader = () => {
             </Grid>
             <Grid
               item
-              sm={3}
-              md={7}
+              sm={2}
+              md={6}
               className="common-grid"
+              onClick={() => goPage('/dashboard/tutorial')}
               style={{
                 justifyContent: 'flex-end',
               }}
             >
-              <AiOutlineQuestion
-                size={24}
-                color="white"
-                style={{
-                  marginRight: '1rem',
-                }}
-              />
+              <AiOutlineQuestion size={24} color="white" />
+            </Grid>
+            <Grid
+              item
+              sm={1}
+              md={1}
+              className="common-grid"
+              style={{
+                justifyContent: 'flex-end',
+              }}
+              onClick={() =>
+                dispatch(
+                  setHeaderInfo({
+                    name: 'notification',
+                    status: true,
+                  }),
+                )
+              }
+            >
+              <IoNotificationsOutline size={24} color="white" />
             </Grid>
 
             <Grid
@@ -361,7 +367,7 @@ const ResponsivePageHeader = () => {
               style={{
                 justifyContent: 'flex-end',
               }}
-              onClick={handleLogin}
+              onClick={handleLogout}
             >
               <IoLogOut color="white" size={24} />
             </Grid>
@@ -490,6 +496,11 @@ const ResponsivePageHeader = () => {
       <SidebarContainer>
         {breakpoint !== 'xs' && <Hidden xsDown>{getBottomContent()}</Hidden>}
       </SidebarContainer>
+
+      {breakpoint === 'xs' && <MobileDrawer />}
+
+      <NotificationDrawer />
+      <AuthModal />
     </Fragment>
   );
 };

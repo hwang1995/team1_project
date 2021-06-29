@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
+
 import DiagnosisPage from './diagnosis';
 import DiagnosisHistoryPage from './diagnosis-history';
 import DiagnosticPage from './diagnostic';
@@ -8,7 +9,6 @@ import MemberPage from './member';
 import PatientPage from './patient';
 import ReservationPage from './reservation';
 import TutorialPage from './tutorial';
-
 
 /**
  * Dashboard 컴포넌트의 페이지를 정의하고
