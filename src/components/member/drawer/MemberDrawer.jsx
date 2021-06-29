@@ -6,6 +6,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
+  Avatar,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,6 +24,9 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import PostalCodeModal from '../modal/PostalCodeModal';
 import { KeyboardDatePicker } from '@material-ui/pickers';
+import ImageUploader from 'react-images-upload';
+import StyledContainer from 'components/common/container/StyledContainer';
+import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
 
 const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { breakpoint } = useWindowSize();
@@ -33,6 +38,14 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const [keyboardDate, handleKeyDateChange] = useState(new Date());
   const [dateErrorMessage, setDateErrorMessage] = useState('');
 
+  const [pictures, setPictures] = useState('');
+
+  const [imgBase64, setImgBase64] = useState('');
+
+  const onDrop = (event, picture) => {
+    setPictures(picture[0]);
+  };
+
   const dispatch = useDispatch();
 
   const isModalOpened = useSelector((state) => state.member.modalStatus);
@@ -40,6 +53,28 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { member_postal, member_addr1 } = useSelector(
     (state) => state.member.addressInfo,
   );
+
+  const [selectedGender, setSelectedGender] = useState({
+    male: false,
+    female: false,
+  });
+
+  const handleChangeGender = (name) => {
+    console.log(name);
+    if (name === 'male') {
+      //남성일때
+      setSelectedGender({
+        female: false,
+        male: true,
+      });
+    } else {
+      //여성일때
+      setSelectedGender({
+        male: false,
+        female: true,
+      });
+    }
+  };
 
   //drawer창 on/off 될때마다 주소값 초기화
   useEffect(() => {
@@ -120,6 +155,10 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     const regExpPw =
       /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
 
+    // 전화번호 정규표현식
+    const regExpTel =
+      /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+
     let member_authority = '';
     if (selectVal === '병원장') {
       member_authority = 'ROLE_ADMIN';
@@ -134,13 +173,25 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     const member_email = event.target.memberEmail.value;
     const member_pw = event.target.memberPassword.value;
     const member_name = event.target.memberName.value;
+    const member_tel = event.target.memberTel.value;
     const member_birth = event.target.memberBirth.value;
     const member_postal = event.target.memberAddress1.value;
     const member_addr1 = event.target.memberAddress2.value;
     const member_addr2 = event.target.memberAddress3.value;
+    const member_img = pictures;
+    const member_introduce = event.target.memberIntroduce.value;
+    let gender = '';
+    if (selectedGender['male'] === true) {
+      gender = '남';
+    } else if (selectedGender['female'] === true) {
+      gender = '여';
+    }
+    const member_gender = gender;
 
+    //유효성 검사
     const isValidEmail = regExpEmail.test(member_email);
     const isValidPW = regExpPw.test(member_pw);
+    const isValidTel = regExpTel.test(member_tel);
 
     if (!isEmailChecked) {
       alert('이메일 중복 체크를 해주세요. ');
@@ -153,15 +204,21 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
         '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
       );
       return;
+    } else if (gender === '') {
+      alert('성별을 선택해주세요.');
+      return;
     } else if (member_name === '') {
       alert('이름이 공백입니다.');
+      return;
+    } else if (!isValidTel) {
+      alert("전화번호를 올바르게 입력해주세요.(공백 또는 ' - ' 사용)");
       return;
     } else if (member_birth === '') {
       alert('생년월일 값을 입력해주세요.');
       return;
     } else if (!(dateErrorMessage === '')) {
       console.log(dateErrorMessage);
-      alert(dateErrorMessage + ' 다시 한번 확인해주세요^^');
+      alert('생년월일에서 ' + dateErrorMessage + ' 다시 한번 확인해주세요^^');
       return;
     } else if (member_postal === '' || member_addr1 === '') {
       alert('주소가 공백입니다. 주소 검색을 해주세요.');
@@ -176,18 +233,24 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
       member_pw,
       member_birth,
       member_email,
+      member_gender,
       member_name,
+      member_tel,
       member_authority,
       member_postal,
       member_addr1,
       member_addr2,
+      member_img,
+      member_introduce,
     };
-    console.log(newMember);
+    console.log('새로운 멤버정보 ', newMember);
 
     setMember((member) => [...member, newMember]);
 
+    setImgBase64(member_img);
+
     alert('임직원이 추가되었습니다.');
-    console.log(member);
+    console.log('member: ', member);
     //setMember(member);
     setOpened(false);
   };
@@ -308,11 +371,158 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 }}
               >
                 <StyledTypography variant="h6" component="h5" weight={5}>
+                  성별
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <div
+                  style={{
+                    display: 'flex',
+                    maxWidth: '400px',
+                    height: '100px',
+                  }}
+                >
+                  <StyledContainer
+                    bgColor="rgb(62,63,70)"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    onClick={() => handleChangeGender('male')}
+                  >
+                    {selectedGender.male && (
+                      <Fragment>
+                        <IoManOutline color="rgb(244,213,51)" size={64} />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flex: 1,
+                          }}
+                        >
+                          <StyledTypography
+                            variant="subtitle1"
+                            weight={7}
+                            style={{
+                              color: 'rgb(244,213,51)',
+                              fontFamily: 'Lato',
+                            }}
+                          >
+                            남자 (Male)
+                          </StyledTypography>
+                        </div>
+                      </Fragment>
+                    )}
+                    {!selectedGender.male && (
+                      <Fragment>
+                        <IoManOutline color="white" size={64} />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flex: 1,
+                          }}
+                        >
+                          <StyledTypography
+                            variant="subtitle1"
+                            weight={7}
+                            style={{
+                              color: 'white',
+                              fontFamily: 'Lato',
+                            }}
+                          >
+                            남자 (Male)
+                          </StyledTypography>
+                        </div>
+                      </Fragment>
+                    )}
+                  </StyledContainer>
+                  <StyledContainer
+                    bgColor="rgb(62,63,70)"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    onClick={() => handleChangeGender('female')}
+                  >
+                    {selectedGender.female && (
+                      <Fragment>
+                        <IoWomanOutline color="rgb(244,213,51)" size={64} />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flex: 1,
+                          }}
+                        >
+                          <StyledTypography
+                            variant="subtitle1"
+                            weight={7}
+                            style={{
+                              color: 'rgb(244,213,51)',
+                              fontFamily: 'Lato',
+                            }}
+                          >
+                            여자 (Female)
+                          </StyledTypography>
+                        </div>
+                      </Fragment>
+                    )}
+                    {!selectedGender.female && (
+                      <Fragment>
+                        <IoWomanOutline color="white" size={64} />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flex: 1,
+                          }}
+                        >
+                          <StyledTypography
+                            variant="subtitle1"
+                            weight={7}
+                            style={{
+                              color: 'white',
+                              fontFamily: 'Lato',
+                            }}
+                          >
+                            여자 (Female)
+                          </StyledTypography>
+                        </div>
+                      </Fragment>
+                    )}
+                  </StyledContainer>
+                </div>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
                   이름
                 </StyledTypography>
               </Grid>
               <Grid item xs={9}>
                 <StyledInputBase name="memberName" />
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  전화번호
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={9}>
+                <StyledInputBase name="memberTel" />
               </Grid>
               <Grid
                 item
@@ -393,6 +603,37 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 />
               </Grid>
             </Grid>
+            <div>
+              <StyledTypography variant="h6" component="h5" weight={5}>
+                이미지
+              </StyledTypography>
+              <ImageUploader
+                name="memberImage"
+                withIcon={true}
+                buttonText="이미지를 선택해주세요."
+                onChange={onDrop}
+                imgExtension={['.jpg', '.png']}
+                fileSizeError="파일사이즈가 너무 큽니다. 최대크기(5242880)"
+                fileTypeError="파일확장자가 잘못되었습니다."
+                label="최대 파일 크기: 5mb, 확장자: jpg, png 가능"
+                maxFileSize={5242880}
+                singleImage
+                withPreview
+              />
+            </div>
+            <div>
+              <StyledTypography variant="h6" component="h5" weight={5}>
+                자기소개
+              </StyledTypography>
+              <TextField
+                name="memberIntroduce"
+                label="간단한 소개인사를 적어주세요."
+                multiline
+                rows={4}
+                variant="outlined"
+                fullWidth
+              />
+            </div>
 
             <div
               style={{

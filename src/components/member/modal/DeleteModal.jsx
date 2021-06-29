@@ -101,7 +101,7 @@ const DeleteModal = ({
                   정말 삭제하겠습니까?
                 </h2>
                 <img
-                  src="http://localhost:3000/image/dorge.jpg"
+                  src="http://localhost:3000/assets/image/question.jpeg"
                   alt="Logo"
                   width="100%"
                   height="300px"
@@ -117,7 +117,7 @@ const DeleteModal = ({
                 }}
               >
                 <StyledButton
-                  bgColor="blue"
+                  bgColor="lightblue"
                   color="white"
                   width="60"
                   onClick={() => deleteMember()}
