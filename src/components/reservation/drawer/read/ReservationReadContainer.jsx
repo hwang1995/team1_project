@@ -7,53 +7,139 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
 
+/*
+  캘린더에 추가된 데이터를 클릭했을 때 나오는 ReservationDrawer에 세팅되는 컨텐트 부분이다.
+  readPatient: 예약된 환자 정보 객체 데이터이다.
+*/
 const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
 
    const dispatch = useDispatch();
 
+  // 내원사유를 관리하는 상태 데이터, readPatient.drOpinion을 세팅하여 수정할 수 있도록 한다
   const [visitReason, setReason] = useState(readPatient.drOpinion);
+  // 수정, 삭제 완료되었을떄에 따라 컴포넌트를 세팅하기 위한 상태 데이터
   const [checkPage, setCheckPage] = useState("");
+  // 예약시간 부분을 커스텀하여 세팅하는 상태 데이터
   const [reservationTime, setReservationTime] = useState({
     day: "",
     startTime: "",
     endTime: ""
   })
+
+  /* 
+    내원사유에 대한 값을 받아 세팅 하는 부분
+    검색: checkPage
+  */
   const visitReasonHandleChange = (event) => {
     setReason(event.target.value);
   };
+
+  /*
+    readPatient(props)값이 변할 떄마다 실행이 된다.
+    여기에서 readPatient에 있는 예약 시간 데이터를 통해 커스텀하여 데이터 세팅
+    reservationTime에 데이터를 세팅한다.
+    검색: reservationTime
+  */
   useEffect(() => {
-    console.log("reservationreadcontainer 실행")
     const day = moment(readPatient.start).format('YYYY년 MM월 DD일');
     const startTime = moment(readPatient.start).format('LT');
     const endTime = moment(readPatient.end).format('LT');
-    setReservationTime({day, startTime, endTime});
-  }, []);
+    setReservationTime({ day, startTime, endTime });
+  }, [readPatient]);
 
+  /*
+    예약수정 버튼을 클릭했을 때, 실행되는 클릭 이벤트 함수
+    1) 수정된 값이 없을 때
+    2) 수정된 값을 상태 데이터에 세팅
+    3) 컴포넌트 변화 (업데이트 완료) 
+  */
   const updateReservationInfo = (id, changeVisitReason) => {
+    //1)
     if (visitReason === readPatient.drOpinion){
       alert("수정된 내용을 입력해주세요");
     }else{
-      console.log("id", id);
-       console.log("changeVisitReason", changeVisitReason);
+      //2)
        const updateInfo = {
          id: id,
          drOpinion: changeVisitReason
        }
+       //2)
       dispatch(upateReservationTime(updateInfo));
-      ///나중에 수정이 완료되었다는 컴포넌트 작성해서 여기다 작성하기!
+      ///3)
       setCheckPage('UPDATE');
     }
   }
-
+  /*
+    예약 취소 버튼을 눌렀을 때, 실행 되는 함수
+    1) 값을 삭제하기 위한 부분
+    2) 컴포넌트 변화 (삭제 완료)
+  */
   const removeReservationInfo = (id) => {
+    //1)
     dispatch(removeReservationTime(id));
+    //2)
     setCheckPage('REMOVE');
   }
 
-  return (
-    <div>
-      {checkPage === '' ? (
-        <Grid
+  const resultUpdate = () => {
+    return (
+
+        <div style={{ textAlign: 'center' }}>
+          <div>
+            <img src="/assets/image/accept.png" alt="accept" />
+          </div>
+          <div>
+            <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
+              수정이 완료되었습니다.
+            </h1>
+          </div>
+          <div>
+            <StyledButton
+              width="60%"
+              bgColor="#DDB892"
+              color="white"
+              onClick={() => {
+                setReadOpened(false);
+                setCheckPage('');
+              }}
+            >
+              메인으로 돌아가기
+            </StyledButton>
+          </div>
+        </div>
+    )
+  }
+
+  const resultDelete = () => {
+    return (
+       <div style={{ textAlign: 'center' }}>
+          <div>
+            <img src="/assets/image/accept.png" alt="accept"/>
+          </div>
+          <div>
+            <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
+              예약이 취소되었습니다.
+            </h1>
+          </div>
+          <div>
+            <StyledButton
+              width="60%"
+              bgColor="#DDB892"
+              color="white"
+              onClick={() => {
+                setReadOpened(false);
+                setCheckPage('');
+              }}
+            >
+              메인으로 돌아가기
+            </StyledButton>
+          </div>
+        </div>
+    )
+  }
+  const mainContent = () => {
+    return (
+      <Grid
           container
           spacing={2}
           style={{
@@ -208,55 +294,14 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             </StyledButton>
           </Grid>
         </Grid>
-      ) : checkPage === 'UPDATE' ? (
-        <div style={{ textAlign: 'center' }}>
-          <div>
-            <img src="/assets/image/accept.png" />
-          </div>
-          <div>
-            <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
-              수정이 완료되었습니다.
-            </h1>
-          </div>
-          <div>
-            <StyledButton
-              width="60%"
-              bgColor="#DDB892"
-              color="white"
-              onClick={() => {
-                setReadOpened(false);
-                setCheckPage('');
-              }}
-            >
-              메인으로 돌아가기
-            </StyledButton>
-          </div>
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center' }}>
-          <div>
-            <img src="/assets/image/accept.png" />
-          </div>
-          <div>
-            <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
-              삭제가 완료되었습니다.
-            </h1>
-          </div>
-          <div>
-            <StyledButton
-              width="60%"
-              bgColor="#DDB892"
-              color="white"
-              onClick={() => {
-                setReadOpened(false);
-                setCheckPage('');
-              }}
-            >
-              메인으로 돌아가기
-            </StyledButton>
-          </div>
-        </div>
-      )}
+    )
+  }
+
+  return (
+    <div>
+      {checkPage === '' && mainContent()}
+      {checkPage === 'UPDATE' && resultUpdate()}
+      {checkPage === 'REMOVE' && resultDelete()}
     </div>
   );
 };

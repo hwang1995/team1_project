@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {setGenderStatus} from "redux/features/member/memberSlice";
 import { Grid } from '@material-ui/core';

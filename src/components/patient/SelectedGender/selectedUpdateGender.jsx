@@ -9,13 +9,13 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 const SelectedMan = (genderValue) => {
   const dispatch = useDispatch();
 
+  const gender = genderValue.genderValue;
   const [selectedGender, setSelectedGender] = useState({
     male: false,
     female: false,
   });
 
   const handleChange = (name) => {
-    console.log(name);
     let balance = '';
     if (name === 'male') {
       balance = 'female';
@@ -36,21 +36,10 @@ const SelectedMan = (genderValue) => {
   };
 
   useEffect(() => {
-    console.log('genderValue', genderValue);
-    if (genderValue.genderValue === 'male') {
-      setSelectedGender({
-        ...selectedGender,
-        male: true,
-      });
-    }
-
-    if (genderValue.genderValue === 'female') {
-       setSelectedGender({
-         ...selectedGender,
-         female: true,
-       });
-    }
-  },[])
+    setSelectedGender({
+      [gender]: true,
+    });
+  }, [gender]);
 
   return (
     <Fragment>

@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import Content from "./Content";
+import UpdateQuestion from './Content/UpdateQuestion';
+import DeleteQuestion from './Content/DeleteQuestion';
 import {
   upateReservationTime,
   removeReservationTime,
 } from 'redux/features/reservation/reservationSlice';
 import moment from 'moment';
-import { Grid } from '@material-ui/core';
-import StyledTypography from 'components/common/typography/StyledTypography';
-import StyledInputBase from 'components/common/input/StyledInputBase';
-import StyledButton from 'components/common/button/StyledButton';
 
+/*
+  해당 컴포넌트는 환자 데이터 정보를 가져와 볼 수 있는 컴포넌트이다.
+  1) setReadOpened -> DeleteQuestion과 UpdateQuestion 에 props로 전달해 준다. 
+     false -> 검색어가 없다라고 띄우는 컴포넌트
+     true -> 검색결과 내용을 담아 띄우는 컴포넌트
+  2) readPatient는 환자 데이터 이다. Content 컴포넌트에 props로 전달하여 데이터를 세팅해 준다
+  3) setVisible ->SearchBox를 보여주냐 보여주지 않냐에 대한 여부
+  4) setPageResult
+     예약환자를 검색하는 컴포넌트 (PatientListItem)에서 
+     pageResult = true -> 검색어를 입력해세요 라는 내용이 세팅
+                  false -> 검색결과가 없습니다 라는 내용이 세팅
+*/ 
 const ReservationInfoListContainer = ({
   setReadOpened,
   readPatient,
@@ -17,261 +28,92 @@ const ReservationInfoListContainer = ({
   setPageResult,
 }) => {
   const dispatch = useDispatch();
-
+  /*
+    '': => Content 컴포넌트 (환자의 정보를 보여주는 컴포넌트)
+    'Update': => 수정이 완료되었다는 내용
+    'Remove': => 삭제가 완료되었다는 내용
+  */
   const [checkPage, setCheckPage] = useState('');
+  
+  // 의사 소견
   const [visitReason, setReason] = useState(readPatient.drOpinion);
+
+  // 예약시간 데이터
   const [reservationTime, setReservationTime] = useState({
     day: '',
     startTime: '',
     endTime: '',
   });
+
+  // 의사 소견에 대한 값을 setReason에 세팅
   const visitReasonHandleChange = (event) => {
     setReason(event.target.value);
   };
-  useEffect(() => {
-    console.log('reservationreadcontainer 실행');
-    const day = moment(readPatient.start).format('YYYY년 MM월 DD일');
-    const startTime = moment(readPatient.start).format('LT');
-    const endTime = moment(readPatient.end).format('LT');
-    setReservationTime({ day, startTime, endTime });
-  }, []);
 
+  /*
+    readPatient 값이 바뀔때 마다 
+    props를 통해 갖고온 readPatient 데이터를 reservationTime에 세팅 해준다
+  */
+  useEffect(() => {
+      console.log("detail 컴포넌트")
+    setReservationTime({
+      day: moment(readPatient.start).format('YYYY년 MM월 DD일'),
+      startTime: moment(readPatient.start).format('LT'),
+      endTime: moment(readPatient.end).format('LT'),
+    });
+  }, [readPatient]);
+
+  // 수정관련 클릭 이벤트
   const updateReservationInfo = (id, changeVisitReason) => {
     if (visitReason === readPatient.drOpinion) {
       alert('수정된 내용을 입력해주세요');
     } else {
-      console.log('id', id);
-      console.log('changeVisitReason', changeVisitReason);
       const updateInfo = {
         id: id,
         drOpinion: changeVisitReason,
       };
       dispatch(upateReservationTime(updateInfo));
-      ///나중에 수정이 완료되었다는 컴포넌트 작성해서 여기다 작성하기!
+
       setCheckPage('UPDATE');
       setVisible(true);
-      //setReadOpened(false);
     }
   };
 
+  // 예약 취소 눌렀을 떄 일어나는 클릭 이벤트
   const removeReservationInfo = (id) => {
     dispatch(removeReservationTime(id));
-    ///나중에 삭제가 완료되면 컴포넌트 작성해서 여기다 작성하기!
+    
     setCheckPage('REMOVE');
     setVisible(true);
-    //setReadOpened(false);
   };
 
   return (
     <div>
-      {checkPage === '' ? (
-        <Grid
-          container
-          spacing={2}
-          style={{
-            padding: '2rem',
-          }}
-        >
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              이름
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={readPatient.title} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              생년월일
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={readPatient.birth} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              예약 날짜
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={reservationTime.day} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              예약 시작
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={reservationTime.startTime} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              예약 종료
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={reservationTime.endTime} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              진료실
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={readPatient.drRoom} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              의사
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase readOnly value={readPatient.memberName} />
-          </Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <StyledTypography variant="h6" component="h5" weight={5}>
-              내원 사유
-            </StyledTypography>
-          </Grid>
-          <Grid item xs={9}>
-            <StyledInputBase
-              onChange={visitReasonHandleChange}
-              value={visitReason}
-            />
-          </Grid>
-          <Grid item xs={6} style={{ textAlign: 'center', marginTop: '1.5em' }}>
-            <StyledButton
-              width="80%"
-              bgColor="#99582a"
-              color="white"
-              onClick={() => {
-                updateReservationInfo(readPatient.id, visitReason);
-              }}
-            >
-              예약수정
-            </StyledButton>
-          </Grid>
-          <Grid item xs={6} style={{ textAlign: 'center', marginTop: '1.5em' }}>
-            <StyledButton
-              width="80%"
-              bgColor="#DDB892"
-              color="white"
-              onClick={() => {
-                removeReservationInfo(readPatient.id);
-              }}
-            >
-              예약취소
-            </StyledButton>
-          </Grid>
-        </Grid>
-      ) : checkPage === 'UPDATE' ? (
-        <div style={{ textAlign: 'center' }}>
-          <div>
-            <img src="/assets/image/accept.png" />
-          </div>
-          <div>
-            <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
-              수정이 완료되었습니다.
-            </h1>
-          </div>
-          <div>
-            <StyledButton
-              width="60%"
-              bgColor="#DDB892"
-              color="white"
-              onClick={() => {
-                setCheckPage('');
-                setVisible(false);
-                setReadOpened(false);
-                setPageResult(false);
-              }}
-            >
-              이전 화면으로 돌아가기
-            </StyledButton>
-          </div>
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center' }}>
-          <div>
-            <img src="/assets/image/accept.png" />
-          </div>
-          <div>
-            <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
-              삭제가 완료되었습니다.
-            </h1>
-          </div>
-          <div>
-            <StyledButton
-              width="60%"
-              bgColor="#DDB892"
-              color="white"
-              onClick={() => {
-                setVisible(false);
-                setCheckPage('');
-                setReadOpened(false);
-                setPageResult(false);
-              }}
-            >
-              이전 화면으로 돌아가기
-            </StyledButton>
-          </div>
-        </div>
+      {checkPage === '' && (
+        <Content
+          readPatient={readPatient}
+          reservationTime={reservationTime}
+          updateReservationInfo={updateReservationInfo}
+          visitReasonHandleChange={visitReasonHandleChange}
+          removeReservationInfo={removeReservationInfo}
+          visitReason={visitReason}
+        />
+      )}
+      {checkPage === 'UPDATE' && (
+        <UpdateQuestion
+          setCheckPage={setCheckPage}
+          setVisible={setVisible}
+          setReadOpened={setReadOpened}
+          setPageResult={setPageResult}
+        />
+      )}
+      {checkPage === 'REMOVE' && (
+        <DeleteQuestion
+          setCheckPage={setCheckPage}
+          setVisible={setVisible}
+          setReadOpened={setReadOpened}
+          setPageResult={setPageResult}
+        />
       )}
     </div>
   );
