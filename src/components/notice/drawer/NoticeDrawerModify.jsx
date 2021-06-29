@@ -19,6 +19,7 @@ const NoticeDrawerModify = () => {
   const [inputContent, setInputContent] = useState('');
   const dispatch = useDispatch();
 
+  console.log(inputContent);
   const handleChange = (e) => {
     setInputVal(e.target.value);
   };
@@ -57,7 +58,7 @@ const NoticeDrawerModify = () => {
     );
 
     console.log('currentItem : ', currentItem);
-    dispatch(setActiveStep('SUCCESS'));
+    dispatch(setActiveStep('MODIFYSUCCESS'));
   };
 
   useEffect(() => {

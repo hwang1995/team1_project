@@ -7,6 +7,8 @@ import emergencyReducer from './features/emergency/emergencySlice';
 import memberReducer from './features/member/memberSlice';
 import commonReducer from './features/common/commonSlice';
 import diagnosticReducer from './features/diagnostic/diagnosticSlice';
+import tutorialReducer from './features/tutorial/tutorialSlice';
+
 export default configureStore({
   reducer: {
     common: commonReducer,
@@ -16,5 +18,6 @@ export default configureStore({
     diagnostic: diagnosticReducer,
     member: memberReducer,
     emergency: emergencyReducer,
+    tutorial: tutorialReducer,
   },
 });
