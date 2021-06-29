@@ -163,7 +163,7 @@ const MedicineDrawer = () => {
               >
                 {medicineInfo.length === 0 && (
                   <Fragment>
-                    <StyledTypography variant="h5" component="h5" weight={9}>
+                    <StyledTypography variant="h5" component="h5" weight={7}>
                       여기에는 추가된 약 목록들이 나타납니다.
                     </StyledTypography>
                   </Fragment>

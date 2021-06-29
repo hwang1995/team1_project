@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import Dashboard from './dashboard';
 import ErrorPage from './ErrorPage';
 // import { Switch, Route, Router } from 'react-router-dom';
+import AuthPage from './auth';
 import MainPage from './main';
 import TemporaryPage from './temporary';
 

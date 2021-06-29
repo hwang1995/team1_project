@@ -19,6 +19,8 @@ export const commonSlice = createSlice({
     },
     headerInfo: {
       drawer: false,
+      notification: false,
+      auth: false,
       diagnosis: false,
       hospital: false,
       patient: false,

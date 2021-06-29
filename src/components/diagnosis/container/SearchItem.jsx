@@ -1,12 +1,22 @@
 import React, { useState, useCallback } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import ClrButton from './ClrButton';
 import SearchContainer from './SearchContainer';
 
 const SearchItem = ({ data, addMedicine }) => {
   const [count, setCount] = useState(1);
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = useCallback(
+    (variant, message) => {
+      enqueueSnackbar(message, {
+        variant,
+      });
+    },
+    [enqueueSnackbar],
+  );
   const addItem = useCallback(
     (data, count) => {
       addMedicine({ ...data, count });
@@ -21,12 +31,12 @@ const SearchItem = ({ data, addMedicine }) => {
   const handleMinusBtn = useCallback(() => {
     setCount((prevState) => {
       if (prevState <= 1) {
-        alert('MINUS');
+        handleAlert('error', '수량은 마이너스가 될 수 없습니다.');
         return prevState;
       }
       return prevState - 1;
     });
-  }, []);
+  }, [handleAlert]);
 
   return (
     <SearchContainer key={data.medicine_id}>

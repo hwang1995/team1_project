@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Divider,
   Grid,
-  Hidden,
   Stepper,
   Step,
   StepLabel,
@@ -13,6 +12,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { FaDiagnoses } from 'react-icons/fa';
 import { RiChatHistoryFill } from 'react-icons/ri';
 import { useSelector, useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 import {
   setMedicineDrawer,
   setInjectorDrawer,
@@ -22,8 +22,7 @@ import {
   setActiveStep,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import StyledButton from 'components/common/button/StyledButton';
-import PageHeader from 'components/common/header/PageHeader';
-import MenuSidebar from 'components/common/sidebar/MenuSidebar';
+
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import DataTable from 'components/diagnosis/table/DataTable';
@@ -49,16 +48,30 @@ const DiagnosisPage = () => {
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
   const activeStep = useSelector((state) => state.diagnosis.activeStep);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const handleNext = () => {
     if (patientInfo.id === 0) {
-      alert('환자를 선택해주세요.');
+      handleAlert('error', '환자를 선택해주세요.');
+      // alert('환자를 선택해주세요.');
       return;
     } else if (activeStep === 1 && diagnosisInfo.dr_opinion === '') {
-      alert('의사 의견을 입력해주세요.');
+      handleAlert('error', '의사 의견을 입력해주세요.');
+      // alert('의사 의견을 입력해주세요.');
       return;
     } else if (activeStep === 1 && diagnosisInfo.dr_opinion !== '') {
       dispatch(setDiagnosisModal(true));
+      return;
+    }
+
+    if (activeStep === 2) {
+      dispatch(setActiveStep(0));
       return;
     }
     dispatch(setActiveStep(activeStep + 1));

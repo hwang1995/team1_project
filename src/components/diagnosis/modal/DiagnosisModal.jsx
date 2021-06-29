@@ -84,11 +84,10 @@ const DiagnosisModal = () => {
                   진료의 내용이 아래와 같습니까?
                 </StyledTypography>
                 <div>
-                  <IconButton>
-                    <AiOutlineClose
-                      size={24}
-                      onClick={() => dispatch(setDiagnosisModal(false))}
-                    />
+                  <IconButton
+                    onClick={() => dispatch(setDiagnosisModal(false))}
+                  >
+                    <AiOutlineClose size={24} />
                   </IconButton>
                 </div>
               </DrawerHeader>
@@ -169,7 +168,7 @@ const DiagnosisModal = () => {
             </ResponsiveContainer>
             <div>
               <StyledButton onClick={handleNextStep} bgColor="#FEFEFE">
-                다음 페이지로 넘어가기
+                진료 등록 하기
               </StyledButton>
             </div>
           </div>

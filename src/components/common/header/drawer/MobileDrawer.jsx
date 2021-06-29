@@ -242,6 +242,20 @@ const MobileDrawer = () => {
                 </div>
               </div>
             </Collapse>
+
+            <div
+              className="content-area"
+              onClick={() =>
+                dispatch(
+                  setHeaderInfo({
+                    name: 'notification',
+                    status: true,
+                  }),
+                )
+              }
+            >
+              알림 리스트
+            </div>
           </PageTransition>
         </MobileContainer>
       </Drawer>
