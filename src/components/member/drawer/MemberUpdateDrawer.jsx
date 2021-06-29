@@ -10,6 +10,7 @@ import {
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import useWindowSize from 'hooks/useWindowSize';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
@@ -32,7 +33,13 @@ const MemberUpdateDrawer = ({
   const [selectVal, setSelectVal] = useState('');
 
   const [memberInfo, setMemberInfo] = useState({});
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   const handleChange = (event) => {
     if (event.target.name === 'memberName') {
       setMemberInfo({ ...memberInfo, member_name: event.target.value });
@@ -108,16 +115,19 @@ const MemberUpdateDrawer = ({
     const isValidTel = regExpTel.test(member_tel);
 
     if (member_name === '') {
-      alert('이름이 공백입니다.');
+      handleAlert('error', '이름이 공백입니다.');
       return;
     } else if (!isValidTel) {
-      alert("전화번호를 제대로 입력해주세요.(공백 또는 '-' 사용)");
+      handleAlert(
+        'error',
+        '전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)',
+      );
       return;
     } else if (member_postal === '' || member_addr1 === '') {
-      alert('주소가 공백입니다. 주소 검색을 해주세요.');
+      handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
       return;
     } else if (member_addr2 === '') {
-      alert('상세주소가 공백입니다. 상세주소를 입력해주세요.');
+      handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
       return;
     }
 
@@ -128,8 +138,7 @@ const MemberUpdateDrawer = ({
     row.member_postal = member_postal;
     row.member_addr1 = member_addr1;
     row.member_addr2 = member_addr2;
-
-    alert('임직원 정보가 변경 되었습니다.');
+    handleAlert('success', '임직원 정보가 변경 되었습니다.');
     setMember(member);
     console.log('선택임직원데이터: ', memberData);
     setUpdateOpened(false);

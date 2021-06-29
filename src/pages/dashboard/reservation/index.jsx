@@ -25,7 +25,7 @@ import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import doctorJson from '../../../pages/temporary/sihyun/json/doctorJson';
 import ReservationDrawer from 'components/reservation/drawer/Insert/ReservationDrawer';
-import ReservationReadDrawer from 'components/reservation/drawer/Read/ReservationReadDrawer';
+import ReservationReadDrawer from 'components/reservation/drawer/read/ReservationReadDrawer';
 import SearchReservation from 'components/reservation/drawer/SearchReservation';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
@@ -37,7 +37,6 @@ import PageTransition from 'components/common/transition/PageTransition';
  * @returns {JSX.Element}
  */
 const ReservationPage = () => {
-
   /*
    검색
    1) callendarDom
@@ -56,7 +55,7 @@ const ReservationPage = () => {
   const reservationInfo = useSelector(
     (state) => state.reservation.reservationInfo,
   );
- // const { breakpoint } = useWindowSize();
+  // const { breakpoint } = useWindowSize();
 
   /*
   Calendar DOM을 가져오기 위해 설정하는 Ref
@@ -118,7 +117,7 @@ const ReservationPage = () => {
   const weekNum = moment(now, 'MM-DD-YYYY').week();
   const initStartDate = moment().day('Sunday').week(weekNum).toDate();
   const initEndDate = moment().day('Saturday').week(weekNum).toDate();
-  
+
   /*
   handlePrevClick과 handleNextClick 클릭시 주단위로
   캘린더가 넘어간다
@@ -130,7 +129,7 @@ const ReservationPage = () => {
     endDate: moment(initEndDate).format('YYYY년 MM월 DD일'),
   });
 
- /* 
+  /* 
   캘린더 dom을 가져오기 위해 useEffect를 사용
   검색: callendarDom
  */
@@ -225,7 +224,7 @@ const ReservationPage = () => {
   3) drawer오픈한다
   검색: readReservationData
   */
-  const onBeforeCreateSchedule = (e) => { 
+  const onBeforeCreateSchedule = (e) => {
     // 1)
     const start = e.start;
     const end = e.end;
@@ -336,7 +335,7 @@ const ReservationPage = () => {
                       ))}
                     </Select>
                   </FormControl>
-                    {/* /selectDoctor */}
+                  {/* /selectDoctor */}
                 </TitleHeader>
                 <div
                   className="icon-area"

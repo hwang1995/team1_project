@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import Content from "./Content";
+import { useSnackbar } from 'notistack';
+import Content from './Content';
 import UpdateQuestion from './Content/UpdateQuestion';
 import DeleteQuestion from './Content/DeleteQuestion';
 import {
@@ -20,7 +21,7 @@ import moment from 'moment';
      예약환자를 검색하는 컴포넌트 (PatientListItem)에서 
      pageResult = true -> 검색어를 입력해세요 라는 내용이 세팅
                   false -> 검색결과가 없습니다 라는 내용이 세팅
-*/ 
+*/
 const ReservationInfoListContainer = ({
   setReadOpened,
   readPatient,
@@ -28,13 +29,20 @@ const ReservationInfoListContainer = ({
   setPageResult,
 }) => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   /*
     '': => Content 컴포넌트 (환자의 정보를 보여주는 컴포넌트)
     'Update': => 수정이 완료되었다는 내용
     'Remove': => 삭제가 완료되었다는 내용
   */
   const [checkPage, setCheckPage] = useState('');
-  
+
   // 의사 소견
   const [visitReason, setReason] = useState(readPatient.drOpinion);
 
@@ -55,7 +63,7 @@ const ReservationInfoListContainer = ({
     props를 통해 갖고온 readPatient 데이터를 reservationTime에 세팅 해준다
   */
   useEffect(() => {
-      console.log("detail 컴포넌트")
+    console.log('detail 컴포넌트');
     setReservationTime({
       day: moment(readPatient.start).format('YYYY년 MM월 DD일'),
       startTime: moment(readPatient.start).format('LT'),
@@ -66,7 +74,7 @@ const ReservationInfoListContainer = ({
   // 수정관련 클릭 이벤트
   const updateReservationInfo = (id, changeVisitReason) => {
     if (visitReason === readPatient.drOpinion) {
-      alert('수정된 내용을 입력해주세요');
+      handleAlert('error', '수정된 내용을 입력해주세요');
     } else {
       const updateInfo = {
         id: id,
@@ -82,7 +90,7 @@ const ReservationInfoListContainer = ({
   // 예약 취소 눌렀을 떄 일어나는 클릭 이벤트
   const removeReservationInfo = (id) => {
     dispatch(removeReservationTime(id));
-    
+
     setCheckPage('REMOVE');
     setVisible(true);
   };

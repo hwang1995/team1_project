@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import { AiOutlineSearch } from 'react-icons/ai';
-
+import { useSnackbar } from 'notistack';
 const SearchContainer = styled.div`
   padding: 0.5rem;
   border-radius: 5px;
@@ -21,6 +21,13 @@ const SearchBase = styled(InputBase)`
 
 const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
   const [inputVal, setInputVal] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   const handleChange = (event) => {
     setInputVal(event.target.value);
   };
@@ -35,13 +42,14 @@ const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
         }, 10);
       }
     } else if (key === 'Enter' && !inputVal) {
-      alert('값이 존재하지 않습니다.');
+      handleAlert('error', '값이 존재하지 않습니다.');
     }
   };
 
   const handleClick = () => {
     if (inputVal === '') {
-      alert('공백입니다. 나중에 띄우자.');
+      handleAlert('error', '값이 입력되지 않았습니다.');
+
       return;
     }
     setSearchVal(inputVal);

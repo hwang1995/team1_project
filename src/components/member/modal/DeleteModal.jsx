@@ -7,6 +7,7 @@ import {
   Grid,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -42,6 +43,13 @@ const DeleteModal = ({
 }) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const handleClose = () => {
     setOpenModal(false);
@@ -51,7 +59,7 @@ const DeleteModal = ({
     const index = member.findIndex((member) => member.member_id === member_id);
     member.splice(index, 1);
     setMember(member);
-    alert('삭제되었습니다.');
+    handleAlert('success', '삭제되었습니다.');
     setOpenModal(false);
   };
 

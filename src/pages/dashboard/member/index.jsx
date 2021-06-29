@@ -18,8 +18,7 @@ import {
 } from '@material-ui/core';
 //import patientData from './patientData';
 import memberData from './memberData';
-import PageHeader from 'components/common/header/PageHeader';
-import MenuSidebar from 'components/common/sidebar/MenuSidebar';
+import { useSnackbar } from 'notistack';
 import useWindowSize from 'hooks/useWindowSize';
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
@@ -54,7 +53,13 @@ const MemberPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [isOpenModal, setOpenModal] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   //페이지상태 이벤트(페이지 이동시)
   const handleChangePage = (event, newPage) => {
     console.log('newPage: ', newPage);
@@ -71,11 +76,9 @@ const MemberPage = () => {
   const handleInitPassword = (data) => {
     const initialPW = 'douzone123!';
     data.member_pw = initialPW;
-    alert(
-      data.member_name +
-        '님의 비밀번호가 초기화되었습니다. (' +
-        initialPW +
-        ')',
+    handleAlert(
+      'success',
+      `${data.member_name}님의 비밀번호가 초기화되었습니다. (${initialPW})`,
     );
   };
 

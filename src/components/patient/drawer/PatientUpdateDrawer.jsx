@@ -5,6 +5,7 @@ import moment from 'moment';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import 'react-datepicker/dist/react-datepicker.css';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -26,25 +27,29 @@ const PatientUpdateDrawer = ({
 
   const gender = useSelector((state) => state.member.gender);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const [isUpdateModalOpened, setUpdateModalOpened] = useState(false);
   const [changeView, setChange] = useState(false);
   const [removeOrUpdate, setStatus] = useState('');
   const [patientInfo, setPatientInfo] = useState({
-    patient_id: "",
-    patient_name: "",
-    patient_birth: "",
-    patient_addr1: "",
-    patient_addr2: "",
-    patient_postal: "",
-    patient_tel: "",
-    patient_height: "",
-    patient_weight: "",
-    patient_gender: "",
+    patient_id: '',
+    patient_name: '',
+    patient_birth: '',
+    patient_addr1: '',
+    patient_addr2: '',
+    patient_postal: '',
+    patient_tel: '',
+    patient_height: '',
+    patient_weight: '',
+    patient_gender: '',
   });
-
-
-
 
   useEffect(() => {
     if (breakpoint !== undefined) {
@@ -53,11 +58,9 @@ const PatientUpdateDrawer = ({
   }, [breakpoint]);
 
   useEffect(() => {
-    console.log("실행", readPatientData);
+    console.log('실행', readPatientData);
     setPatientInfo(readPatientData);
-  }, [readPatientData])
-
-
+  }, [readPatientData]);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -86,16 +89,16 @@ const PatientUpdateDrawer = ({
       dispatch(setGenderStatus(''));
       setChange(true);
     } else {
-      alert('변경된 사항이 없습니다.');
+      handleAlert('error', '변경된 사항이 없습니다.');
     }
   };
 
   const addressClick = ({ fullAddress, postalcode }) => {
-      setPatientInfo({
-        ...patientInfo,
-        patient_postal: postalcode,
-        patient_addr1: fullAddress,
-      });
+    setPatientInfo({
+      ...patientInfo,
+      patient_postal: postalcode,
+      patient_addr1: fullAddress,
+    });
   };
 
   const deleteHandleClick = () => {
@@ -137,8 +140,8 @@ const PatientUpdateDrawer = ({
       setStatus('');
       setUpdateOpened(false);
       setChange(false);
-    } 
-     if (removeOrUpdate === 'remove') {
+    }
+    if (removeOrUpdate === 'remove') {
       setStatus('');
       setUpdateOpened(false);
       setChange(false);

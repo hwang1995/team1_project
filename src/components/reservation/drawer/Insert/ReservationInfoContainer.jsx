@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setReservationTime } from 'redux/features/reservation/reservationSlice';
 import { Grid } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
-
 
 /*
   예약정보 (환자정보, 의사정보, 예약시간, 내원사유)를 입력하고 
@@ -47,6 +47,16 @@ const ReservationInfoContainer = ({
   );
   const dispatch = useDispatch();
 
+  const visitReasonHandleChange = (event) => {
+    setReason(event.target.value);
+  };
+  const { enqueueSnackbar } = useSnackbar();
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
   /*
     컴포넌트 바뀌기 전, 진료예약 버튼 클릭시 발생하는 클릭 이벤트
     1) 환자이름과 생년월일이 안젹혀있을 때
@@ -60,11 +70,11 @@ const ReservationInfoContainer = ({
   const handleReservationClick = () => {
     //1)
     if (patientInfo.patient_name === '' && patientInfo.patient_birth === '') {
-      alert('환자를 선택해주세요');
+      handleAlert('error', '환자를 선택해주세요.');
     } else {
       //2)
       if (visitReason === '') {
-        alert('내원 사유를 적어주세요');
+        handleAlert('error', '내원 사유를 적어주세요.');
       } else {
         //3)
         setCheckChange(true);
@@ -114,9 +124,6 @@ const ReservationInfoContainer = ({
 
     검색: 
   */
-  const visitReasonHandleChange = (event) => {
-    setReason(event.target.value);
-  };
 
   return (
     <Grid

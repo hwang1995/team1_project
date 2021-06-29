@@ -27,6 +27,7 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import ImageUploader from 'react-images-upload';
 import StyledContainer from 'components/common/container/StyledContainer';
 import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
+import { useSnackbar } from 'notistack';
 
 const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { breakpoint } = useWindowSize();
@@ -41,6 +42,13 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const [pictures, setPictures] = useState('');
 
   const [imgBase64, setImgBase64] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const onDrop = (event, picture) => {
     setPictures(picture[0]);
@@ -119,15 +127,15 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
 
     const isValidEmail = regExpEmail.test(memberEmail);
     if (!isValidEmail) {
-      alert('이메일을 올바른 형식으로 입력해주세요.');
+      handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
       return;
     }
     const isInfo = member.find((member) => member.member_email === memberEmail);
     if (!isInfo) {
-      alert('확인되었습니다.');
+      handleAlert('success', '이메일을 사용해도 좋습니다.');
       setIsEmailChecked(true);
     } else {
-      alert('중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
+      handleAlert('error', '중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
       return;
     }
   };
@@ -194,37 +202,44 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     const isValidTel = regExpTel.test(member_tel);
 
     if (!isEmailChecked) {
-      alert('이메일 중복 체크를 해주세요. ');
+      handleAlert('error', '이메일 중복 체크를 해주세요.');
       return;
     } else if (!isValidEmail) {
-      alert('이메일을 올바른 형식으로 입력해주세요.');
+      handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
       return;
     } else if (!isValidPW) {
-      alert(
+      handleAlert(
+        'error',
         '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
       );
       return;
     } else if (gender === '') {
-      alert('성별을 선택해주세요.');
+      handleAlert('error', '성별을 선택해주세요.');
       return;
     } else if (member_name === '') {
-      alert('이름이 공백입니다.');
+      handleAlert('error', '이름이 공백입니다.');
       return;
     } else if (!isValidTel) {
-      alert("전화번호를 올바르게 입력해주세요.(공백 또는 ' - ' 사용)");
+      handleAlert(
+        'error',
+        '전화번호를 올바르게 입력해주세요.(공백 또는 ' - ' 사용)',
+      );
       return;
     } else if (member_birth === '') {
-      alert('생년월일 값을 입력해주세요.');
+      handleAlert('error', '생년월일 값을 입력해주세요.');
       return;
     } else if (!(dateErrorMessage === '')) {
       console.log(dateErrorMessage);
-      alert('생년월일에서 ' + dateErrorMessage + ' 다시 한번 확인해주세요^^');
+      handleAlert(
+        'error',
+        `생년월일에서 ${dateErrorMessage} 다시 한번 확인해주세요.`,
+      );
       return;
     } else if (member_postal === '' || member_addr1 === '') {
-      alert('주소가 공백입니다. 주소 검색을 해주세요.');
+      handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
       return;
     } else if (member_addr2 === '') {
-      alert('상세주소가 공백입니다. 상세주소를 입력해주세요.');
+      handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
       return;
     }
 
@@ -248,8 +263,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     setMember((member) => [...member, newMember]);
 
     setImgBase64(member_img);
-
-    alert('임직원이 추가되었습니다.');
+    handleAlert('success', '임직원이 추가되었습니다.');
     console.log('member: ', member);
     //setMember(member);
     setOpened(false);

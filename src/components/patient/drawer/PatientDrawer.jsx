@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import {useSelector, useDispatch} from "react-redux";
+import { useSelector, useDispatch } from 'react-redux';
 import { setGenderStatus } from 'redux/features/member/memberSlice';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
-import SelectedMan from "../SelectedGender/selectedGender";
+import { useSnackbar } from 'notistack';
+import SelectedMan from '../SelectedGender/selectedGender';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -16,14 +17,18 @@ import StyledButton from 'components/common/button/StyledButton';
 import PatientModal from '../modal/Modal';
 
 const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
-
   const gender = useSelector((state) => state.member.gender);
   const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
   const [isModalOpened, setModalOpened] = useState(false);
   const [keyboardDate, handleKeyDateChange] = useState(new Date());
-  
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   const [isPatient, setPatient] = useState({
     patient_id: '',
     patient_name: '',
@@ -34,16 +39,14 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     patient_tel: '',
     patient_height: '',
     patient_weight: '',
-    patient_gender: ''
+    patient_gender: '',
   });
-
 
   useEffect(() => {
     if (breakpoint !== undefined) {
       console.log('Current breakpoint is', breakpoint);
     }
   }, [breakpoint]);
-
 
   //fuction(open){function(e){}}
   const toggleDrawer = (open) => (e) => {
@@ -53,40 +56,39 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     setOpened(open);
   };
 
- 
-
   const addHandleClick = () => {
     console.log(isPatient);
-      isPatient.patient_birth = moment(keyboardDate).format('YYYY/MM/DD');
-   
-    if (isPatient.patient_name === undefined) {
-      alert('이름을 입력해주세요');
+    isPatient.patient_birth = moment(keyboardDate).format('YYYY/MM/DD');
+
+    if (isPatient.patient_name === undefined || isPatient.patient_name === '') {
+      handleAlert('error', '이름을 입력해주세요.');
       return;
     }
 
-    if(gender === "") {
-       alert("성별을 선택해주세요");
-       return
-    }else{
+    if (gender === '') {
+      handleAlert('error', '성별을 선택해주세요.');
+      return;
+    } else {
       isPatient.patient_gender = gender;
     }
 
     if (isPatient.patient_birth === '') {
-      alert('생년월일을 입력해주세요');
+      handleAlert('error', '생년월일을 입력해주세요.');
       return;
     }
     const reg = /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/;
     if (!reg.test(isPatient.patient_tel)) {
-      alert('전화번호 형식이 맞지 않습니다.');
+      handleAlert('error', '전화번호 형식이 맞지 않습니다.');
+
       return;
     }
-   
+
     if (
-      Number.parseInt(isPatient.patient_height)===isNaN ||
+      Number.parseInt(isPatient.patient_height) === isNaN ||
       isPatient.patient_height === undefined
     ) {
       console.log(Number.parseInt(isPatient.patient_height));
-      alert('키 형식이 맞지 않습니다.');
+      handleAlert('error', '키는 숫자만 입력 가능합니다.');
       return;
     }
     if (
@@ -94,20 +96,22 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       isPatient.patient_weight === undefined
     ) {
       console.log(typeof isPatient.patient_weight);
-      alert('몸무게 형식이 맞지 않습니다.');
+      handleAlert('error', '몸무게 숫자만 입력 가능합니다.');
       return;
     }
-    if (isPatient.patient_postal === undefined || isPatient.patient_addr1 === undefined) {
-      alert('주소를 입력해주세요');
+    if (
+      isPatient.patient_postal === undefined ||
+      isPatient.patient_addr1 === undefined
+    ) {
+      handleAlert('error', '주소를 입력해주세요.');
       return;
     }
-      isPatient.patient_id = patientData.length + 1;
-      const newPatient = patientData.concat(isPatient);
-      setPatients(newPatient);
-      setPatient({});
-      dispatch(setGenderStatus(''));
-      setOpened(false);
-    
+    isPatient.patient_id = patientData.length + 1;
+    const newPatient = patientData.concat(isPatient);
+    setPatients(newPatient);
+    setPatient({});
+    dispatch(setGenderStatus(''));
+    setOpened(false);
   };
 
   const handleChange = (event) => {
@@ -128,9 +132,6 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       patient_addr1: fullAddress,
     });
   };
-
-
-  
 
   return (
     <Fragment>
