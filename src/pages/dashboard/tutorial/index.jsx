@@ -18,7 +18,6 @@ import {
 } from '@material-ui/core';
 import { setActiveStep } from 'redux/features/tutorial/tutorialSlice';
 import TitleHeader from 'components/common/header/TitleHeader';
-import { ImEnter } from 'react-icons/im';
 import CommonTutorial from './CommonTutorial';
 import OwnerTutorial from './OwnerTutorial';
 
@@ -30,6 +29,7 @@ const TutorialPage = () => {
   const activeStep = useSelector((state) => state.tutorial.activeStep);
 
   const getStepContent = (step) => {
+    console.log(step);
     switch (step) {
       case 'COMMON':
         return <CommonTutorial />;
@@ -49,6 +49,11 @@ const TutorialPage = () => {
   // const handleChangeAuth = (event) => {
   //   setAuth(event.target.value);
   // };
+
+  const handleClick = (auth) => {
+    setAuth(auth);
+    dispatch(setActiveStep(auth));
+  };
 
   return (
     <div>
@@ -74,29 +79,39 @@ const TutorialPage = () => {
                     <span>사용자가이드 | {auth}</span>
                     <span>튜토리얼</span>
                   </div>
-                  <ImEnter
-                    style={{ marginRight: '10px' }}
-                    onClick={() => dispatch(setActiveStep(auth))}
-                  />
+
                   <FormControl style={{ width: '100%', flex: 1 }}>
                     <Select
                       value={auth}
-                      onChange={(e) => setAuth(e.target.value)}
+                      onChange={(e) => handleClick(e.target.value)}
                     >
-                      <MenuItem value={auth} onClick={() => setAuth('COMMON')}>
+                      <MenuItem
+                        value="COMMON"
+                        onClick={() => handleClick('COMMON')}
+                      >
                         공통
                       </MenuItem>
-                      <MenuItem value={auth} onClick={() => setAuth('DOCTOR')}>
+                      <MenuItem
+                        value="DOCTOR"
+                        onClick={() => handleClick('DOCTOR')}
+                      >
                         의사
                       </MenuItem>
-                      <MenuItem value={auth} onClick={() => setAuth('NURSE')}>
+                      <MenuItem
+                        value="NURSE"
+                        onClick={() => handleClick('NURSE')}
+                      >
                         간호사
                       </MenuItem>
-                      <MenuItem value={auth}  onClick={() => setAuth('INSPECTOR')}
+                      <MenuItem
+                        value="INSPECTOR"
+                        onClick={() => handleClick('INSPECTOR')}
                       >
                         검사자
                       </MenuItem>
-                      <MenuItem value={auth}  onClick={() => setAuth('OWNER')}
+                      <MenuItem
+                        value="OWNER"
+                        onClick={() => handleClick('OWNER')}
                       >
                         병원장
                       </MenuItem>

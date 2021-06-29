@@ -21,13 +21,19 @@ import {
 } from '@material-ui/core';
 // import MaskedInput from 'react-text-mask';
 import NumberFormat from 'react-number-format';
-
+import { useSnackbar } from 'notistack';
 
 const EmergencyDrawerWrite = () => {
   const [title, setTitle] = useState('');
   const [tel, setTel] = useState('');
   const [line, setLine] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   const dispatch = useDispatch();
   const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
 
@@ -47,11 +53,12 @@ const EmergencyDrawerWrite = () => {
     const emergencyIndex = emergencyItem.length;
 
     if (tel === '' || title === '') {
-      alert('이름 혹은 전화번호 비어있습니다.');
+      handleAlert('error', '이름 혹은 전화번호가 비어있습니다.');
+
       return;
     }
     if (line === '') {
-      alert('내선/외선을 선택해 주시기 바랍니다.');
+      handleAlert('error', '내선/외선을 선택해 주시기 바랍니다.');
       return;
     }
     dispatch(
@@ -120,7 +127,7 @@ const EmergencyDrawerWrite = () => {
               /> */}
               <NumberFormat
                 onChange={handleChangeTel}
-                format="###-###-####"
+                format="###-####-####"
                 allowEmptyFormatting
                 mask="_"
               />

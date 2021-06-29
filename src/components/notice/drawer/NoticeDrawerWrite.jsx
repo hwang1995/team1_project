@@ -11,10 +11,17 @@ import {
   setActiveStep,
   setNoticeCurrentIndex,
 } from 'redux/features/notice/noticeSlice';
-
+import { useSnackbar } from 'notistack';
 const NoticeDrawerWrite = () => {
   const [title, setTitle] = useState('');
   const editorRef = useRef(null);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const dispatch = useDispatch();
   const noticeItem = useSelector((state) => state.notice.noticeItem);
@@ -28,7 +35,8 @@ const NoticeDrawerWrite = () => {
     const noticeIndex = noticeItem.length;
     const editorContent = editorRef.current.getInstance().getHTML();
     if (editorContent === '' || title === '') {
-      alert('제목 혹은 내용이 비어있습니다.');
+      handleAlert('error', '제목 혹은 내용이 비어있습니다.');
+
       return;
     }
     const imgRegEx = /img src="|(.*?)"/gm;

@@ -81,13 +81,15 @@ const PatientUpdateDrawer = ({
       patientInfo.patient_addr2 !== readPatientData.patient_addr2 ||
       readPatientData.patient_gender !== gender
     ) {
-      if (readPatientData.patient_gender !== gender) {
-        patientInfo.patient_gender = gender;
-      }
+      if (gender === "") {
+        handleAlert('error', '변경된 사항이 없습니다.');
+      }else{
+      patientInfo.patient_gender = gender;
       setReadPatientData(patientInfo);
       setStatus('update');
       dispatch(setGenderStatus(''));
       setChange(true);
+      }
     } else {
       handleAlert('error', '변경된 사항이 없습니다.');
     }

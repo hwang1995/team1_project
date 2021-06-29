@@ -111,6 +111,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     setPatients(newPatient);
     setPatient({});
     dispatch(setGenderStatus(''));
+    handleKeyDateChange(new Date());
     setOpened(false);
   };
 
