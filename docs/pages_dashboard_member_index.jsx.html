@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/dashboard/member/index.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/dashboard/member/index.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, Fragment } from 'react';
+import {
+  Divider,
+  Grid,
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableFooter,
+  TablePagination,
+  Paper,
+  Button,
+  IconButton,
+  Avatar,
+} from '@material-ui/core';
+//import patientData from './patientData';
+import memberData from './memberData';
+import { useSnackbar } from 'notistack';
+import ContentContainer from 'components/common/container/ContentContainer';
+import TitleHeader from 'components/common/header/TitleHeader';
+import SearchBox from 'components/common/search/SearchBox';
+import MemberDrawer from 'components/member/drawer/MemberDrawer';
+import StyledButton from 'components/common/button/StyledButton';
+import MemberUpdateDrawer from 'components/member/drawer/MemberUpdateDrawer';
+import DeleteModal from 'components/member/modal/DeleteModal';
+import { BiRefresh } from 'react-icons/bi';
+import { FiRefreshCcw } from 'react-icons/fi';
+import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
+import PageTransition from 'components/common/transition/PageTransition';
+/**
+ * 이 페이지 컴포넌트는 임직원 관리 페이지를 작성하기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * Sider
+ * * Header
+ * * 환자 관리 ( Table, ColoredButton)
+ * @returns {JSX.Element}
+ */
+const MemberPage = () => {
+  const [isOpened, setOpened] = useState(false);
+  const [isUpdateOpened, setUpdateOpened] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
+
+  const [selectedData, setSelectedData] = useState('');
+  const [member, setMember] = useState(memberData);
+
+  //page설정 상태관리
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [isOpenModal, setOpenModal] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+  //페이지상태 이벤트(페이지 이동시)
+  const handleChangePage = (event, newPage) => {
+    console.log('newPage: ', newPage);
+    setPage(newPage);
+  };
+
+  //페이지당 보여줄 컬럼개수
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  //비밀번호 초기화
+  const handleInitPassword = (data) => {
+    const initialPW = 'douzone123!';
+    data.member_pw = initialPW;
+    handleAlert(
+      'success',
+      `${data.member_name}님의 비밀번호가 초기화되었습니다. (${initialPW})`,
+    );
+  };
+
+  const handleRefresh = () => {
+    setPage(0);
+    setSearchVal('');
+  };
+  //검색했을때 동작
+  useEffect(() => {
+    console.log(searchVal);
+    setPage(0);
+  }, [searchVal]);
+
+  return (
+    &lt;div>
+      &lt;header
+        style={{
+          position: 'sticky',
+          top: 0,
+          backgroundColor: 'white',
+          zIndex: 1,
+        }}
+      >
+        &lt;ResponsivePageHeader />
+      &lt;/header>
+      &lt;main>
+        &lt;Grid container>
+          &lt;Grid item xs={12}>
+            &lt;PageTransition>
+              &lt;ContentContainer>
+                &lt;TitleHeader>
+                  &lt;span>병원 | &lt;/span>
+                  &lt;span>임직원 관리&lt;/span>
+                &lt;/TitleHeader>
+                &lt;br />
+                &lt;Grid container>
+                  &lt;Grid item xs={9} lg={4}>
+                    &lt;SearchBox
+                      setSearchVal={setSearchVal}
+                      placeholder="임직원 이름을 입력해주세요."
+                    />
+                  &lt;/Grid>
+                  &lt;Grid item xs={1} lg={2}>
+                    &lt;IconButton
+                      color="primary"
+                      size="medium"
+                      onClick={handleRefresh}
+                      style={{ marginLeft: '20px', marginTop: '10px' }}
+                    >
+                      &lt;FiRefreshCcw />
+                    &lt;/IconButton>
+                  &lt;/Grid>
+                  &lt;Grid
+                    item
+                    xs={2}
+                    lg={6}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    &lt;StyledButton
+                      width="100px"
+                      bgColor="rgb(30, 51, 71)"
+                      color="white"
+                      onClick={() => setOpened((prevState) => !prevState)}
+                    >
+                      추가
+                    &lt;/StyledButton>
+                  &lt;/Grid>
+                  &lt;Grid item xs={12}>
+                    &lt;Paper>
+                      &lt;TableContainer
+                        style={{ marginTop: '1rem', marginBottom: '1rem' }}
+                      >
+                        &lt;Table
+                          style={{ minWidth: '600px', overflowX: 'scroll' }}
+                        >
+                          &lt;TableHead>
+                            &lt;TableRow>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '40px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                직책
+                              &lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '50px',
+                                  overflowX: 'scroll',
+                                }}
+                              >&lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                이름{'&amp;'}생년월일
+                              &lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                이메일
+                              &lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '200px',
+                                  overflowX: 'scroll',
+                                }}
+                              >
+                                주소
+                              &lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >&lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >&lt;/TableCell>
+                              &lt;TableCell
+                                component="td"
+                                style={{
+                                  minWidth: '100px',
+                                  overflowX: 'scroll',
+                                }}
+                              >&lt;/TableCell>
+                            &lt;/TableRow>
+                          &lt;/TableHead>
+                          &lt;TableBody>
+                            {member
+                              .filter(function (element) {
+                                //새로운 배열을 만들어줌
+                                return element.member_name.includes(searchVal);
+                              })
+                              .slice(
+                                page * rowsPerPage,
+                                (page + 1) * rowsPerPage,
+                              )
+                              .map((data) => (
+                                &lt;Fragment key={data.member_id}>
+                                  &lt;TableRow hover="true">
+                                    &lt;TableCell component="th">
+                                      {data.member_authority ===
+                                        'ROLE_DOCTOR' &amp;&amp; '의사'}
+                                      {data.member_authority ===
+                                        'ROLE_INSPECTOR' &amp;&amp; '검사자'}
+                                      {data.member_authority === 'ROLE_NURSE' &amp;&amp;
+                                        '간호사'}
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      &lt;Avatar src={data.member_image} />
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      &lt;p
+                                        style={{
+                                          marginBottom: '0.325rem',
+                                        }}
+                                      >
+                                        {data.member_name}
+                                      &lt;/p>
+
+                                      &lt;Divider />
+
+                                      &lt;p
+                                        style={{
+                                          marginTop: '0.325rem',
+                                        }}
+                                      >
+                                        {' '}
+                                        {data.member_birth}
+                                      &lt;/p>
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      {data.member_email}
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      {data.member_addr1} {data.member_addr2}
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      &lt;StyledButton
+                                        bgColor="rgb(11, 83, 151)"
+                                        color="white"
+                                        onClick={() => {
+                                          setUpdateOpened(
+                                            (prevState) => !prevState,
+                                          );
+                                          setSelectedData(data);
+                                        }}
+                                      >
+                                        변경
+                                      &lt;/StyledButton>
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      &lt;StyledButton
+                                        bgColor="rgba(165, 10, 17, 0.637)"
+                                        color="white"
+                                        onClick={() => {
+                                          setOpenModal(
+                                            (prevState) => !prevState,
+                                          );
+                                          setSelectedData(data.member_id);
+                                        }}
+                                      >
+                                        삭제
+                                      &lt;/StyledButton>
+                                    &lt;/TableCell>
+                                    &lt;TableCell component="th">
+                                      &lt;Button
+                                        size="small"
+                                        bgColor="rgba(11, 131, 31, 0.795)"
+                                        color="white"
+                                        onClick={() => {
+                                          handleInitPassword(data);
+                                        }}
+                                        endIcon={&lt;BiRefresh />}
+                                      >
+                                        비밀번호 초기화
+                                      &lt;/Button>
+                                    &lt;/TableCell>
+                                  &lt;/TableRow>
+                                &lt;/Fragment>
+                              ))}
+                          &lt;/TableBody>
+                          &lt;TableFooter>
+                            &lt;TableRow>
+                              &lt;TablePagination
+                                count={
+                                  member.filter(function (element) {
+                                    //새로운 배열을 만들어줌
+                                    return element.member_name.includes(
+                                      searchVal,
+                                    );
+                                  }).length
+                                }
+                                page={page}
+                                rowsPerPage={rowsPerPage}
+                                onChangePage={handleChangePage}
+                                onChangeRowsPerPage={handleChangeRowsPerPage}
+                                rowsPerPageOptions={[5, 10, 25]}
+                              />
+                            &lt;/TableRow>
+                          &lt;/TableFooter>
+                        &lt;/Table>
+                      &lt;/TableContainer>
+                    &lt;/Paper>
+                  &lt;/Grid>
+                &lt;/Grid>
+
+                {/* 추가 Drawer 
+                  isOpened, setOpened: Drawer 오픈상태 
+                  setMember: memberData에 대한 정보 수정에 대한 상태setter전달
+              */}
+                &lt;MemberDrawer
+                  isOpened={isOpened}
+                  setOpened={setOpened}
+                  member={member}
+                  setMember={setMember}
+                />
+                {/* 수정 Drawer 
+                  isUpdateOpened, setUpdateOpened: Drawer 오픈상태
+                  memberData: 선택한 멤버정보 전달
+                  setMember: memberData에 대한 정보 수정에 대한 상태setter전달
+              */}
+                &lt;MemberUpdateDrawer
+                  isUpdateOpened={isUpdateOpened}
+                  setUpdateOpened={setUpdateOpened}
+                  memberData={selectedData}
+                  member={member}
+                  setMember={setMember}
+                />
+                {/* 삭제 Modal */}
+                &lt;DeleteModal
+                  isOpenModal={isOpenModal}
+                  setOpenModal={setOpenModal}
+                  member={member}
+                  member_id={selectedData}
+                  setMember={setMember}
+                />
+              &lt;/ContentContainer>
+            &lt;/PageTransition>
+          &lt;/Grid>
+        &lt;/Grid>
+      &lt;/main>
+    &lt;/div>
+  );
+};
+
+export default MemberPage;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 18:15:20 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

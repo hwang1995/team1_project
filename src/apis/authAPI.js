@@ -16,7 +16,16 @@ import axios from 'axios';
  * * !String memberAuthority 
  * * !String hospitalCode
  * 
+ * @throws
+ * * HTTP Status 401 - Unauthorized
+ * * * status - "no_hospital"
+ * * * message - "병원 정보가 존재하지 않습니다."
+ * 
+ * * HTTP Status 401 - Unauthorized
+ * * * status - "no_account"
+ * * * message - "존재하지 않습니다."
  */
-export const getAuthentication = async (loginInfo) => {
-    return await axios.get('/auth', loginInfo);
+export const getAuthentication = (loginInfo) => {
+    const data = axios.post('/auth', loginInfo);
+    return data;
 }

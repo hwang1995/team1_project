@@ -9,14 +9,10 @@ import SearchBox from 'components/common/search/SearchBox';
 import PatientInfoListItem from './PatientInfoListItem';
 import ReservationInfoListContainer from './ReservationInfoListContainer';
 
-
 /*
   예약된 환자의 검색을 보여주는 Drawer 컨테이너
 */
-const SearchReservation = ({
-  searchOpened,
-  setSearchOpened,
-}) => {
+const SearchReservation = ({ searchOpened, setSearchOpened }) => {
   /*
     리덕스에서 설정한 예약환자 데이터
   */
@@ -64,7 +60,7 @@ const SearchReservation = ({
   };
 
   useEffect(() => {
-    console.log("예약 환자 검색하는 Drawer가 나오는 컴포넌트 입니다.")
+    console.log('예약 환자 검색하는 Drawer가 나오는 컴포넌트 입니다.');
     setResult([]);
   }, [readOpened]);
 

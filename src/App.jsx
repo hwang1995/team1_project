@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-
+import { useSelector, useDispatch } from 'react-redux';
 import GlobalStyle from './components/common/GlobalStyles';
 import Pages from './pages/index';
 /**
@@ -7,13 +7,16 @@ import Pages from './pages/index';
  * 1. axios.defaults.headers.common['authToken'] 을 설정한다.
  * 2. 매번 sessionStorage에 authToken과 userInfo가 있는지 점검하고, 있다면 Redux store에 저장시켜서 글로벌로 사용할 수 있게 한다.
  *
- * @returns
+ * @returns {JSX.Element}
  */
-const App = () => (
-  <Fragment>
-    <GlobalStyle />
-    <Pages />
-  </Fragment>
-);
+const App = () => {
+
+  return (
+    <Fragment>
+      <GlobalStyle />
+      <Pages />
+    </Fragment>
+  );
+};
 
 export default App;

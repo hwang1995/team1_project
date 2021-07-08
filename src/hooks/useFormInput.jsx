@@ -7,7 +7,7 @@ import { useState, useCallback } from 'react';
  *
  * <input {...username}/> <input {...email}/>
  * @param {*} initialForm
- * @returns
+ * @returns {object} formState
  */
 const useFormInput = (initialForm) => {
   const [form, setForm] = useState(initialForm);

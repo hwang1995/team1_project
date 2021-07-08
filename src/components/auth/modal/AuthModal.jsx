@@ -22,6 +22,7 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import useInput from 'hooks/useInput';
+import { getAuthentication } from 'apis/authAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -86,9 +87,9 @@ const AuthModal = () => {
 
   const history = useHistory();
 
-  const hospital_code = useInput('');
-  const member_email = useInput('');
-  const member_password = useInput('');
+  const hospitalCode = useInput('');
+  const memberEmail = useInput('');
+  const memberPw = useInput('');
 
   const isOpened = useSelector((state) => state.common.headerInfo.auth);
   const handleClose = () =>
@@ -99,20 +100,31 @@ const AuthModal = () => {
       }),
     );
 
-  const handleLogin = () => {
-    console.log(hospital_code.value, member_email.value, member_password.value);
-    dispatch(
-      setLoginInfo({
-        member_id: 1,
-        member_email: 'destiny0810@naver.com',
-        member_name: '황성욱',
-        member_authority: 'ROLE_DOCTOR',
-        hospital_code: 'BDZ_1',
-        hospital_name: '국군수도병원',
-      }),
-    );
-    handleClose();
-    history.push('/dashboard');
+  const handleLogin = async () => {
+    const hospital = hospitalCode.value;
+    const email = memberEmail.value;
+    const password = memberPw.value;
+    const { data } = await getAuthentication({
+      hospitalCode: hospital,
+      memberEmail: email,
+      memberPw: password,
+    });
+
+    console.log(data.data);
+
+    dispatch(setLoginInfo(data.data));
+    // dispatch(
+    //   setLoginInfo({
+    //     member_id: 1,
+    //     member_email: 'destiny0810@naver.com',
+    //     member_name: '황성욱',
+    //     member_authority: 'ROLE_DOCTOR',
+    //     hospital_code: 'BDZ_1',
+
+    //   }),
+    // );
+    // handleClose();
+    // history.push('/dashboard');
   };
 
   return (
@@ -170,7 +182,7 @@ const AuthModal = () => {
                     <InputBase
                       type="text"
                       className="input-area"
-                      {...hospital_code}
+                      {...hospitalCode}
                     />
                   </InputBox>
                   <StyledTypography
@@ -187,7 +199,7 @@ const AuthModal = () => {
                     <InputBase
                       type="email"
                       className="input-area"
-                      {...member_email}
+                      {...memberEmail}
                     />
                   </InputBox>
                   <StyledTypography
@@ -204,7 +216,7 @@ const AuthModal = () => {
                     <InputBase
                       type="password"
                       className="input-area"
-                      {...member_password}
+                      {...memberPw}
                     />
                   </InputBox>
 

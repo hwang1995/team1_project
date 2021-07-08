@@ -3,13 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 export const commonSlice = createSlice({
   name: 'common',
   initialState: {
+    authToken: '',
     loginInfo: {
-      member_id: 0,
-      member_email: '',
-      member_name: '',
-      member_authority: '',
-      hospital_code: '',
-      hospital_name: '',
+      memberId: 0,
+      memberEmail: '',
+      memberName: '',
+      memberAuthority: '',
+      hospitalCode: '',
     },
     sidebarInfo: {
       drawer: false,
@@ -28,7 +28,10 @@ export const commonSlice = createSlice({
   },
   reducers: {
     setLoginInfo(state, action) {
+      // Stringify된 JSON을 파싱해서 Redux의 상태로 적용
+
       state.loginInfo = action.payload;
+      // state.loginInfo = a.payload;
     },
     setSidebarInfo(state, action) {
       const { name, status } = action.payload;
@@ -38,10 +41,13 @@ export const commonSlice = createSlice({
       const { name, status } = action.payload;
       state.headerInfo[name] = status;
     },
+    setAuthToken(state, action) {
+      state.authToken = action.payload;
+    }
   },
 });
 
-export const { setLoginInfo, setSidebarInfo, setHeaderInfo } =
+export const { setLoginInfo, setSidebarInfo, setHeaderInfo, setAuthToken } =
   commonSlice.actions;
 
 export default commonSlice.reducer;

@@ -17,6 +17,7 @@
     "@toast-ui/react-calendar": "^1.0.5",
     "@toast-ui/react-editor": "^3.0.0",
     "axios": "^0.21.1",
+    "better-docs": "^2.3.2",
     "bwip-js": "^3.0.1",
     "clsx": "^1.1.1",
     "eslint-config-airbnb": "^18.2.1",
@@ -25,6 +26,7 @@
     "framer-motion": "^4.1.17",
     "html-react-parser": "^1.2.7",
     "immer": "^9.0.3",
+    "jsdoc": "^3.6.7",
     "material-ui-popup-state": "^1.8.3",
     "moment": "^2.29.1",
     "node-sass": "^6.0.1",
@@ -53,7 +55,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "docs": "jsdoc -c jsdoc.conf.json"
   },
   "eslintConfig": {
     "extends": [
