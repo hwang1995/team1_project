@@ -42,7 +42,7 @@ export const showMembersListByHospitalCode = async (hospitalCode) => {
  * * * memberColor (임직원 색상)
  */
 export const showMembersListByNameAndCode = async (memberSearchInfo) => {
-  return await axios.get(`/member/search`);
+  return await axios.get(`/member/search`, memberSearchInfo);
 };
 
 /**
@@ -70,7 +70,7 @@ export const showMembersListByNameAndCode = async (memberSearchInfo) => {
  * @returns {boolean}
  */
 export const addMember = async (memberInfo) => {
-  return await axios.post(`/member`);
+  return await axios.post(`/member`, memberInfo);
 };
 
 /**
@@ -88,7 +88,7 @@ export const addMember = async (memberInfo) => {
  * @returns {boolean}
  */
 export const modifyMemberInfo = async (memberInfo) => {
-  return await axios.put(`/member`);
+  return await axios.put(`/member`, memberInfo);
 };
 
 /**
@@ -98,7 +98,7 @@ export const modifyMemberInfo = async (memberInfo) => {
  * @returns {boolean}
  */
 export const deleteMember = async (memberId) => {
-  return await axios.delete(`/member`);
+  return await axios.delete(`/member`, memberId);
 };
 
 /**
@@ -108,7 +108,7 @@ export const deleteMember = async (memberId) => {
  * @returns {boolean}
  */
 export const intializeMemberPw = async (memberId) => {
-  return await axios.put(`/member/initial-pw`);
+  return await axios.put(`/member/initial-pw`, memberId);
 };
 
 /**
@@ -122,7 +122,7 @@ export const intializeMemberPw = async (memberId) => {
  * @returns {String}
  */
 export const memberImageUpload = async (imageInfo) => {
-  return await axios.post(`/member/image`);
+  return await axios.post(`/member/image`, imageInfo);
 };
 
 /**
@@ -135,5 +135,5 @@ export const memberImageUpload = async (imageInfo) => {
  * @returns {boolean}
  */
 export const isExistedEmail = async (emailCheckInfo) => {
-  return await axios.get(`/member/email-check`);
+  return await axios.get(`/member/email-check`, emailCheckInfo);
 };
