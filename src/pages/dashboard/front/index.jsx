@@ -145,15 +145,16 @@ const FrontPage = () => {
                           </p>
                         </StyledTypography>
                       </div>
-
-                      <img
-                        src="/assets/image/dashboard_1.png"
-                        width="10%"
-                        alt="Dashboard"
-                        style={{
-                          flex: 1,
-                        }}
-                      />
+                      <Hidden xsDown>
+                        <img
+                          src="/assets/image/dashboard_1.png"
+                          width="10%"
+                          alt="Dashboard"
+                          style={{
+                            flex: 1,
+                          }}
+                        />
+                      </Hidden>
                     </StyledContainer>
                     <div style={{ marginTop: '3rem', display: 'flex' }}>
                       <div style={{ flex: 4 }}>

@@ -14,6 +14,7 @@ import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import 'moment/locale/ko';
+import axios from 'axios';
 
 moment.locale('ko');
 

@@ -168,7 +168,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
 
     let member_authority = '';
     if (selectVal === '병원장') {
-      member_authority = 'ROLE_ADMIN';
+      member_authority = 'ROLE_DIRECTOR';
     } else if (selectVal === '의사') {
       member_authority = 'ROLE_DOCTOR';
     } else if (selectVal === '간호사') {
