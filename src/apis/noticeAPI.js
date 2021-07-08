@@ -4,7 +4,7 @@ import axios from 'axios';
  * * 목적 : 해당 병원의 식별자 코드(hospitalCode)로 NOTICE 리스트를 출력하기 위한 API
  *
  * @param {String} hospitalCode
- * @returns {List<NoticesDTO>} list
+ * @returns {List<NoticesDTO>} noticeList
  * * [notices Entity]
  * * * !String noticeTitle
  * * * !String noticeAuthor
@@ -12,6 +12,7 @@ import axios from 'axios';
  * * * !String noticeHeadText
  * * * String noticeHeadImage
  * * * !int noticeCount
+ * @author HYEONG YUN KIM
  */
 export const getNoticesList = async (hospitalCode) => {
   return await axios.get('https://localhost/api/v1/notice/', {
@@ -25,11 +26,12 @@ export const getNoticesList = async (hospitalCode) => {
  * * 목적 : 해당 공지사항의 댓글 리스트를 출력하기 위한 API
  *
  * @param {number} noticeId
- * @returns {List<NoticeCommentsDTO>} list
+ * @returns {List<NoticeCommentsDTO>} noticeList
  * * [noticeComments Entity]
  * * * !String memberName
  * * * !String createdDate
  * * * !String comment
+ * @author HYEONG YUN KIM
  */
 export const getNoticeCommentsList = async (noticeId) => {
   return await axios.get('https://localhost/api/v1/notice/comments', {
@@ -43,11 +45,12 @@ export const getNoticeCommentsList = async (noticeId) => {
  * * 목적 : 해당 공지사항의 상세정보 + 조회수 증가를 위한 API
  *
  * @param {number} noticeId
- * @returns {List<NoticeCommentsDTO>} list
+ * @returns {List<NoticeCommentsDTO>} noticeCommentList
  * * [notices Entity]
  * * * !String noticeTitle
  * * * !String noticeContent
  * * * !String noticeAuthor
+ * @author HYEONG YUN KIM
  */
 export const getNoticeList = async (noticeId) => {
   return await axios.get('https://localhost/api/v1/notice/detail', {
@@ -64,7 +67,7 @@ export const getNoticeList = async (noticeId) => {
  * * [SearchNoticeByHospitalCodeAndTitleVO Entity]
  * * * !String noticeTitle
  * * * !String hospitalCode
- * @returns {List<NoticesDTO>} list
+ * @returns {List<NoticesDTO>} searchList
  * * [notices Entity]
  * * * !String noticeTitle
  * * * !String noticeAuthor
@@ -72,6 +75,7 @@ export const getNoticeList = async (noticeId) => {
  * * * !String noticeHeadText
  * * * String noticeHeadImage
  * * * !int noticeCount
+ * @author HYEONG YUN KIM
  */
 export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
   return await axios.get('https://localhost/api/v1/notice/search', {
@@ -97,6 +101,7 @@ export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
  * * * String noticeHeadImage
  * @returns {boolean} result
  * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
 export const createNotice = async (noticeInfo) => {
   return await axios.post('https://localhost/api/v1/notice/', {
@@ -118,6 +123,7 @@ export const createNotice = async (noticeInfo) => {
  * * * !String comment
  * @returns {boolean} result
  * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
 export const addComment = async (noiceCommentInfo) => {
   return await axios.post('https://localhost/api/v1/notice/comment', {
@@ -137,6 +143,7 @@ export const addComment = async (noiceCommentInfo) => {
  * * * !String base64Content
  * @returns {String} filePath
  * * filePath : 파일저장 경로
+ * 
  */
 export const addNoticeImage = async (noticeImageInfo) => {
   return await axios.post('https://localhost/api/v1/notice/images', {
@@ -158,6 +165,7 @@ export const addNoticeImage = async (noticeImageInfo) => {
  * * * !int noticeId
  * @returns {boolean} result
  * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
 export const modifyNotice = async (noticeInfo) => {
   return await axios.put('https://localhost/api/v1/notice', {
@@ -176,6 +184,7 @@ export const modifyNotice = async (noticeInfo) => {
  * * * !String comment
  * @returns {boolean} result
  * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
 export const modifyComment = async (updateCommentInfo) => {
   return await axios.put('https://localhost/api/v1/notice/comment', {
@@ -191,6 +200,7 @@ export const modifyComment = async (updateCommentInfo) => {
  * @param {number} noticeId
  * @returns {boolean} result
  * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
 export const removeNotice = async (noticeId) => {
   return await axios.delete('https://localhost/api/v1/notice', {
@@ -206,6 +216,7 @@ export const removeNotice = async (noticeId) => {
  * @param {number} noticeCommentId
  * @returns {boolean} result
  * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
 export const removeComment = async (noticeCommentId) => {
   return await axios.delete('https://localhost/api/v1/notice/comment', {

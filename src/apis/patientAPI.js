@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * * 목적 : hospitalCode에 맞는 병원의 환자 목록을 가져오기 위한 API
  * @param {String} hospitalCode
- * @returns {List<PatientsDTO>} patinetsList
+ * @returns {List<PatientsDTO>} patientList
  * * [Patients Entity]
  * * !int patientId
  * * !String patientName
@@ -18,6 +18,7 @@ import axios from 'axios';
  * * !LocalDateTime recentDate
  * * !LocalDate patientBirth
  * * !String hospitalCode
+ * @author SI HYUN PARK
  */
 export const getPatientsList = async (hospitalCode) => {
   return await axios.get(`/patient/search/${hospitalCode}`);
@@ -43,6 +44,7 @@ export const getPatientsList = async (hospitalCode) => {
  * * !LocalDateTime recentDate
  * * !LocalDate patientBirth
  * * !String hospitalCode
+ * @author SI HYUN PARK
  */
 export const getSearchPatientList = async (searchInfo) => {
   return await axios.get('/patient', searchInfo);
@@ -65,6 +67,7 @@ export const getSearchPatientList = async (searchInfo) => {
  * * !LocalDate patientBirth
  * * !String hospitalCode
  * @returns {boolean} result (등록 성공 여부)
+ * @author SI HYUN PARK
  */
 export const registerPatientInfo = async (patientInfo) => {
   return await axios.post('/patient', patientInfo);
@@ -72,6 +75,7 @@ export const registerPatientInfo = async (patientInfo) => {
 
 /**
  * * 목적 : 환자에 대한 정보 수정을 위한 API
+ * @param {PatientsDTO} updatePatientInfo
  * * [Patients Entity]
  * * !String patientName
  * * !String patientSsn;
@@ -85,8 +89,8 @@ export const registerPatientInfo = async (patientInfo) => {
  * * !LocalDateTime recentDate
  * * !LocalDate patientBirth
  * * !String hospitalCode
- * @param {PatientsDTO} updatePatientInfo
  * @returns {boolean} result (수정 성공 여부)
+ * @author SI HYUN PARK
  */
 export const modifyPatient = async (updatePatientInfo) => {
   return await axios.put('/patient', updatePatientInfo);
@@ -96,6 +100,7 @@ export const modifyPatient = async (updatePatientInfo) => {
  * * 목적 : 환자에 대한 정보 삭제를 위한 API
  * @param {int} patientId
  * @returns {boolean} result (삭제 성공 여부)
+ * @author SI HYUN PARK
  */
 export const deletePatient = async (patientId) => {
   return await axios.delete(`/patient/${patientId}`);

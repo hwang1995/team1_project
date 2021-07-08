@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: apis/searchAPI.js</title>
+    <title>JSDoc: Source: apis/reservationAPI.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: apis/searchAPI.js</h1>
+    <h1 class="page-title">Source: apis/reservationAPI.js</h1>
 
     
 
@@ -29,149 +29,154 @@
             <pre class="prettyprint source linenums"><code>import axios from 'axios';
 
 /**
- * * 목표 : 약품의 이름을 검색하면 약품의 대한 리스트를 출력하는 API
- * @param {string} medicineName 
- * @returns {List&lt;MedicinesDTO>} medicineResults
- * * [Medicines Entity]
- * * !int medicineId (약품의 ID)
- * * !String medicineCode (약품 코드)
- * * !String medicineName (약품 영문 명)
- * * !String medicineType (약품 구분)
- * * !String medicineUnit (약 혹은 주사의 단위)
- * * !String medicineExplain (약 혹은 주사의 상세 설명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_medicine_name"
- * * * message : "약품 이름이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_medicines_content"
- * * * message : "약품이 존재하지 않습니다."
- * @author SUNG WOOK HWANG
- */
-export const searchMedicineList = async (medicineName) => {
-    return await axios.get("/search/medicine", {
-        params: {
-            medicineName
-        }
-    });
-};
-
-/**
- * * 목표 : 주사의 이름을 검색하면 주사의 대한 리스트를 출력하는 API
- * @param {string} medicineName 
- * @returns {List&lt;MedicinesDTO>} medicineResults
- * * [Medicines Entity]
- * * !int medicineId (약품의 ID)
- * * !String medicineCode (약품 코드)
- * * !String medicineName (약품 영문 명)
- * * !String medicineType (약품 구분)
- * * !String medicineUnit (약 혹은 주사의 단위)
- * * !String medicineExplain (약 혹은 주사의 상세 설명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_medicine_name"
- * * * message : "약품 이름이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_medicines_content"
- * * * message : "약품이 존재하지 않습니다."
- * @author SUNG WOOK HWANG
- */
-export const searchInjectorList = async (medicineName) => {
-    return await axios.get("/search/injector", {
-        params: {
-            medicineName
-        }
-    });
-};
-
-
-/**
- * * 목표 : 진단 검사의 그룹 명 (bundleName)을 검색하면 진단 검사에 대한 리스트를 출력하기 위한 API
- * @param {string} bundleName 
- * @returns {List&lt;DiagnosticInspectionsDTO>} inspectionResults
- * * [DiagnosticInspections Entity]
- * * * !int diagInspectionId (진단 검사 리스트의 ID)
- * * * !String bundleCode (그룹 코드 || 묶음 코드)
- * * * !String bundleName (그룹 명 || 묶음 명)
- * * * !String presCode (처방 코드)
- * * * !String presName (처방 명)
- * * * !String presUnit (단위)
- * * * !double presLowerLimit (하한치)
- * * * !double presUpperLimit (상한치)
- * * * String presVessel (용기)
- * * * String presSpecimenName (검체명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_bundle_name"
- * * * message : "그룹 명이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_diagnostic_inspection_content"
- * * * message : "진단 검사가 존재하지 않습니다."
- * @author SUNG WOOK HWANG
- */
-export const searchDiagnosticList = async (bundleName) => {
-    return await axios.get("/search/diagnostic", {
-        params: {
-            bundleName
-        }
-    });
-};
-
-/**
- * * 목표 : 진단 검사의 그룹 코드 (bundleCode)를 검색하면 진단 검사에 대한 리스트를 출력하기 위한 API
- * @param {string} bundleCode 
- * @returns {List&lt;DiagnosticInspectionsDTO>} inspectionResults
- * * [DiagnosticInspections Entity]
- * * * !int diagInspectionId (진단 검사 리스트의 ID)
- * * * !String bundleCode (그룹 코드 || 묶음 코드)
- * * * !String bundleName (그룹 명 || 묶음 명)
- * * * !String presCode (처방 코드)
- * * * !String presName (처방 명)
- * * * !String presUnit (단위)
- * * * !double presLowerLimit (하한치)
- * * * !double presUpperLimit (상한치)
- * * * String presVessel (용기)
- * * * String presSpecimenName (검체명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_bundle_name"
- * * * message : "그룹 명이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_diagnostic_inspection_content"
- * * * message : "진단 검사가 존재하지 않습니다."
- * @author SUNG WOOK HWANG
- */
-export const searchDiagnosticListByCode = async (bundleCode) => {
-    return await axios.get("/search/diagnostic-code", {
-        params: {
-            bundleCode
-        }
-    });
-};
-
-/**
- * * 목표 : 병원 정보와 환자의 이름을 통해 환자의 리스트를 출력하기 위한 API
- * @param {PatientSearchVO} patientInfo 
- * * !String hospitalCode (병원 코드)
+ * * 목적 : 진료 접수(예약) 목록 보기를 위한 API
+ * @param {WeekNoWithMemberVO} weekNoWithMember
+ * * !int weekNo
+ * * !int memberId
+ * * !String hospitalCode
+ * @returns {List&lt;ReservationVO>} result
+ * * !String category (time)
+ * * !String color (white)
+ * * [Diagnosis Entity]
+ * * !int id (diagId, 진료 pk)
+ * * !int calendarId (=weekNo)
+ * * !LocalDateTime start (예약 시작 시간)
+ * * !LocalDateTime end (예약 마감 시간)
+ * * !String visitPurpose (방문 목적)
+ * * [Patients Entity]
+ * * !String title (환자 이름)
+ * * !int patientId (환자 pk)
  * * !String patientName (환자 이름)
- * @returns {List&lt;PatientVO>} patientInfos
- * * !int patientId (환자의 ID)
- * * !String patientName (환자 이름)
- * * !String patientGender (환자의 성별)
- * * !String patientBirth (환자의 생일, LocalDateTime > String으로 변환함)
- * * !String hospitalCode (병원 코드)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_patient_search_info"
- * * * message : "병원 코드 혹은 환자의 이름이 없습니다"
- * * HTTP Status 204 - No Content
- * * * status : "no_result"
- * * * message : "검색 결과 존재하지 않습니다."
- * @author SUNG WOOK HWANG
+ * * !LocatDate patientBirth (환자 생년월일)
+ * * [Members Entity]
+ * * !int memberId
+ * * !String bgColor (의사마다의 고유 색)
+ * * !String doctorName (의사 이름)
+ * * !String doctorRoom (의사 방 이름)
+ * @author SI HYUN PARK
  */
-export const searchPatientInfoByName = async (patientInfo) => {
-    return await axios.get("/search/patient", patientInfo);
-}</code></pre>
+export const getReservationInfo = async (weekNoWithMember) => {
+  return await axios.get('/reservation', weekNoWithMember);
+};
+
+/**
+ * * 목적 : 진료 접수(예약)을 추가하기 위한 API
+ * @param {DiagnosisDTO} diagnosisInfo
+ * * !int weekNo
+ * * !LocalDateTime startDate
+ * * !LocalDateTime endDate
+ * * !String visitPurpose
+ * * String drOpinion (null)
+ * * !boolean isPharmacy (false)
+ * * !boolean isInjector (false)
+ * * !boolean isDiagnosticTest (false)
+ * * !boolean isVital (false)
+ * * !String reservationStatus (RESERVATION_REGISTER)
+ * * !int memberId
+ * * !int patientId
+ * * !String hospitalCode
+ * @returns {boolean} result (등록 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const registerReservationInfo = async (diagnosisInfo) => {
+  return await axios.post('/reservation', diagnosisInfo);
+};
+
+/**
+ * * 목적 : 진료 접수 내용 (방문 목적)을 수정하기 위한 API
+ * @param {diagnosisUpdateVO} diagnosisUpdateVO
+ * * !int diagId
+ * * !int patientId
+ * * !int memberId
+ * * !String hospitalCode
+ * * !String visitPurpose
+ * @returns {boolean} result (수정 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const modifyReservationInfo = async (diagnosisUpdateVO) => {
+  return await axios.put('/reservation', diagnosisUpdateVO);
+};
+
+/**
+ * * 목적 : 진료 접수 내용을 삭제 (status 수정)하기 위한 API
+ * @param {int} diagId
+ * @returns {boolean} result (삭제 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const removeReservationInfo = async (diagId) => {
+  return await axios.put(`/reservation/${diagId}`);
+};
+
+/**
+ * 목적 : 예약 추가시 등록할 환자를 검색하기 위한 API
+ * @param {PatientSearchVO} patientVO
+ * * !String hospitalCode
+ * * !String patientName
+ * @returns {List&lt;PatientDTO>} data
+ * * !int patientId
+ * * !String patientName
+ * * !String patientSsn
+ * * !String patientGender
+ * * !String patientTel
+ * * !String patientAddr1
+ * * String patientAddr2
+ * * !String patientPostal
+ * * !int patientHeight
+ * * !int patientWeight
+ * * !LocalDateTime recentDate
+ * * !LocalDate patientBirth
+ * * !String hospitalCode
+ * @author SI HYUN PARK
+ */
+export const getPatientInfo = async (patientVO) => {
+  return await axios.get('/reservation/patient', patientVO);
+};
+
+/**
+ * 목적 : 화면 렌더링 될때 select에 의사 정보를 세팅할 데이터를 가져오기 위한 API
+ * @param {String} hospitalCode
+ * @returns {List&lt;MemberDTO>} data
+ * * !int memberId
+ * * !String memberName
+ * * !String doctorRoom
+ * * !String hospitalCode
+ * * !String memberColor
+ * @author SI HYUN PARK
+ */
+export const getDoctorInfo = async (hospitalCode) => {
+  return await axios.get(`/reservation/doctor/${hospitalCode}`);
+};
+
+/**
+ * * 목적 : 예약 환자 검색
+ * @param {PatientSearchVO} patientSearchVO
+ * * !String hospitalCode
+ * * !String patientName
+ * @returns {List&lt;ReservationVO>} data
+ * * !String category (time)
+ * * !String color (white)
+ * * [Diagnosis Entity]
+ * * !int id (diagId, 진료 pk)
+ * * !int calendarId (=weekNo)
+ * * !LocalDateTime start (예약 시작 시간)
+ * * !LocalDateTime end (예약 마감 시간)
+ * * !String visitPurpose (방문 목적)
+ * * [Patients Entity]
+ * * !String title (환자 이름)
+ * * !int patientId (환자 pk)
+ * * !String patientName (환자 이름)
+ * * !LocatDate patientBirth (환자 생년월일)
+ * * [Members Entity]
+ * * !int memberId
+ * * !String bgColor (의사마다의 고유 색)
+ * * !String doctorName (의사 이름)
+ * * !String doctorRoom (의사 방 이름)
+ * @author SI HYUN PARK
+ */
+export const getSearchReservationPatient = async (patientSearchVO) => {
+  return await axios.get('/reservation/waitingPatient', patientSearchVO);
+};
+</code></pre>
         </article>
     </section>
 

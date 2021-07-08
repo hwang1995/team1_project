@@ -4,12 +4,13 @@ import axios from 'axios';
  * * 목적 : 해당 병원의 식별자 코드(hospitalCode)로 TODO 리스트를 출력하기 위한 API
  *
  * @param {String} hospitalCode
- * @returns {List<TodosDTO>} list
+ * @returns {List<TodosDTO>} todoList
  * * [todos Entity]
  * * * !String todoContent
  * * * !String hospitalCode
  * * * !String createdDate
  * * * !int todo_id
+ * @author HYEONG YUN KIM
  */
 export const getTodosListByHospitalCode = async (hospitalCode) => {
   return await axios.get('https://localhost/api/v1/todo/search/code/', {
@@ -23,12 +24,13 @@ export const getTodosListByHospitalCode = async (hospitalCode) => {
  * * 목적 : 해당 임직원의 ID(memberId)로 TODO 리스트를 출력하기 위한 API
  *
  * @param {number} memberId
- * @returns {List<TodosDTO>} list
+ * @returns {List<TodosDTO>} todoList
  * * [todos Entity]
  * * * !String todoContent
  * * * !String createdDate
  * * * !int todoId
  * * * !int memberId
+ * @author HYEONG YUN KIM
  */
 export const getTodosListByMemberId = async (memberId) => {
   return await axios.get('https://localhost/api/v1/todo/search/id/', {
@@ -49,7 +51,7 @@ export const getTodosListByMemberId = async (memberId) => {
  * * * !String hospitalCode
  * @returns {boolean} result
  * 성공: True, 실패: False
- *
+ * @author HYEONG YUN KIM
  */
 export const createTodo = async (todoInfo) => {
   return await axios.post('https://localhost/api/v1/todo/', {
@@ -65,7 +67,7 @@ export const createTodo = async (todoInfo) => {
  * @param {number} todoId
  * @returns {boolean} result
  * 성공: True, 실패: False
- *
+ * @author HYEONG YUN KIM
  */
 export const removeTodo = async (memberId) => {
   return await axios.delete('https://localhost/api/v1/todo/', {

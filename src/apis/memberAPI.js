@@ -4,18 +4,19 @@ import axios from 'axios';
  * * 목적 : 해당 병원의 모든 임직원 목록 가져오기
  *
  * @param {String} hospitalCode
- * @returns {List<MembersDTO>}
- * * [Mermbers Table]
- * * * !memberId (임직원 고유 코드)
- * * * !memberEmail (임직원 이메일)
- * * * !memberName (임직원 이름)
- * * * !memberTel (임직원 전화번호)
- * * * !memberAddr1 (임직원 상세주소1)
- * * * !memberAddr2 (임직원 상세주소2)
- * * * !memberPostal (임직원 우편번호)
- * * * memberImage (임직원 프로필 사진)
- * * * !memberBirth (임직원 생년월일)
- * * * memberColor (임직원 색상)
+ * @returns {List<MembersDTO>} memberInfo
+ * * [Members Table]
+ * * * !int memberId (임직원 고유 코드)
+ * * * !String memberEmail (임직원 이메일)
+ * * * !String memberName (임직원 이름)
+ * * * !String memberTel (임직원 전화번호)
+ * * * !String memberAddr1 (임직원 상세주소1)
+ * * * !String memberAddr2 (임직원 상세주소2)
+ * * * !String memberPostal (임직원 우편번호)
+ * * * String memberImage (임직원 프로필 사진)
+ * * * !String memberBirth (임직원 생년월일)
+ * * * String memberColor (임직원 색상)
+ * @author JONG HYUN HONG
  */
 export const showMembersListByHospitalCode = async (hospitalCode) => {
   return await axios.get(`/member`, hospitalCode);
@@ -26,10 +27,10 @@ export const showMembersListByHospitalCode = async (hospitalCode) => {
  *
  * @param {MemberSearchVO} memberSearchInfo
  * * [MemberSearchVO]
- * * * !hospitalCode (병원 코드)
- * * * !memberName (임직원 이름)
- * @returns {List<MembersDTO>}
- * * [Mermbers Table]
+ * * * !String hospitalCode (병원 코드)
+ * * * !String memberName (임직원 이름)
+ * @returns {List<MembersDTO>} searchList
+ * * [Members Table]
  * * * !memberId (임직원 고유 코드)
  * * * !memberEmail (임직원 이메일)
  * * * !memberName (임직원 이름)
@@ -40,6 +41,7 @@ export const showMembersListByHospitalCode = async (hospitalCode) => {
  * * * memberImage (임직원 프로필 사진)
  * * * !memberBirth (임직원 생년월일)
  * * * memberColor (임직원 색상)
+ * @author JONG HYUN HONG
  */
 export const showMembersListByNameAndCode = async (memberSearchInfo) => {
   return await axios.get(`/member/search`, memberSearchInfo);
@@ -67,7 +69,8 @@ export const showMembersListByNameAndCode = async (memberSearchInfo) => {
  * * * !joinedDate (임직원 가입일자)
  * * * memberIntroduction (임직원 자기소개)
  * * * !memberColor (임직원 색상)
- * @returns {boolean}
+ * @author JONG HYUN HONG
+ * @returns {boolean} result
  */
 export const addMember = async (memberInfo) => {
   return await axios.post(`/member`, memberInfo);
@@ -85,7 +88,8 @@ export const addMember = async (memberInfo) => {
  * * * !memberPostal (임직원 우편번호)
  * * * !memberAddr1 (임직원 상세주소1)
  * * * !memberAddr2 (임직원 상세주소2)
- * @returns {boolean}
+ * @returns {boolean} result 
+ * @author JONG HYUN HONG
  */
 export const modifyMemberInfo = async (memberInfo) => {
   return await axios.put(`/member`, memberInfo);
@@ -95,7 +99,8 @@ export const modifyMemberInfo = async (memberInfo) => {
  * * 목적 : 해당 병원의 해당 임직원을 삭제하기
  *
  * @param {int} memberId
- * @returns {boolean}
+ * @returns {boolean} result
+ * @author JONG HYUN HONG
  */
 export const deleteMember = async (memberId) => {
   return await axios.delete(`/member`, memberId);
@@ -105,7 +110,8 @@ export const deleteMember = async (memberId) => {
  * * 목적 : 해당 병원의 해당 임직원에 대한 비밀번호 초기화하기
  *
  * @param {int} memberId
- * @returns {boolean}
+ * @returns {boolean} result
+ * @author JONG HYUN HONG
  */
 export const intializeMemberPw = async (memberId) => {
   return await axios.put(`/member/initial-pw`, memberId);
@@ -119,7 +125,8 @@ export const intializeMemberPw = async (memberId) => {
  * * * !hospitalCode (병원 코드)
  * * * !imageName (이미지 이름)
  * * * !base64Content (base64 텍스트)
- * @returns {String}
+ * @returns {String} imageSrc
+ * @author JONG HYUN HONG
  */
 export const memberImageUpload = async (imageInfo) => {
   return await axios.post(`/member/image`, imageInfo);
@@ -132,7 +139,8 @@ export const memberImageUpload = async (imageInfo) => {
  * * [EmailCheckVO]
  * * * !hospitalCode (병원 코드)
  * * * !memberEmail (임직원 이메일)
- * @returns {boolean}
+ * @returns {boolean} result
+ * @author JONG HYUN HONG
  */
 export const isExistedEmail = async (emailCheckInfo) => {
   return await axios.get(`/member/email-check`, emailCheckInfo);

@@ -6,25 +6,26 @@ import axios from 'axios';
  * * !int weekNo
  * * !int memberId
  * * !String hospitalCode
- * @returns {List<ReservationVO>}
+ * @returns {List<ReservationVO>} result
  * * !String category (time)
  * * !String color (white)
- * * DiagnosisDTO
+ * * [Diagnosis Entity]
  * * !int id (diagId, 진료 pk)
  * * !int calendarId (=weekNo)
  * * !LocalDateTime start (예약 시작 시간)
  * * !LocalDateTime end (예약 마감 시간)
  * * !String visitPurpose (방문 목적)
- * * PatientsDTO
+ * * [Patients Entity]
  * * !String title (환자 이름)
  * * !int patientId (환자 pk)
  * * !String patientName (환자 이름)
  * * !LocatDate patientBirth (환자 생년월일)
- * * MembersDTO
+ * * [Members Entity]
  * * !int memberId
  * * !String bgColor (의사마다의 고유 색)
  * * !String doctorName (의사 이름)
  * * !String doctorRoom (의사 방 이름)
+ * @author SI HYUN PARK
  */
 export const getReservationInfo = async (weekNoWithMember) => {
   return await axios.get('/reservation', weekNoWithMember);
@@ -40,15 +41,16 @@ export const getReservationInfo = async (weekNoWithMember) => {
  * * String drOpinion (null)
  * * !boolean isPharmacy (false)
  * * !boolean isInjector (false)
- * * !boolean isDiagnosticTest (flase)
+ * * !boolean isDiagnosticTest (false)
  * * !boolean isVital (false)
  * * !String reservationStatus (RESERVATION_REGISTER)
  * * !int memberId
  * * !int patientId
  * * !String hospitalCode
  * @returns {boolean} result (등록 성공 여부)
+ * @author SI HYUN PARK
  */
-export const regisgerReservationInfo = async (diagnosisInfo) => {
+export const registerReservationInfo = async (diagnosisInfo) => {
   return await axios.post('/reservation', diagnosisInfo);
 };
 
@@ -61,6 +63,7 @@ export const regisgerReservationInfo = async (diagnosisInfo) => {
  * * !String hospitalCode
  * * !String visitPurpose
  * @returns {boolean} result (수정 성공 여부)
+ * @author SI HYUN PARK
  */
 export const modifyReservationInfo = async (diagnosisUpdateVO) => {
   return await axios.put('/reservation', diagnosisUpdateVO);
@@ -70,6 +73,7 @@ export const modifyReservationInfo = async (diagnosisUpdateVO) => {
  * * 목적 : 진료 접수 내용을 삭제 (status 수정)하기 위한 API
  * @param {int} diagId
  * @returns {boolean} result (삭제 성공 여부)
+ * @author SI HYUN PARK
  */
 export const removeReservationInfo = async (diagId) => {
   return await axios.put(`/reservation/${diagId}`);
@@ -80,7 +84,7 @@ export const removeReservationInfo = async (diagId) => {
  * @param {PatientSearchVO} patientVO
  * * !String hospitalCode
  * * !String patientName
- * @returns {List<patientDTO>} data
+ * @returns {List<PatientDTO>} data
  * * !int patientId
  * * !String patientName
  * * !String patientSsn
@@ -94,6 +98,7 @@ export const removeReservationInfo = async (diagId) => {
  * * !LocalDateTime recentDate
  * * !LocalDate patientBirth
  * * !String hospitalCode
+ * @author SI HYUN PARK
  */
 export const getPatientInfo = async (patientVO) => {
   return await axios.get('/reservation/patient', patientVO);
@@ -108,35 +113,37 @@ export const getPatientInfo = async (patientVO) => {
  * * !String doctorRoom
  * * !String hospitalCode
  * * !String memberColor
+ * @author SI HYUN PARK
  */
 export const getDoctorInfo = async (hospitalCode) => {
   return await axios.get(`/reservation/doctor/${hospitalCode}`);
 };
 
 /**
- *
+ * * 목적 : 예약 환자 검색
  * @param {PatientSearchVO} patientSearchVO
  * * !String hospitalCode
  * * !String patientName
  * @returns {List<ReservationVO>} data
  * * !String category (time)
  * * !String color (white)
- * * DiagnosisDTO
+ * * [Diagnosis Entity]
  * * !int id (diagId, 진료 pk)
  * * !int calendarId (=weekNo)
  * * !LocalDateTime start (예약 시작 시간)
  * * !LocalDateTime end (예약 마감 시간)
  * * !String visitPurpose (방문 목적)
- * * PatientsDTO
+ * * [Patients Entity]
  * * !String title (환자 이름)
  * * !int patientId (환자 pk)
  * * !String patientName (환자 이름)
  * * !LocatDate patientBirth (환자 생년월일)
- * * MembersDTO
+ * * [Members Entity]
  * * !int memberId
  * * !String bgColor (의사마다의 고유 색)
  * * !String doctorName (의사 이름)
  * * !String doctorRoom (의사 방 이름)
+ * @author SI HYUN PARK
  */
 export const getSearchReservationPatient = async (patientSearchVO) => {
   return await axios.get('/reservation/waitingPatient', patientSearchVO);

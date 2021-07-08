@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: apis/searchAPI.js</title>
+    <title>JSDoc: Source: apis/todoAPI.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: apis/searchAPI.js</h1>
+    <h1 class="page-title">Source: apis/todoAPI.js</h1>
 
     
 
@@ -29,149 +29,82 @@
             <pre class="prettyprint source linenums"><code>import axios from 'axios';
 
 /**
- * * 목표 : 약품의 이름을 검색하면 약품의 대한 리스트를 출력하는 API
- * @param {string} medicineName 
- * @returns {List&lt;MedicinesDTO>} medicineResults
- * * [Medicines Entity]
- * * !int medicineId (약품의 ID)
- * * !String medicineCode (약품 코드)
- * * !String medicineName (약품 영문 명)
- * * !String medicineType (약품 구분)
- * * !String medicineUnit (약 혹은 주사의 단위)
- * * !String medicineExplain (약 혹은 주사의 상세 설명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_medicine_name"
- * * * message : "약품 이름이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_medicines_content"
- * * * message : "약품이 존재하지 않습니다."
- * @author SUNG WOOK HWANG
+ * * 목적 : 해당 병원의 식별자 코드(hospitalCode)로 TODO 리스트를 출력하기 위한 API
+ *
+ * @param {String} hospitalCode
+ * @returns {List&lt;TodosDTO>} todoList
+ * * [todos Entity]
+ * * * !String todoContent
+ * * * !String hospitalCode
+ * * * !String createdDate
+ * * * !int todo_id
+ * @author HYEONG YUN KIM
  */
-export const searchMedicineList = async (medicineName) => {
-    return await axios.get("/search/medicine", {
-        params: {
-            medicineName
-        }
-    });
+export const getTodosListByHospitalCode = async (hospitalCode) => {
+  return await axios.get('https://localhost/api/v1/todo/search/code/', {
+    params: {
+      hospitalCode,
+    },
+  });
 };
 
 /**
- * * 목표 : 주사의 이름을 검색하면 주사의 대한 리스트를 출력하는 API
- * @param {string} medicineName 
- * @returns {List&lt;MedicinesDTO>} medicineResults
- * * [Medicines Entity]
- * * !int medicineId (약품의 ID)
- * * !String medicineCode (약품 코드)
- * * !String medicineName (약품 영문 명)
- * * !String medicineType (약품 구분)
- * * !String medicineUnit (약 혹은 주사의 단위)
- * * !String medicineExplain (약 혹은 주사의 상세 설명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_medicine_name"
- * * * message : "약품 이름이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_medicines_content"
- * * * message : "약품이 존재하지 않습니다."
- * @author SUNG WOOK HWANG
+ * * 목적 : 해당 임직원의 ID(memberId)로 TODO 리스트를 출력하기 위한 API
+ *
+ * @param {number} memberId
+ * @returns {List&lt;TodosDTO>} todoList
+ * * [todos Entity]
+ * * * !String todoContent
+ * * * !String createdDate
+ * * * !int todoId
+ * * * !int memberId
+ * @author HYEONG YUN KIM
  */
-export const searchInjectorList = async (medicineName) => {
-    return await axios.get("/search/injector", {
-        params: {
-            medicineName
-        }
-    });
-};
-
-
-/**
- * * 목표 : 진단 검사의 그룹 명 (bundleName)을 검색하면 진단 검사에 대한 리스트를 출력하기 위한 API
- * @param {string} bundleName 
- * @returns {List&lt;DiagnosticInspectionsDTO>} inspectionResults
- * * [DiagnosticInspections Entity]
- * * * !int diagInspectionId (진단 검사 리스트의 ID)
- * * * !String bundleCode (그룹 코드 || 묶음 코드)
- * * * !String bundleName (그룹 명 || 묶음 명)
- * * * !String presCode (처방 코드)
- * * * !String presName (처방 명)
- * * * !String presUnit (단위)
- * * * !double presLowerLimit (하한치)
- * * * !double presUpperLimit (상한치)
- * * * String presVessel (용기)
- * * * String presSpecimenName (검체명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_bundle_name"
- * * * message : "그룹 명이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_diagnostic_inspection_content"
- * * * message : "진단 검사가 존재하지 않습니다."
- * @author SUNG WOOK HWANG
- */
-export const searchDiagnosticList = async (bundleName) => {
-    return await axios.get("/search/diagnostic", {
-        params: {
-            bundleName
-        }
-    });
+export const getTodosListByMemberId = async (memberId) => {
+  return await axios.get('https://localhost/api/v1/todo/search/id/', {
+    params: {
+      memberId,
+    },
+  });
 };
 
 /**
- * * 목표 : 진단 검사의 그룹 코드 (bundleCode)를 검색하면 진단 검사에 대한 리스트를 출력하기 위한 API
- * @param {string} bundleCode 
- * @returns {List&lt;DiagnosticInspectionsDTO>} inspectionResults
- * * [DiagnosticInspections Entity]
- * * * !int diagInspectionId (진단 검사 리스트의 ID)
- * * * !String bundleCode (그룹 코드 || 묶음 코드)
- * * * !String bundleName (그룹 명 || 묶음 명)
- * * * !String presCode (처방 코드)
- * * * !String presName (처방 명)
- * * * !String presUnit (단위)
- * * * !double presLowerLimit (하한치)
- * * * !double presUpperLimit (상한치)
- * * * String presVessel (용기)
- * * * String presSpecimenName (검체명)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_bundle_name"
- * * * message : "그룹 명이 입력되지 않았거나, 공백입니다."
- * * HTTP Status 204 - No Content
- * * * status : "no_diagnostic_inspection_content"
- * * * message : "진단 검사가 존재하지 않습니다."
- * @author SUNG WOOK HWANG
+ * * 목적 : 해당 TODO 리스트를 등록하기 위한 API
+ *
+ * @param {TodosDTO} todoInfo
+ * * [todos Entity]
+ * * * !String todoContent
+ * * * LocalDateTime createdDate
+ * * * !int memberId
+ * * * !String hospitalCode
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
-export const searchDiagnosticListByCode = async (bundleCode) => {
-    return await axios.get("/search/diagnostic-code", {
-        params: {
-            bundleCode
-        }
-    });
+export const createTodo = async (todoInfo) => {
+  return await axios.post('https://localhost/api/v1/todo/', {
+    params: {
+      todoInfo,
+    },
+  });
 };
 
 /**
- * * 목표 : 병원 정보와 환자의 이름을 통해 환자의 리스트를 출력하기 위한 API
- * @param {PatientSearchVO} patientInfo 
- * * !String hospitalCode (병원 코드)
- * * !String patientName (환자 이름)
- * @returns {List&lt;PatientVO>} patientInfos
- * * !int patientId (환자의 ID)
- * * !String patientName (환자 이름)
- * * !String patientGender (환자의 성별)
- * * !String patientBirth (환자의 생일, LocalDateTime > String으로 변환함)
- * * !String hospitalCode (병원 코드)
- * @throws
- * * HTTP Status 400 - Bad Request
- * * * status : "no_patient_search_info"
- * * * message : "병원 코드 혹은 환자의 이름이 없습니다"
- * * HTTP Status 204 - No Content
- * * * status : "no_result"
- * * * message : "검색 결과 존재하지 않습니다."
- * @author SUNG WOOK HWANG
+ * * 목적 : 해당 TODO 리스트를 삭제하기 위한 API
+ *
+ * @param {number} todoId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
  */
-export const searchPatientInfoByName = async (patientInfo) => {
-    return await axios.get("/search/patient", patientInfo);
-}</code></pre>
+export const removeTodo = async (memberId) => {
+  return await axios.delete('https://localhost/api/v1/todo/', {
+    params: {
+      memberId,
+    },
+  });
+};
+</code></pre>
         </article>
     </section>
 

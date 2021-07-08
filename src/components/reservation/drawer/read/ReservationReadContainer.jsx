@@ -11,10 +11,14 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
 
-/*
-  캘린더에 추가된 데이터를 클릭했을 때 나오는 ReservationDrawer에 세팅되는 컨텐트 부분이다.
-  readPatient: 예약된 환자 정보 객체 데이터이다.
-*/
+/**
+ * * 목적 : 예약 상태를 보여주기 위한 컨테이너
+ * 캘린더에 추가된 데이터를 클릭했을 때 나오는 ReservationDrawer에 세팅되는 컨텐트 부분이다.
+ * readPatient: 예약된 환자 정보 객체 데이터이다.
+ * @param {object} state hello world
+ * @returns {JSX.Element} view
+ */
+
 const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
