@@ -11,11 +11,16 @@ import clsx from 'clsx';
 
 import useWindowSize from 'hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHeaderInfo, setLoginInfo } from 'redux/features/common/commonSlice';
+import {
+  setAuthToken,
+  setHeaderInfo,
+  setLoginInfo,
+} from 'redux/features/common/commonSlice';
 import MobileDrawer from './drawer/MobileDrawer';
 
 import NotificationDrawer from './drawer/NotificationDrawer';
 import AuthModal from 'components/auth/modal/AuthModal';
+import { removeAuthHeader } from 'apis/axiosConfig';
 
 const PageContainer = styled.div`
   width: 100%;
@@ -108,10 +113,11 @@ const ResponsivePageHeader = () => {
   const dispatch = useDispatch();
 
   const authInfo = useSelector((state) => state.common.loginInfo);
+
   const [isLogined, setLogined] = useState(false);
 
   useEffect(() => {
-    if (authInfo.member_email !== '') {
+    if (authInfo.memberEmail !== '') {
       setLogined(true);
     }
   }, [authInfo]);
@@ -147,22 +153,19 @@ const ResponsivePageHeader = () => {
         status: true,
       }),
     );
-    // setLogined((prevState) => !prevState);
   };
 
   const handleLogout = () => {
-    dispatch(
-      setLoginInfo({
-        member_id: 0,
-        member_email: '',
-        member_name: '',
-        member_authority: '',
-        hospital_code: '',
-        hospital_name: '',
-      }),
-    );
+    removeAuthHeader();
+
+    dispatch(setLoginInfo(''));
+    dispatch(setAuthToken(''));
+
+    sessionStorage.removeItem('userInfo');
+    sessionStorage.removeItem('authToken');
+
     setLogined(false);
-    history.push('/');
+    window.location.href = '/';
   };
 
   const handleOpen = () => {

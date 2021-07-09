@@ -29,7 +29,9 @@ export const commonSlice = createSlice({
   reducers: {
     setLoginInfo(state, action) {
       // Stringify된 JSON을 파싱해서 Redux의 상태로 적용
-
+      if (action.payload === '') {
+        return;
+      }
       state.loginInfo = action.payload;
       // state.loginInfo = a.payload;
     },

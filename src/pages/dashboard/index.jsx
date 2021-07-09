@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useCallback } from 'react';
 import { Route, Switch } from 'react-router-dom';
-
+import { useHistory } from 'react-router-dom';
 import DiagnosisPage from './diagnosis';
 import DiagnosisHistoryPage from './diagnosis-history';
 import DiagnosticPage from './diagnostic';
@@ -9,6 +9,7 @@ import MemberPage from './member';
 import PatientPage from './patient';
 import ReservationPage from './reservation';
 import TutorialPage from './tutorial';
+import { useSnackbar } from 'notistack';
 
 /**
  * Dashboard 컴포넌트의 페이지를 정의하고
@@ -23,6 +24,26 @@ import TutorialPage from './tutorial';
  * * /dashboard/reservation => 대쉬보드의 진료 예약 페이지
  */
 const Dashboard = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
+  const handleAlert = useCallback(
+    (variant, message) => {
+      enqueueSnackbar(message, {
+        variant,
+      });
+    },
+    [enqueueSnackbar],
+  );
+
+  useEffect(() => {
+    if (sessionStorage.getItem('authToken') === null) {
+      handleAlert('error', '인가되지 않은 요청입니다...');
+      history.push('/');
+    }
+    // 나중에 권한 별로 들어가지 말라고 할 떄에 사용
+    const parseJSON = JSON.parse(sessionStorage.getItem('userInfo'));
+    console.log(parseJSON);
+  }, [handleAlert, history]);
   return (
     <Fragment>
       <Switch>

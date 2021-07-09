@@ -1,6 +1,10 @@
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHeaderInfo, setLoginInfo } from 'redux/features/common/commonSlice';
+import {
+  setAuthToken,
+  setHeaderInfo,
+  setLoginInfo,
+} from 'redux/features/common/commonSlice';
 import {
   makeStyles,
   Modal,
@@ -16,6 +20,7 @@ import { useHistory } from 'react-router-dom';
 import { AiOutlineClose } from 'react-icons/ai';
 import { RiHospitalLine, RiLockPasswordLine } from 'react-icons/ri';
 import { HiOutlineMail } from 'react-icons/hi';
+import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -23,6 +28,7 @@ import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import useInput from 'hooks/useInput';
 import { getAuthentication } from 'apis/authAPI';
+import { addAuthHeader } from 'apis/axiosConfig';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -90,6 +96,13 @@ const AuthModal = () => {
   const hospitalCode = useInput('');
   const memberEmail = useInput('');
   const memberPw = useInput('');
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const isOpened = useSelector((state) => state.common.headerInfo.auth);
   const handleClose = () =>
@@ -100,33 +113,46 @@ const AuthModal = () => {
       }),
     );
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
     const hospital = hospitalCode.value;
     const email = memberEmail.value;
     const password = memberPw.value;
-    const { data } = await getAuthentication({
-      hospitalCode: hospital,
-      memberEmail: email,
-      memberPw: password,
-    });
+    try {
+      const { data, status } = await getAuthentication({
+        hospitalCode: hospital,
+        memberEmail: email,
+        memberPw: password,
+      });
 
-    console.log(data.data);
+      const { authToken, ...rest } = data;
 
-    dispatch(setLoginInfo(data.data));
-    // dispatch(
-    //   setLoginInfo({
-    //     member_id: 1,
-    //     member_email: 'destiny0810@naver.com',
-    //     member_name: '황성욱',
-    //     member_authority: 'ROLE_DOCTOR',
-    //     hospital_code: 'BDZ_1',
+      addAuthHeader(authToken);
 
-    //   }),
-    // );
-    // handleClose();
-    // history.push('/dashboard');
+      dispatch(setAuthToken(authToken));
+      dispatch(setLoginInfo(rest));
+
+      sessionStorage.setItem('authToken', authToken);
+      sessionStorage.setItem('userInfo', JSON.stringify(rest));
+
+      handleAlert('success', '로그인에 성공하였습니다.');
+
+      handleClose();
+      history.push('/dashboard');
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
   };
-
+  const handleKeyPress = (event) => {
+    const { key } = event;
+    const hospital = hospitalCode.value;
+    const email = memberEmail.value;
+    const password = memberPw.value;
+    if (key === 'Enter' && hospital && email && password) {
+    } else if (key === 'Enter' && !hospital && !email && !password) {
+      handleAlert('error', '값이 존재하지 않습니다.');
+    }
+  };
   return (
     <Fragment>
       <Modal
@@ -228,6 +254,7 @@ const AuthModal = () => {
                       marginTop: '2rem',
                     }}
                     onClick={() => handleLogin()}
+                    onKeyPress={handleKeyPress}
                   >
                     로그인
                   </Button>

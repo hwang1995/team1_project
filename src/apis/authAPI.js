@@ -25,7 +25,10 @@ import axios from 'axios';
  * * * status - "no_account"
  * * * message - "존재하지 않습니다."
  */
-export const getAuthentication = (loginInfo) => {
-    const data = axios.post('/auth', loginInfo);
-    return data;
+export const getAuthentication = async (loginInfo) => {
+    const result = await axios.post('/auth', loginInfo);
+    const data = result.data.data;
+    const status = result.status;
+
+    return { data, status };
 }

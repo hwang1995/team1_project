@@ -27,14 +27,14 @@ const store = configureStore({
 // Axios에 인증 헤더 추가
 if (sessionStorage.getItem("authToken")) {
   addAuthHeader(sessionStorage.getItem('authToken'));
+  store.dispatch(setAuthToken(sessionStorage.getItem("authToken")));
 }
-// const testInfo = {
-//   memberId: 1000,
-//   memberEmail: '',
-//   memberName: '',
-//   memberAuthority: '',
-//   hospitalCode: '',
-// }
-// store.dispatch(setLoginInfo(sessionStorage.getItem("userInfo") || ''));
-// store.dispatch(setAuthToken(sessionStorage.getItem("authToken") || ''));
+
+if (sessionStorage.getItem("userInfo")) {
+  const parseJSON = JSON.parse(sessionStorage.getItem("userInfo"));
+  store.dispatch(setLoginInfo(parseJSON));
+}
+
+
+
 export default store;
