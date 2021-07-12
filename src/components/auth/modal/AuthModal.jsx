@@ -139,6 +139,7 @@ const AuthModal = () => {
       handleClose();
       history.push('/dashboard');
     } catch (error) {
+      // alert(error.response);
       const { message } = error.response.data;
       handleAlert('error', message);
     }
@@ -247,6 +248,7 @@ const AuthModal = () => {
                   </InputBox>
 
                   <Button
+                    type="button"
                     variant="contained"
                     color="primary"
                     fullWidth

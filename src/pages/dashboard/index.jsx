@@ -1,6 +1,9 @@
-import React, { Fragment, useEffect, useCallback } from 'react';
+import React, { Fragment, useEffect, useCallback, useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
+import Paho from 'paho-mqtt';
 import DiagnosisPage from './diagnosis';
 import DiagnosisHistoryPage from './diagnosis-history';
 import DiagnosticPage from './diagnostic';
@@ -9,7 +12,6 @@ import MemberPage from './member';
 import PatientPage from './patient';
 import ReservationPage from './reservation';
 import TutorialPage from './tutorial';
-import { useSnackbar } from 'notistack';
 
 /**
  * Dashboard 컴포넌트의 페이지를 정의하고
@@ -26,6 +28,7 @@ import { useSnackbar } from 'notistack';
 const Dashboard = () => {
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const userInfo = useSelector((state) => state.common.loginInfo);
   const handleAlert = useCallback(
     (variant, message) => {
       enqueueSnackbar(message, {
@@ -42,8 +45,64 @@ const Dashboard = () => {
     }
     // 나중에 권한 별로 들어가지 말라고 할 떄에 사용
     const parseJSON = JSON.parse(sessionStorage.getItem('userInfo'));
-    console.log(parseJSON);
+    // console.log(parseJSON);
   }, [handleAlert, history]);
+
+  // MQTT 정의
+  const { REACT_APP_MQTT_HOSTNAME, REACT_APP_MQTT_PORT } = process.env;
+  let client = useRef(null);
+  const connectMqttBroker = () => {
+    client.current = new Paho.Client(
+      REACT_APP_MQTT_HOSTNAME,
+      Number.parseInt(REACT_APP_MQTT_PORT),
+      'client-' + new Date().getTime(),
+    );
+    client.current.onConnectionLost = () => {
+      console.log('접속 끊김');
+    };
+    client.current.onMessageArrived = (msg) => {
+      const parseMsg = JSON.parse(msg.payloadString);
+      const { priority, message } = parseMsg;
+      handleAlert(priority, message);
+      // console.log(message);
+    };
+    client.current.connect({
+      onSuccess: () => {
+        const { memberAuthority, hospitalCode } = userInfo;
+        // client.current.subscribe('/ABC_001');
+        console.log(memberAuthority);
+
+        if (memberAuthority === 'ROLE_DEVELOP') {
+          client.current.subscribe(`/${hospitalCode}`); // 모든 유저에게 보냄.
+          client.current.subscribe(`/${hospitalCode}/#`);
+        }
+
+        if (memberAuthority === 'ROLE_DIRECTOR') {
+          client.current.subscribe(`/${hospitalCode}/director`);
+        } else if (memberAuthority === 'ROLE_DOCTOR') {
+          client.current.subscribe(`/${hospitalCode}/doctor`);
+        } else if (memberAuthority === 'ROLE_NURSE') {
+          client.current.subscribe(`/${hospitalCode}/nurse`);
+        } else if (memberAuthority === 'ROLE_INSPECTOR') {
+          client.current.subscribe(`/${hospitalCode}/inspector`);
+        }
+
+        console.log('성공 했습니다.');
+      },
+    });
+  };
+
+  const disconnectMqttBroker = () => {
+    client.current.disconnect();
+  };
+
+  useEffect(() => {
+    connectMqttBroker();
+    return () => {
+      disconnectMqttBroker();
+    };
+  }, []);
+
   return (
     <Fragment>
       <Switch>
