@@ -27,6 +27,7 @@ import ImageUploader from 'react-images-upload';
 import StyledContainer from 'components/common/container/StyledContainer';
 import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
 import { useSnackbar } from 'notistack';
+import { addMember, memberImageUpload, isExistedEmail } from 'apis/memberAPI';
 
 const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const { breakpoint } = useWindowSize();
@@ -39,8 +40,6 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const [dateErrorMessage, setDateErrorMessage] = useState('');
 
   const [pictures, setPictures] = useState('');
-
-  const [imgBase64, setImgBase64] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
   const handleAlert = (variant, message) => {
@@ -49,8 +48,13 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     });
   };
 
-  const onDrop = (event, picture) => {
+  const onDrop = async (event, picture) => {
     setPictures(picture[0]);
+    const { data, status } = await memberImageUpload(picture);
+    if (status == 200) {
+      //해당 임직원의 이미지 변경
+      //setCurrentMember(data);
+    }
   };
 
   const dispatch = useDispatch();
@@ -119,7 +123,18 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   };
 
   //이메일 중복체크
-  const handleEmailChecked = () => {
+  const handleEmailChecked = async () => {
+    //const {data,status}=await isExistedEmail(emailCheckInfo);
+    //병원코드, 이메일 요청
+    //if(data===true){
+    //handleAlert('error', '중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
+    //return;
+    //}
+    //else{
+    //handleAlert('success', '이메일을 사용해도 좋습니다.');
+    //setIsEmailChecked(true);
+    //}
+
     // 이메일 정규 표현식
     const regExpEmail =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -149,8 +164,8 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     setIsEmailChecked(false);
   }, [memberEmail]);
 
-  //submit
-  const handleSubmit = (event) => {
+  //임직원 추가 버튼(submit)
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // 이메일 정규 표현식
@@ -166,39 +181,39 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     const regExpTel =
       /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
 
-    let member_authority = '';
+    let memberAuthority = '';
     if (selectVal === '병원장') {
-      member_authority = 'ROLE_DIRECTOR';
+      memberAuthority = 'ROLE_DIRECTOR';
     } else if (selectVal === '의사') {
-      member_authority = 'ROLE_DOCTOR';
+      memberAuthority = 'ROLE_DOCTOR';
     } else if (selectVal === '간호사') {
-      member_authority = 'ROLE_NURSE';
+      memberAuthority = 'ROLE_NURSE';
     } else if (selectVal === '검사자') {
-      member_authority = 'ROLE_INSPECTOR';
+      memberAuthority = 'ROLE_INSPECTOR';
     }
 
-    const member_email = event.target.memberEmail.value;
-    const member_pw = event.target.memberPassword.value;
-    const member_name = event.target.memberName.value;
-    const member_tel = event.target.memberTel.value;
-    const member_birth = event.target.memberBirth.value;
-    const member_postal = event.target.memberAddress1.value;
-    const member_addr1 = event.target.memberAddress2.value;
-    const member_addr2 = event.target.memberAddress3.value;
-    const member_img = pictures;
-    const member_introduce = event.target.memberIntroduce.value;
+    const memberEmail = event.target.memberEmail.value;
+    const memberPw = event.target.memberPassword.value;
+    const memberName = event.target.memberName.value;
+    const memberTel = event.target.memberTel.value;
+    const memberBirth = event.target.memberBirth.value;
+    const memberPostal = event.target.memberAddress1.value;
+    const memberAddr1 = event.target.memberAddress2.value;
+    const memberAddr2 = event.target.memberAddress3.value;
+    const memberImg = pictures;
+    const memberIntroduce = event.target.memberIntroduce.value;
     let gender = '';
     if (selectedGender['male'] === true) {
       gender = '남';
     } else if (selectedGender['female'] === true) {
       gender = '여';
     }
-    const member_gender = gender;
+    const memberGender = gender;
 
     //유효성 검사
-    const isValidEmail = regExpEmail.test(member_email);
-    const isValidPW = regExpPw.test(member_pw);
-    const isValidTel = regExpTel.test(member_tel);
+    const isValidEmail = regExpEmail.test(memberEmail);
+    const isValidPW = regExpPw.test(memberPw);
+    const isValidTel = regExpTel.test(memberTel);
 
     if (!isEmailChecked) {
       handleAlert('error', '이메일 중복 체크를 해주세요.');
@@ -215,7 +230,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     } else if (gender === '') {
       handleAlert('error', '성별을 선택해주세요.');
       return;
-    } else if (member_name === '') {
+    } else if (memberName === '') {
       handleAlert('error', '이름이 공백입니다.');
       return;
     } else if (!isValidTel) {
@@ -224,7 +239,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
         '전화번호를 올바르게 입력해주세요.(공백 또는 ' - ' 사용)',
       );
       return;
-    } else if (member_birth === '') {
+    } else if (memberBirth === '') {
       handleAlert('error', '생년월일 값을 입력해주세요.');
       return;
     } else if (!(dateErrorMessage === '')) {
@@ -234,37 +249,39 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
         `생년월일에서 ${dateErrorMessage} 다시 한번 확인해주세요.`,
       );
       return;
-    } else if (member_postal === '' || member_addr1 === '') {
+    } else if (memberPostal === '' || memberAddr1 === '') {
       handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
       return;
-    } else if (member_addr2 === '') {
+    } else if (memberAddr2 === '') {
       handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
       return;
     }
 
-    const newMember = {
-      member_id: '임시ID',
-      member_pw,
-      member_birth,
-      member_email,
-      member_gender,
-      member_name,
-      member_tel,
-      member_authority,
-      member_postal,
-      member_addr1,
-      member_addr2,
-      member_img,
-      member_introduce,
-    };
-    console.log('새로운 멤버정보 ', newMember);
-
-    setMember((member) => [...member, newMember]);
-
-    setImgBase64(member_img);
+    const newMember = '';
+    try {
+      const { data, status } = await addMember({
+        memberPw,
+        memberBirth,
+        memberEmail,
+        memberGender,
+        memberName,
+        memberTel,
+        memberAuthority,
+        memberPostal,
+        memberAddr1,
+        memberAddr2,
+        memberImg,
+        memberIntroduce,
+      });
+      newMember = data;
+      setMember((member) => [...member, newMember]);
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+      return;
+    }
     handleAlert('success', '임직원이 추가되었습니다.');
     console.log('member: ', member);
-    //setMember(member);
     setOpened(false);
   };
 

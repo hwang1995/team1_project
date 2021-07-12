@@ -18,6 +18,7 @@ import StyledButton from 'components/common/button/StyledButton';
 import PostalCodeModal from '../modal/PostalCodeModal';
 import { setModalStatus } from 'redux/features/member/memberSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { modifyMemberInfo } from 'apis/memberAPI';
 
 /*관리자관점 임직원 정보수정 컴포넌트*/
 
@@ -90,7 +91,7 @@ const MemberUpdateDrawer = ({
     });
   }, [member_postal, member_addr1]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     let member_authority = '';
@@ -130,6 +131,22 @@ const MemberUpdateDrawer = ({
       handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
       return;
     }
+
+    //수정
+    // try {
+    //   const { data, status } = await modifyMemberInfo({
+    //     memberId,
+    //     memberAuthority,
+    //     memberName,
+    //     memberTel,
+    //     memberPostal,
+    //     memberAddr1,
+    //     memberAddr2,
+    //   });
+    // } catch (error) {
+    //   const { message } = error.response.data;
+    //   handleAlert('error', message);
+    // }
 
     const row = member.find((row) => row.member_id === memberData.member_id);
     row.member_authority = member_authority;
