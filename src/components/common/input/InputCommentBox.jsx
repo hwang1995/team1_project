@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 import styled from 'styled-components';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { useSnackbar } from 'notistack';
+import AddIcon from '@material-ui/icons/Add';
 
 const SearchContainer = styled.div`
   padding: 0.5rem;
@@ -20,7 +20,7 @@ const SearchBase = styled(InputBase)`
   font-weight: 700;
 `;
 
-const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
+const InputCommentBox = ({ setInputComment, placeholder, noRemove }) => {
   const [inputVal, setInputVal] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
@@ -36,7 +36,7 @@ const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
   const handleKeyPress = (event) => {
     const { key } = event;
     if (key === 'Enter' && inputVal) {
-      setSearchVal(inputVal);
+      setInputComment(inputVal);
       if (noRemove === undefined) {
         setTimeout(() => {
           setInputVal('');
@@ -53,7 +53,7 @@ const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
 
       return;
     }
-    setSearchVal(inputVal);
+    setInputComment(inputVal);
     if (noRemove === undefined) {
       setTimeout(() => {
         setInputVal('');
@@ -71,7 +71,7 @@ const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
           onKeyPress={handleKeyPress}
         />
         <IconButton type="submit" onClick={handleClick}>
-          <AiOutlineSearch />
+          <AddIcon />
         </IconButton>
       </SearchContainer>
     </Fragment>
@@ -87,4 +87,4 @@ const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
 //   border: 0.5px solid #868e96;
 // `;
 
-export default SearchBox;
+export default InputCommentBox;

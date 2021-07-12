@@ -7,15 +7,30 @@ import React, { Fragment, useRef, useState } from 'react';
 import { BsListUl, BsPencilSquare } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addNoticeItem,
   setActiveStep,
-  setNoticeCurrentIndex,
 } from 'redux/features/notice/noticeSlice';
 import { useSnackbar } from 'notistack';
+import { createNotice } from 'apis/noticeAPI';
+
+
 const NoticeDrawerWrite = () => {
-  const [title, setTitle] = useState('');
+  const [noticeTitle, setNoticeTitle] = useState();
   const editorRef = useRef(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [notice, setNotice] = React.useState({  });
+
+
+  const hospitalCode = useSelector(
+    (state) => state.common.loginInfo.hospitalCode,
+  );
+
+  const memberId = useSelector(
+    (state) => state.common.loginInfo.memberId,
+  )
+
+  const memberName = useSelector(
+    (state) => state.common.loginInfo.memberName,
+  )
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -24,46 +39,55 @@ const NoticeDrawerWrite = () => {
   };
 
   const dispatch = useDispatch();
-  const noticeItem = useSelector((state) => state.notice.noticeItem);
 
   const handleChange = (event) => {
-    setTitle(event.target.value);
+    setNoticeTitle(event.target.value);
   };
 
-  const handleAdd = () => {
+  const handleAdd = async (event) => {
+    try {
     const now = new Date().toLocaleDateString();
-    const noticeIndex = noticeItem.length;
     const editorContent = editorRef.current.getInstance().getHTML();
-    if (editorContent === '' || title === '') {
+    if (editorContent === '' || noticeTitle === '') {
       handleAlert('error', '제목 혹은 내용이 비어있습니다.');
 
       return;
     }
     const imgRegEx = /img src="|(.*?)"/gm;
     const imgRegExResult = editorContent.match(imgRegEx);
-    let notice_head_image = '';
+    let noticeHeadImage = '';
     if (imgRegExResult !== null) {
-      notice_head_image = editorContent.match(imgRegEx)[1].replace('"', '');
+      noticeHeadImage = editorContent.match(imgRegEx)[1].replace('"', '');
     }
 
-    const notice_head_text = editorContent
+    const noticeHeadText = editorContent
       .replace(/<(?:.|\n)*?>/gm, '')
       .substring(0, 50);
 
-    dispatch(
-      addNoticeItem({
-        notice_id: noticeIndex + 1,
-        notice_title: title,
-        notice_date: now,
-        notice_content: editorContent,
-        notice_author: '김형윤',
-        notice_head_text,
-        notice_head_image,
-      }),
-    );
+    setNotice({
+      noticeTitle: noticeTitle,
+      createDate: "2021-07-07T00:00:00",
+      noticeContent: editorContent,
+      noticeAuthor: "홍길동",
+      hospitalCode,
+      memberId,
+      noticeHeadText,
+      noticeHeadImage,
+    });
 
-    dispatch(setNoticeCurrentIndex(noticeIndex));
+    console.log(notice);
+    const noticeInfo = { ...notice }
+    const sad = JSON.stringify(noticeInfo)    
+    console.log("sad", sad)
+
+    await createNotice(sad);
+    console.log("newNotice", noticeInfo)
+
     dispatch(setActiveStep('SUCCESS'));
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -74,7 +98,7 @@ const NoticeDrawerWrite = () => {
         </div>
         <div style={{ flex: 6 }}>
           <StyledInputBase
-            value={title}
+            value={noticeTitle}
             onChange={handleChange}
             placeholder="제목을 입력해주세요."
           />

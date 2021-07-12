@@ -13,7 +13,7 @@ import axios from 'axios';
  * @author HYEONG YUN KIM
  */
 export const getTodosListByHospitalCode = async (hospitalCode) => {
-  return await axios.get('https://localhost/api/v1/todo/search/code/', {
+  return await axios.get('http://localhost:8080/api/v1/todo/search/code/', {
     params: {
       hospitalCode,
     },
@@ -33,7 +33,7 @@ export const getTodosListByHospitalCode = async (hospitalCode) => {
  * @author HYEONG YUN KIM
  */
 export const getTodosListByMemberId = async (memberId) => {
-  return await axios.get('https://localhost/api/v1/todo/search/id/', {
+  return await axios.get('http://localhost:8080/api/v1/todo/search/id/', {
     params: {
       memberId,
     },
@@ -54,7 +54,7 @@ export const getTodosListByMemberId = async (memberId) => {
  * @author HYEONG YUN KIM
  */
 export const createTodo = async (todoInfo) => {
-  return await axios.post('https://localhost/api/v1/todo/', {
+  return await axios.post('http://localhost:8080/api/v1/todo/', {
     params: {
       todoInfo,
     },
@@ -70,7 +70,7 @@ export const createTodo = async (todoInfo) => {
  * @author HYEONG YUN KIM
  */
 export const removeTodo = async (memberId) => {
-  return await axios.delete('https://localhost/api/v1/todo/', {
+  return await axios.delete('http://localhost:8080/api/v1/todo/', {
     params: {
       memberId,
     },

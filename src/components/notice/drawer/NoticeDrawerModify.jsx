@@ -4,19 +4,20 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Editor } from '@toast-ui/react-editor';
 // import parse from 'html-react-parser';
 import {
-  modifyNoticeItem,
   setActiveStep,
 } from 'redux/features/notice/noticeSlice';
 import StyledButton from 'components/common/button/StyledButton';
 import StyledInputBase from 'components/common/input/StyledInputBase';
+import { getNoticeList, modifyNotice } from 'apis/noticeAPI';
 
 const NoticeDrawerModify = () => {
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
-  const noticeItem = useSelector((state) => state.notice.noticeItem);
-  const currentItem = noticeItem[currentIndex];
+  
   const editorRef = useRef(null);
   const [inputVal, setInputVal] = useState('');
   const [inputContent, setInputContent] = useState('');
+  const [notice, setNotice] = React.useState({  });
+
   const dispatch = useDispatch();
 
   console.log(inputContent);
@@ -25,46 +26,68 @@ const NoticeDrawerModify = () => {
   };
 
   useEffect(() => {
+    const work = async () => {
+      try {
+        const response = await getNoticeList(currentIndex);
+        setNotice(response.data.data);
+        console.log("response", response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    work();
+  }, [currentIndex]); //***** [] 없으면 무한실행합니다.
+
+
+  useEffect(() => {
     setInputVal();
     setInputContent();
-  }, [currentItem]);
+  }, [notice]);
 
   // const handleEditorChange = (e, editor) => {
   //   setInputContent(e.target.value);
   // };
 
-  const handleModifyBtn = () => {
+  const handleModifyBtn = async () => {
+    try {
     const editorContent = editorRef.current.getInstance().getHTML();
     const imgRegEx = /img src="|(.*?)"/gm;
     const imgRegExResult = editorContent.match(imgRegEx);
-    let notice_head_image = '';
+    let noticeHeadImage = '';
     if (imgRegExResult !== null) {
-      notice_head_image = editorContent.match(imgRegEx)[1].replace('"', '');
+      noticeHeadImage = editorContent.match(imgRegEx)[1].replace('"', '');
     }
 
     console.log(inputVal);
-    const notice_head_text = editorContent
+    const noticeHeadText = editorContent
       .replace(/<(?:.|\n)*?>/gm, '')
       .substring(0, 50);
 
-    dispatch(
-      modifyNoticeItem({
-        ...currentItem,
-        notice_title: inputVal,
-        notice_content: editorContent,
-        notice_head_text,
-        notice_head_image,
-      }),
-    );
+    setNotice({
+      ...notice,
+      noticeId: currentIndex,
+      noticeTitle: inputVal,
+      noticeContent: editorContent,
+      noticeHeadText,
+      noticeHeadImage,
+    })
 
-    console.log('currentItem : ', currentItem);
+    const dirtyNotice = {...notice};
+
+    await modifyNotice(dirtyNotice);
+
+    console.log('notice : ', notice);
+
     dispatch(setActiveStep('MODIFYSUCCESS'));
+  } catch (error) {
+    console.log(error);
+  }
   };
 
   useEffect(() => {
-    setInputVal(currentItem.notice_title);
-    setInputContent(currentItem.notice_content);
-  }, [currentItem]);
+    setInputVal(notice.noticeTitle);
+    setInputContent(notice.noticeContent);
+  }, [notice]);
 
   return (
     <Fragment>
@@ -74,10 +97,9 @@ const NoticeDrawerModify = () => {
         </div>
         <div style={{ flex: 6 }}>
           <StyledInputBase
-            name="notice_title"
+            name="noticeTitle"
             value={inputVal}
             onChange={handleChange}
-            placeholder="저희 병원을 소개합니다."
           />
         </div>
       </div>
@@ -87,9 +109,9 @@ const NoticeDrawerModify = () => {
             previewStyle="vertical"
             height="500px"
             initialEditType="wysiwyg"
-            name="notice_content"
+            name="noticeContent"
             // value={inputContent}
-            initialValue={currentItem.notice_content}
+            initialValue={notice.noticeContent}
             language="ko"
             // onChange={handleEditorChange}
             ref={editorRef}

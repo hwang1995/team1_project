@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-  setActiveStep,
-  removeNoticeItem,
+  setActiveStep
 } from 'redux/features/notice/noticeSlice';
 import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose, AiOutlineCheckCircle } from 'react-icons/ai';
@@ -13,6 +12,7 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
+import { removeNotice } from 'apis/noticeAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -33,9 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeleteModal = ({ isOpenModal, setOpenModal, notice_id }) => {
+const DeleteModal = ({ isOpenModal, setOpenModal, noticeId }) => {
   const dispatch = useDispatch();
-  const noticeItem = useSelector((state) => state.notice.noticeItem);
 
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
@@ -44,10 +43,19 @@ const DeleteModal = ({ isOpenModal, setOpenModal, notice_id }) => {
     setOpenModal(false);
   };
 
-  const handleDeleteBtn = () => {
-    dispatch(removeNoticeItem(noticeItem[notice_id]));
-    dispatch(setActiveStep('DELETE'));
+  const handleRemoveNotice = async (event) => {
+    try {
+      await removeNotice(noticeId);
+      dispatch(setActiveStep('DELETE'));
+    } catch (error) {
+      console.log(error);
+      
+    }
   };
+
+  // const handleDeleteBtn = () => {
+  //   dispatch(setActiveStep('DELETE'));
+  // };
 
   return (
     <Fragment>
@@ -109,7 +117,7 @@ const DeleteModal = ({ isOpenModal, setOpenModal, notice_id }) => {
                   bgColor="rgb(8,78,127)"
                   color="white"
                   width="150px"
-                  onClick={handleDeleteBtn}
+                  onClick={handleRemoveNotice}
                 >
                   <AiOutlineCheckCircle style={{ marginRight: '5px' }} />
                   확인

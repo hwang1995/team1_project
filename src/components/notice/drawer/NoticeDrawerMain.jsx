@@ -9,34 +9,51 @@ import {
 import SearchBox from 'components/common/search/SearchBox';
 import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 import StyledButton from 'components/common/button/StyledButton';
-
-
+import { getNoticesList } from 'apis/noticeAPI';
 
 const NoticeDrawerMain = () => {
   const [searchVal, setSearchVal] = useState('');
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [notice, setNotice] = React.useState({  });
 
+  const hospitalCode = useSelector(
+    (state) => state.common.loginInfo.hospitalCode,
+  );
   const dispatch = useDispatch();
-
-  const noticeItem = useSelector((state) => state.notice.noticeItem);
 
   const handleChange = (e) => {
     setSearchVal(e.target.value);
     console.log(e.target.value);
   };
 
+
   useEffect(() => {
     console.log(searchVal);
   }, [searchVal]);
+
+  useEffect(() => {
+    const work = async () => {
+      try {
+        const response = await getNoticesList(hospitalCode);
+        setNotice(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    work();
+  }, []); //***** [] 없으면 무한실행합니다.
+
+  const noticeasd = Array.from(notice);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleClick = (data) => {
-    console.log(data);
-    dispatch(setNoticeCurrentIndex(data.notice_id - 1));
+    // console.log(data);
+    dispatch(setNoticeCurrentIndex(data.noticeId));
     dispatch(setActiveStep('READ'));
   };
 
@@ -45,11 +62,11 @@ const NoticeDrawerMain = () => {
     setPage(0);
   };
 
-  const matchData = noticeItem.filter((data) =>
-    data.notice_title.includes(searchVal),
-  );
+  
 
-  console.log("matchData:",matchData);
+  const matchData = noticeasd.filter((data) =>
+    data.noticeTitle.includes(searchVal),
+  );
 
   return (
     <Fragment>
@@ -78,42 +95,38 @@ const NoticeDrawerMain = () => {
         {matchData
           .reverse()
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-
-          .map((data) => ( 
+          .map((data) => (
             <Fragment>
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <div className="left-side" style={{ flex: 2 }}>
                   <div className="avatar-container">
-                    <h4 style={{ marginLeft: '5px' }}>{data.notice_author}</h4>
+                    <h4 style={{ marginLeft: '5px' }}>{data.noticeAuthor}</h4>
                   </div>
                   <div className="textTitle-container">
                     <div
-                      // key={data.notice_id}
+                      key={data.noticeId}
                       align="left"
                       onClick={() => {
                         handleClick(data);
                       }}
                     >
-                      {data.notice_title}
+                      {data.noticeTitle}
                     </div>
                   </div>
                   <div className="textContent-container">
-                    <div align="left">{data.notice_head_text}</div>
+                    <div align="left">{data.noticeHeadText}</div>
                   </div>
                   <div className="textDate-container">
-                    <div align="left">{data.notice_date}</div>
+                    <div align="left">{data.createDate}</div>
                   </div>
                 </div>
-                {data.notice_head_image ? (
-                      <div className="right-side" style={{ flex: 1 }}>
-                       <img src={data.notice_head_image} alt="Logo" width="100%" />
-                      </div>
-                      ) : (
-                      <div className="right-side" style={{ flex: 1 }}>
-                        
-                      </div>
-                      )}
-                
+                {data.noticeHeadImage ? (
+                  <div className="right-side" style={{ flex: 1 }}>
+                    <img src={data.noticeHeadImage} alt="Logo" width="100%" />
+                  </div>
+                ) : (
+                  <div className="right-side" style={{ flex: 1 }}></div>
+                )}
               </div>
             </Fragment>
           ))}
