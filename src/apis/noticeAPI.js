@@ -15,7 +15,7 @@ import axios from 'axios';
  * @author HYEONG YUN KIM
  */
 export const getNoticesList = async (hospitalCode) => {
-  return await axios.get('https://localhost/api/v1/notice/', {
+  return await axios.get('http://localhost:8080/api/v1/notice/', {
     params: {
       hospitalCode,
     },
@@ -34,7 +34,7 @@ export const getNoticesList = async (hospitalCode) => {
  * @author HYEONG YUN KIM
  */
 export const getNoticeCommentsList = async (noticeId) => {
-  return await axios.get('https://localhost/api/v1/notice/comments', {
+  return await axios.get('http://localhost:8080/api/v1/notice/comments', {
     params: {
       noticeId,
     },
@@ -45,7 +45,7 @@ export const getNoticeCommentsList = async (noticeId) => {
  * * 목적 : 해당 공지사항의 상세정보 + 조회수 증가를 위한 API
  *
  * @param {number} noticeId
- * @returns {List<NoticeCommentsDTO>} noticeCommentList
+ * @returns {List<NoticesDTO>} noticeList
  * * [notices Entity]
  * * * !String noticeTitle
  * * * !String noticeContent
@@ -53,7 +53,7 @@ export const getNoticeCommentsList = async (noticeId) => {
  * @author HYEONG YUN KIM
  */
 export const getNoticeList = async (noticeId) => {
-  return await axios.get('https://localhost/api/v1/notice/detail', {
+  return await axios.get('http://localhost:8080/api/v1/notice/detail', {
     params: {
       noticeId,
     },
@@ -78,7 +78,7 @@ export const getNoticeList = async (noticeId) => {
  * @author HYEONG YUN KIM
  */
 export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
-  return await axios.get('https://localhost/api/v1/notice/search', {
+  return await axios.get('http://localhost:8080/api/v1/notice/search', {
     params: {
       searchNoticeByHospitalAndTitle,
     },
@@ -104,7 +104,7 @@ export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
  * @author HYEONG YUN KIM
  */
 export const createNotice = async (noticeInfo) => {
-  return await axios.post('https://localhost/api/v1/notice/', {
+  return await axios.post('http://localhost:8080/api/v1/notice/', {
     params: {
       noticeInfo,
     },
@@ -126,7 +126,7 @@ export const createNotice = async (noticeInfo) => {
  * @author HYEONG YUN KIM
  */
 export const addComment = async (noiceCommentInfo) => {
-  return await axios.post('https://localhost/api/v1/notice/comment', {
+  return await axios.post('http://localhost:8080/api/v1/notice/comment', {
     params: {
       noiceCommentInfo,
     },
@@ -143,10 +143,10 @@ export const addComment = async (noiceCommentInfo) => {
  * * * !String base64Content
  * @returns {String} filePath
  * * filePath : 파일저장 경로
- * 
+ *
  */
 export const addNoticeImage = async (noticeImageInfo) => {
-  return await axios.post('https://localhost/api/v1/notice/images', {
+  return await axios.post('http://localhost:8080/api/v1/notice/images', {
     params: {
       noticeImageInfo,
     },
@@ -168,7 +168,7 @@ export const addNoticeImage = async (noticeImageInfo) => {
  * @author HYEONG YUN KIM
  */
 export const modifyNotice = async (noticeInfo) => {
-  return await axios.put('https://localhost/api/v1/notice', {
+  return await axios.put('http://localhost:8080/api/v1/notice', {
     params: {
       noticeInfo,
     },
@@ -187,7 +187,7 @@ export const modifyNotice = async (noticeInfo) => {
  * @author HYEONG YUN KIM
  */
 export const modifyComment = async (updateCommentInfo) => {
-  return await axios.put('https://localhost/api/v1/notice/comment', {
+  return await axios.put('http://localhost:8080/api/v1/notice/comment', {
     params: {
       updateCommentInfo,
     },
@@ -203,7 +203,7 @@ export const modifyComment = async (updateCommentInfo) => {
  * @author HYEONG YUN KIM
  */
 export const removeNotice = async (noticeId) => {
-  return await axios.delete('https://localhost/api/v1/notice', {
+  return await axios.delete('http://localhost:8080/api/v1/notice', {
     params: {
       noticeId,
     },
@@ -219,7 +219,7 @@ export const removeNotice = async (noticeId) => {
  * @author HYEONG YUN KIM
  */
 export const removeComment = async (noticeCommentId) => {
-  return await axios.delete('https://localhost/api/v1/notice/comment', {
+  return await axios.delete('http://localhost:8080/api/v1/notice/comment', {
     params: {
       noticeCommentId,
     },

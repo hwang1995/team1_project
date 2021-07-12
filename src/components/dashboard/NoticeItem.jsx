@@ -24,7 +24,7 @@ const NoticeContainer = styled.div`
 
 const NoticeItem = ({ data }) => {
   console.log(data);
-  const { notice_title, notice_date, notice_author } = data;
+  const { noticeTitle, createDate, noticeAuthor } = data;
   return (
     <ListItem>
       <NoticeContainer>
@@ -34,7 +34,7 @@ const NoticeItem = ({ data }) => {
           weight={9}
           className="title"
         >
-          {notice_title}
+          {noticeTitle}
         </StyledTypography>
         <Divider className="divider" />
         <div className="description">
@@ -48,7 +48,7 @@ const NoticeItem = ({ data }) => {
             weight={3}
             className="text-margin"
           >
-            {notice_date}
+            {createDate}
           </StyledTypography>
           <StyledTypography
             variant="subtitle1"
@@ -75,7 +75,7 @@ const NoticeItem = ({ data }) => {
             weight={3}
             className="text-margin"
           >
-            {notice_author}
+            {noticeAuthor}
           </StyledTypography>
         </div>
       </NoticeContainer>
