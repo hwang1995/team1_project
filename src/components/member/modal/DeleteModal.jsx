@@ -49,7 +49,8 @@ const DeleteModal = ({
     setOpenModal(false);
   };
 
-  const deleteMember = () => {
+  const deleteMember = async () => {
+    const { data, status } = await deleteMember(member_id);
     const index = member.findIndex((member) => member.member_id === member_id);
     member.splice(index, 1);
     setMember(member);

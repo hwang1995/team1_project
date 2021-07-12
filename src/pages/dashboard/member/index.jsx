@@ -29,6 +29,10 @@ import { BiRefresh } from 'react-icons/bi';
 import { FiRefreshCcw } from 'react-icons/fi';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
+import {
+  showMembersListByHospitalCode,
+  showMembersListByNameAndCode,
+} from 'apis/memberAPI';
 /**
  * 이 페이지 컴포넌트는 임직원 관리 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -51,6 +55,33 @@ const MemberPage = () => {
 
   const [isOpenModal, setOpenModal] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+
+  async function showMember() {
+    try {
+      let hospitalCode = '';
+      const { data, status } = await showMembersListByHospitalCode(
+        hospitalCode,
+      );
+      setMember(data);
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+  }
+
+  async function showSearchMember(searchInfo) {
+    try {
+      const { data, status } = await showMembersListByNameAndCode(searchInfo);
+      setMember(data);
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+  }
+
+  useEffect(() => {
+    showMember();
+  }, []);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -79,13 +110,17 @@ const MemberPage = () => {
     );
   };
 
+  //검색 초기화
   const handleRefresh = () => {
     setPage(0);
     setSearchVal('');
+    showMember();
   };
+
   //검색했을때 동작
   useEffect(() => {
     console.log(searchVal);
+    showSearchMember(searchVal);
     setPage(0);
   }, [searchVal]);
 
