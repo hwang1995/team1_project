@@ -27,8 +27,8 @@ import axios from 'axios';
  * * !String doctorRoom (의사 방 이름)
  * @author SI HYUN PARK
  */
-export const getReservationInfo = async (weekNoWithMember) => {
-  return await axios.get('/reservation', weekNoWithMember);
+export const getReservationInfo = async (WeekNoWithMemberVO) => {
+  return await axios.post('/reservation/data', WeekNoWithMemberVO);
 };
 
 /**

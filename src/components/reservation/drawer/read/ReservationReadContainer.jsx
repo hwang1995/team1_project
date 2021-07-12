@@ -29,7 +29,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
   };
 
   // 내원사유를 관리하는 상태 데이터, readPatient.drOpinion을 세팅하여 수정할 수 있도록 한다
-  const [visitReason, setReason] = useState(readPatient.drOpinion);
+  const [visitReason, setReason] = useState(readPatient.visitPurpose);
   // 수정, 삭제 완료되었을떄에 따라 컴포넌트를 세팅하기 위한 상태 데이터
   const [checkPage, setCheckPage] = useState('');
   // 예약시간 부분을 커스텀하여 세팅하는 상태 데이터
@@ -186,7 +186,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
           </StyledTypography>
         </Grid>
         <Grid item xs={9}>
-          <StyledInputBase readOnly value={readPatient.birth} />
+          <StyledInputBase readOnly value={readPatient.patientBirth} />
         </Grid>
         <Grid
           item
@@ -246,7 +246,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
           </StyledTypography>
         </Grid>
         <Grid item xs={9}>
-          <StyledInputBase readOnly value={readPatient.drRoom} />
+          <StyledInputBase readOnly value={readPatient.doctorRoom} />
         </Grid>
         <Grid
           item
@@ -261,7 +261,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
           </StyledTypography>
         </Grid>
         <Grid item xs={9}>
-          <StyledInputBase readOnly value={readPatient.memberName} />
+          <StyledInputBase readOnly value={readPatient.doctorName} />
         </Grid>
         <Grid
           item
