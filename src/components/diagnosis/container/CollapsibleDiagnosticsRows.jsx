@@ -71,4 +71,4 @@ const CollapsibleDiagnosticsRows = ({ data }) => {
   );
 };
 
-export default CollapsibleDiagnosticsRows;
+export default React.memo(CollapsibleDiagnosticsRows);

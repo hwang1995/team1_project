@@ -1,11 +1,26 @@
 import React from 'react';
 import { TableRow, TableCell } from '@material-ui/core';
-import StyledTypography from 'components/common/typography/StyledTypography';
+import { useDispatch } from 'react-redux';
 import StyledButton from 'components/common/button/StyledButton';
+import {
+  setDrawerStatus,
+  setPatientId,
+} from 'redux/features/history/diagnosisHistorySlice';
 
 const DiagnosisHistoryTableRow = ({ data }) => {
+  const dispatch = useDispatch();
+
   const handleClick = () => {
-    alert('You clicked me ?');
+    const { patientId } = data;
+    dispatch(setPatientId(patientId));
+
+    // 환자의 정보를 세팅 후 DiagnosisHistory Drawer를 연다.
+    dispatch(
+      setDrawerStatus({
+        name: 'diagnosisHistory',
+        status: true,
+      }),
+    );
   };
 
   return (
@@ -20,8 +35,8 @@ const DiagnosisHistoryTableRow = ({ data }) => {
       <TableCell size="small">
         {data.patientAddr1} {data.patientAddr2} {data.patientPostal}
       </TableCell>
-      <TableCell size="small">
-        <StyledButton bgColor="#004D80" color="white" onClick={handleClick}>
+      <TableCell size="small" onClick={handleClick}>
+        <StyledButton bgColor="#004D80" color="white">
           상세 보기
         </StyledButton>
       </TableCell>
@@ -29,4 +44,4 @@ const DiagnosisHistoryTableRow = ({ data }) => {
   );
 };
 
-export default DiagnosisHistoryTableRow;
+export default React.memo(DiagnosisHistoryTableRow);

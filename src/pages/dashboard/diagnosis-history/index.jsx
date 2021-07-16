@@ -22,9 +22,13 @@ import { getPatientsList } from 'apis/patientAPI';
 import HashSpinner from 'components/common/spinner/HashSpinner';
 import DiagnosisHistoryTableHead from 'components/diagnosis-history/table/DiagnosisHistoryTableHead';
 import DiagnosisHistoryTableRow from 'components/diagnosis-history/table/DiagnosisHistoryTableRow';
+import PatientDiagnosisHistoryDrawer from 'components/diagnosis-history/drawer/PatientDiagnosisHistoryDrawer';
+import DiagnosisHistorySearchModal from 'components/diagnosis-history/modal/DiagnosisHistorySearchModal';
+import { setModalStatus } from 'redux/features/history/diagnosisHistorySlice';
 
 const DiagnosisHistoryPage = () => {
   const dispatch = useDispatch();
+
   // Loading의 상태를 저장
   const [isLoading, setLoading] = useState(true);
 
@@ -34,7 +38,9 @@ const DiagnosisHistoryPage = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { hospitalCode } = useSelector((state) => state.common.loginInfo);
-
+  const currentPatientId = useSelector(
+    (state) => state.diagnosisHistory.currentPatientId,
+  );
   const [pager, setPager] = useState({
     page: 0,
     rowsPerPage: 10,
@@ -44,6 +50,15 @@ const DiagnosisHistoryPage = () => {
     enqueueSnackbar(message, {
       variant,
     });
+  };
+
+  const handleSearchModal = () => {
+    dispatch(
+      setModalStatus({
+        name: 'search',
+        status: true,
+      }),
+    );
   };
   const buttonSetting = {
     rest: { scale: 1 },
@@ -147,6 +162,7 @@ const DiagnosisHistoryPage = () => {
                         marginRight: '0.5rem',
                         padding: '0.5rem',
                       }}
+                      onClick={() => handleSearchModal()}
                     >
                       <AiOutlineSearch />
                     </IconButton>
@@ -220,11 +236,11 @@ const DiagnosisHistoryPage = () => {
                       count={patientList.length}
                       rowsPerPage={pager.rowsPerPage}
                       page={pager.page}
-                      onPageChange={handleChangePage}
-                      onChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                   </Fragment>
                 )}
+                {currentPatientId !== 0 && <PatientDiagnosisHistoryDrawer />}
+                <DiagnosisHistorySearchModal />
               </ContentContainer>
             </PageTransition>
           </Grid>

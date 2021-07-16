@@ -60,4 +60,4 @@ const CollapsibleMedicineRows = ({ data }) => {
   );
 };
 
-export default CollapsibleMedicineRows;
+export default React.memo(CollapsibleMedicineRows);

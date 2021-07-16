@@ -11,24 +11,28 @@ import {
   Paper,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { AiOutlineClose } from 'react-icons/ai';
 import { useSnackbar } from 'notistack';
-import { setDiagnosisHistoryDrawer } from 'redux/features/diagnosis/diagnosisSlice';
+import { AiOutlineClose } from 'react-icons/ai';
+import { setDrawerStatus } from 'redux/features/history/diagnosisHistorySlice';
+import { showDiagnosisHistoryByPatientId } from 'apis/diagnosisAPI';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import StyledTypography from 'components/common/typography/StyledTypography';
-import CollapsibleRows from '../container/CollapsibleRows';
-import { showDiagnosisHistoryByPatientId } from 'apis/diagnosisAPI';
+import CollapsibleRows from 'components/diagnosis/container/CollapsibleRows';
 import HashSpinner from 'components/common/spinner/HashSpinner';
 
-const DiagnosisHistoryDrawer = () => {
+const PatientDiagnosisHistoryDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [isLoading, setLoading] = useState(false);
   const [historyData, setHistoryData] = useState([]);
   const dispatch = useDispatch();
   const isOpened = useSelector(
-    (state) => state.diagnosis.drawerStatus.diagnosisHistory,
+    (state) => state.diagnosisHistory.drawerStatus.diagnosisHistory,
+  );
+
+  const patientId = useSelector(
+    (state) => state.diagnosisHistory.currentPatientId,
   );
   const { enqueueSnackbar } = useSnackbar();
 
@@ -37,32 +41,43 @@ const DiagnosisHistoryDrawer = () => {
       variant,
     });
   };
-  const patientInfo = useSelector((state) => state.diagnosis.patient);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       return;
     }
-    dispatch(setDiagnosisHistoryDrawer(open));
+    dispatch(
+      setDrawerStatus({
+        name: 'diagnosisHistory',
+        status: open,
+      }),
+    );
   };
+
+  async function getDiagnosisHistory(patientId) {
+    try {
+      const result = await showDiagnosisHistoryByPatientId(patientId);
+      setHistoryData(result);
+      setLoading(true);
+    } catch (error) {
+      const { message } = error.response.data;
+      if (message === undefined) {
+        handleAlert('error', error);
+        setLoading(true);
+        return;
+      }
+      handleAlert('error', message);
+      setLoading(true);
+    }
+  }
 
   useEffect(() => {
     if (isOpened) {
-      const { patientId } = patientInfo;
-      async function getDiagnosisHistory(patientId) {
-        try {
-          const result = await showDiagnosisHistoryByPatientId(patientId);
-          setHistoryData(result);
-          setLoading(true);
-        } catch (error) {
-          const { message } = error.response.data;
-          handleAlert('error', message);
-          setLoading(true);
-        }
-      }
-
-      getDiagnosisHistory(patientId);
+      setTimeout(() => {
+        getDiagnosisHistory(patientId);
+      }, 1000);
     }
+
     return () => {
       setHistoryData([]);
       setLoading(false);
@@ -87,7 +102,14 @@ const DiagnosisHistoryDrawer = () => {
               <IconButton>
                 <AiOutlineClose
                   size={32}
-                  onClick={() => dispatch(setDiagnosisHistoryDrawer(false))}
+                  onClick={() =>
+                    dispatch(
+                      setDrawerStatus({
+                        name: 'diagnosisHistory',
+                        status: false,
+                      }),
+                    )
+                  }
                 />
               </IconButton>
             </div>
@@ -179,4 +201,4 @@ const DiagnosisHistoryDrawer = () => {
   );
 };
 
-export default DiagnosisHistoryDrawer;
+export default PatientDiagnosisHistoryDrawer;
