@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import { SwipeableDrawer, Grid, Divider, IconButton } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import {
   addInjectorInfo,
   removeInjectorInfo,
@@ -12,14 +13,15 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import StyledTypography from 'components/common/typography/StyledTypography';
-import Spinner from 'components/common/spinner/Spinner';
 import SearchItem from '../container/SearchItem';
-import injectorData from 'pages/dashboard/diagnosis/injector.json';
 import MedicineItem from '../container/MedicineItem';
+import { searchInjectorList } from 'apis/searchAPI';
+import HashSpinner from 'components/common/spinner/HashSpinner';
 
 const InjectorDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [searchVal, setSearchVal] = useState('');
+  const [searchData, setSearchData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const injectorInfo = useSelector((state) => state.diagnosis.injectorInfo);
@@ -34,11 +36,32 @@ const InjectorDrawer = () => {
     dispatch(setInjectorDrawer(open));
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
   useEffect(() => {
     if (searchVal === '') {
       return;
     }
     setLoading(false);
+    async function getMedicineList(searchVal) {
+      try {
+        const result = await searchInjectorList(searchVal);
+        setSearchData(result);
+        setLoading(true);
+      } catch (error) {
+        const { message } = error.response.data;
+        handleAlert('error', message);
+        setLoading(true);
+      }
+    }
+    getMedicineList(searchVal);
+
     setTimeout(() => {
       setLoading(true);
     }, 1000);
@@ -123,7 +146,7 @@ const InjectorDrawer = () => {
                       height: '100vh',
                     }}
                   >
-                    <Spinner />
+                    <HashSpinner />
                   </div>
                 )}
 
@@ -139,16 +162,12 @@ const InjectorDrawer = () => {
                     }}
                   >
                     <Divider />
-                    {injectorData
-                      .filter(({ medicine_name }) =>
-                        medicine_name.includes(searchVal),
-                      )
-                      .map((data) => (
-                        <Fragment key={data.medicine_name}>
-                          <Divider />
-                          <SearchItem data={data} addMedicine={addInjector} />
-                        </Fragment>
-                      ))}
+                    {searchData.map((data) => (
+                      <Fragment key={data.medicineName}>
+                        <Divider />
+                        <SearchItem data={data} addMedicine={addInjector} />
+                      </Fragment>
+                    ))}
                   </div>
                 )}
               </div>

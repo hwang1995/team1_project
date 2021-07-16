@@ -31,7 +31,8 @@ import axios from 'axios';
  * * * message - "환자의 정보가 존재하지 않습니다."
  */
 export const getDiagnosisList = async (userInfo) => {
-    return await axios.get("/diagnosis", userInfo);
+    const result = await axios.post('/diagnosis', userInfo);
+    return result.data.data;
 }
 
 /**
@@ -64,7 +65,8 @@ export const getDiagnosisList = async (userInfo) => {
  * * * message : "알 수 없는 이유로 진료가 등록되지 않았습니다. 다시 시도해주세요."
  */
 export const registDiagnosisInfo = async (diagnosisInfo) => {
-    return await axios.put("/diagnosis", diagnosisInfo);
+    const result = await axios.put('/diagnosis', diagnosisInfo);
+    return result.data.data;
 }
 
 /**
@@ -105,9 +107,10 @@ export const registDiagnosisInfo = async (diagnosisInfo) => {
  * 
  */
 export const showDiagnosisHistoryByPatientId = async (patientId) => {
-    return await axios.get("/diagnosis/history", {
+    const result = await axios.get("/diagnosis/history", {
         params: {
             patientId
         }
-    })
+    });
+    return result.data.data;
 }

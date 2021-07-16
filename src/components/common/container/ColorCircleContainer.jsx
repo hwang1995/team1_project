@@ -5,13 +5,13 @@ const ColorCircleContainer = styled.div`
   width: ${({ size }) => size + 'px'};
   height: ${({ size }) => size + 'px'};
   background-color: ${({ color }) => {
-    if (color === 'PENDING') {
+    if (color === 'DIAGNOSTIC_PENDING') {
       return '#F1BF4D';
-    } else if (color === 'REGISTER') {
+    } else if (color === 'DIAGNOSTIC_REGISTER') {
       return '#E35E5C';
-    } else if (color === 'COMPLETED') {
+    } else if (color === 'DIAGNOSTIC_COMPLETED') {
       return '#488EF3';
-    } else if (color === 'PROCESSING' || color === 'EDTA') {
+    } else if (color === 'DIAGNOSTIC_PROCESSING' || color === 'EDTA') {
       return '#9761F6';
     }
     return color;

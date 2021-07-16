@@ -22,6 +22,7 @@ import axios from 'axios';
  */
 export const getPatientsList = async (hospitalCode) => {
   return await axios.get(`/patient/search/${hospitalCode}`);
+
 };
 
 /**
@@ -47,7 +48,7 @@ export const getPatientsList = async (hospitalCode) => {
  * @author SI HYUN PARK
  */
 export const getSearchPatientList = async (searchInfo) => {
-  return await axios.get('/patient', searchInfo);
+  return await axios.post('/patient/search', searchInfo);
 };
 
 /**

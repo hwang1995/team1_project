@@ -14,6 +14,8 @@ export const diagnosticSlice = createSlice({
       search: false,
     },
     diagnosticDataInput: {},
+    currentDiagTestId: 0,
+    currentDiagTestList: []
   },
   reducers: {
     setDiagnosticDrawer(state, action) {
@@ -27,9 +29,21 @@ export const diagnosticSlice = createSlice({
       state.modalStatus[name] = status;
     },
     setDiagnosticDataInput(state, action) {
-      const { diag_inspection_id, value } = action.payload;
-      state.diagnosticDataInput[diag_inspection_id] = value;
+      const { diagTestRecordId, value } = action.payload;
+      state.diagnosticDataInput[diagTestRecordId] = value;
     },
+    setCurrentDiagTestId(state, action) {
+      state.currentDiagTestId = action.payload;
+    },
+    setCurrentDiagTestList(state, action) {
+      state.currentDiagTestList = action.payload;
+    },
+    resetDiagnosticData(state) {
+      state.diagnosticDataInput = {};
+      state.currentDiagTestId = 0;
+      state.currentDiagTestList = [];
+    }
+
   },
 });
 
@@ -37,7 +51,7 @@ export const {
   setDiagnosticDrawer,
   setDiagnosticDrawerPage,
   setDiagnosticModal,
-  setDiagnosticDataInput,
+  setDiagnosticDataInput, setCurrentDiagTestId, setCurrentDiagTestList, resetDiagnosticData
 } = diagnosticSlice.actions;
 
 export default diagnosticSlice.reducer;

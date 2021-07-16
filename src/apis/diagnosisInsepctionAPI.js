@@ -30,7 +30,8 @@ import axios from 'axios';
  * > 진단 검사의 결과 값이 없는 경우 Throw
  */
 export const showDiagnosticTestListByDiagTestId = async (diagTestId) => {
-    return await axios.get(`/diagnosis/inspection/${diagTestId}`);
+    const result = await axios.get(`/diagnosis/inspection/${diagTestId}`)
+    return result.data.data;
 }
 
 /**
@@ -61,7 +62,8 @@ export const showDiagnosticTestListByDiagTestId = async (diagTestId) => {
  * * * message : "이번 주에는 진단 검사가 존재하지 않습니다." || "임직원과 환자 정보가 존재하지 않습니다"
  */
 export const showWeeklyDiagnosticTestListByHospitalCode = async (hospitalInfo) => {
-    return await axios.get("/diagnosis/inspection", hospitalInfo);
+    const result = await axios.post("/diagnosis/inspection", hospitalInfo);
+    return result.data.data;
 }
 
 /**
@@ -79,8 +81,29 @@ export const showWeeklyDiagnosticTestListByHospitalCode = async (hospitalInfo) =
  * * * message : "진단 검사의 상태가 변경되지 않았습니다."
  */
 export const diagnosticChangeStatus = async (statusInfo) => {
-    return await axios.put("/diagmosis/status", statusInfo);
+    const result = await axios.put("/diagnosis/inspection/status", statusInfo);
+    return result.data.data;
 }
+
+/**
+ * * 목표 : 진단 검사 상세의 상태를 COMPLETED, PROCESSING, PENDING으로 변경하는 API
+ * @param {object} statusInfo 
+ * * !String status (completed || processing || pending)
+ * * !int diagTestId (진단 검사의 ID)
+ * @returns {boolean} result
+ * @throws 
+ * * HTTP Status 400 - Bad Request
+ * * * status : "not_diag_test_id"
+ * * * message : "올바르지 않은 진단 검사의 식별자입니다."
+ * * HTTP Status 409 - Conflict Request
+ * * * status : "not_updated_diag_test_status"
+ * * * message : "진단 검사의 상태가 변경되지 않았습니다."
+ */
+export const diagnosticTestRecordChangeStatus = async (statusInfo) => {
+    const result = await axios.put("/diagnosis/inspection/diagTestStatus", statusInfo);
+    return result.data.data;
+}
+
 
 /**
  * * 목표 : [미구현 사항] 해당 환자의 진단 검사 상세에서 결과를 입력시에 값을 추가
@@ -92,6 +115,45 @@ export const diagnosticChangeStatus = async (statusInfo) => {
  * @return {Boolean} result
  */
 export const changeDiagnosticTestValue = async (testInfos) => {
-    return await axios.put("/diagnosis/inspection/", testInfos);
+    const result = await axios.put("/diagnosis/inspection/", testInfos);
+    return result.data.data;
 }
 
+/**
+ * * 목표 : 진단 검사의 상세 ID와 검사자의 ID를 넘거 바코드를 출력시의 상태를 바꿔준다.
+ * @param {List<DiagnosticTestResultVO} barcodeInfo 
+ *  * * !List<DiagnosticTestResultVO>
+ * * * !int diagTestRecordId (진단 검사 상세의 ID)
+ * * * !int inspectorMemberId (검사자의 ID)
+ * @returns {boolean} true | false
+ */
+export const changeStatusToRegisterWithMemberId = async (barcodeInfo) => {
+    const result = await axios.put('/diagnosis/inspection/barcodePrint', barcodeInfo);
+    return result.data.data;
+}
+
+/**
+ * * 목표 : 진단 검사의 상세 ID와 검사자의 ID를 넘거 상태를 취소로 바꿔준다.
+ * @param {List<DiagnosticTestResultVO} barcodeInfo 
+ *  * * !List<DiagnosticTestResultVO>
+ * * * !int diagTestRecordId (진단 검사 상세의 ID)
+ * * * !int inspectorMemberId (검사자의 ID)
+ * @returns {boolean} true | false
+ */
+export const changeStatusToPendingWithMemberId = async (diagnosticInfo) => {
+    const result = await axios.put('/diagnosis/inspection/pending', diagnosticInfo);
+    return result.data.data;
+}
+
+/**
+ * * 목표 : 진단 검사의 상세 ID와 검사자의 ID를 넘거 상태를 완료로 바꿔준다.
+ * @param {List<DiagnosticTestResultVO} barcodeInfo 
+ *  * * !List<DiagnosticTestResultVO>
+ * * * !int diagTestRecordId (진단 검사 상세의 ID)
+ * * * !int inspectorMemberId (검사자의 ID)
+ * @returns {boolean} true | false
+ */
+export const changeStatusToCompletedWithMemberId = async (diagnosticInfo) => {
+    const result = await axios.put('/diagnosis/inspection/completed', diagnosticInfo);
+    return result.data.data;
+}

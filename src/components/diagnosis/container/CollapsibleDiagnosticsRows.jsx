@@ -53,15 +53,15 @@ const CollapsibleDiagnosticsRows = ({ data }) => {
 
         <TableBody>
           {data.map((rows) => (
-            <Fragment key={rows.diag_inspection_id}>
+            <Fragment key={rows.diagInspectionId}>
               <TableRow>
-                <TableCell size="small">{rows.bundle_code}</TableCell>
-                <TableCell size="small">{rows.bundle_name}</TableCell>
-                <TableCell size="small">{rows.pres_code}</TableCell>
-                <TableCell size="small">{rows.pres_name}</TableCell>
-                <TableCell size="small">{rows.pres_upper_limit}</TableCell>
-                <TableCell size="small">{rows.pres_lower_limit}</TableCell>
-                <TableCell size="small">{rows.pres_unit}</TableCell>
+                <TableCell size="small">{rows.bundleCode}</TableCell>
+                <TableCell size="small">{rows.bundleName}</TableCell>
+                <TableCell size="small">{rows.presCode}</TableCell>
+                <TableCell size="small">{rows.presName}</TableCell>
+                <TableCell size="small">{rows.presUpperLimit}</TableCell>
+                <TableCell size="small">{rows.presLowerLimit}</TableCell>
+                <TableCell size="small">{rows.presUnit}</TableCell>
               </TableRow>
             </Fragment>
           ))}

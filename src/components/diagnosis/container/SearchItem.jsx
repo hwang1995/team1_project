@@ -8,7 +8,6 @@ import SearchContainer from './SearchContainer';
 const SearchItem = ({ data, addMedicine }) => {
   const [count, setCount] = useState(1);
   const { enqueueSnackbar } = useSnackbar();
-
   const handleAlert = useCallback(
     (variant, message) => {
       enqueueSnackbar(message, {
@@ -39,11 +38,11 @@ const SearchItem = ({ data, addMedicine }) => {
   }, [handleAlert]);
 
   return (
-    <SearchContainer key={data.medicine_id}>
-      <h2>{data.medicine_name}</h2>
+    <SearchContainer key={data.medicineId}>
+      <h2>{data.medicineName}</h2>
       <p>
-        약품 코드: {data.medicine_code} | 약품 타입 : {data.medicine_type} |
-        캡슐 타입 : {data.medicine_unit}
+        약품 코드: {data.medicineCode} | 약품 타입 : {data.medicineType} | 캡슐
+        타입 : {data.medicineUnit}
       </p>
       <div className="button-area">
         <div className="count-container">

@@ -135,7 +135,7 @@ const NotificationDrawer = () => {
       setPushList([]);
       setLoading(false);
     };
-  }, [isOpened]);
+  }, [isOpened, hospitalCode, memberAuthority]);
 
   return (
     <Fragment>
@@ -176,6 +176,7 @@ const NotificationDrawer = () => {
                 } else if (priority === 'danger') {
                   return <DangerItem data={data} />;
                 }
+                return <></>;
               })}
             {!isLoading && (
               <div

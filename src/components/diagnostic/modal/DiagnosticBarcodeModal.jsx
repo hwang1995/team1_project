@@ -1,8 +1,17 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
+import {
+  makeStyles,
+  Modal,
+  Backdrop,
+  IconButton,
+  Button,
+} from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import bwipjs from 'bwip-js';
+import moment from 'moment';
+import { useReactToPrint } from 'react-to-print';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -10,6 +19,10 @@ import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
 import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
+import {
+  changeStatusToRegisterWithMemberId,
+  diagnosticChangeStatus,
+} from 'apis/diagnosisInsepctionAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -32,12 +45,68 @@ const useStyles = makeStyles((theme) => ({
 
 const DiagnosticBarcodeModal = () => {
   const classes = useStyles();
+  const componentRef = useRef();
 
   const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   const isOpened = useSelector((state) => state.diagnostic.modalStatus.barcode);
-  const [barcodeUrl, setBarcodeUrl] = useState('');
+  const diagTestId = useSelector((state) => state.diagnostic.currentDiagTestId);
+  const diagnosticList = useSelector(
+    (state) => state.diagnostic.currentDiagTestList,
+  );
+
+  const loginInfo = useSelector((state) => state.common.loginInfo);
+
+  const [barcodeList, setBarcodeList] = useState([]);
+  const [isCompleted, setCompleted] = useState(false);
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  const handlePrintAndStatus = async () => {
+    try {
+      handlePrint();
+
+      const { diagTestStatus } = diagnosticList[0];
+      if (
+        diagTestStatus === 'DIAGNOSTIC_REGISTER' ||
+        diagTestStatus === 'DIAGNOSTIC_COMPLETED'
+      ) {
+        console.log('그냥 출력만 할거입니다.');
+        return;
+      }
+      // 1. 진단 검사의 상태를 진행중으로 바꿔준다.
+      await diagnosticChangeStatus({
+        status: 'register',
+        diagTestId,
+      });
+
+      // 2. 진단 검사 상세의 상태를 진행중으로 바꿔준다.
+
+      const sendInfo = diagnosticList.map(({ diagTestRecordId }) => {
+        const inspectorMemberId = loginInfo.memberId;
+        return {
+          diagTestRecordId,
+          inspectorMemberId,
+        };
+      });
+
+      await changeStatusToRegisterWithMemberId(sendInfo);
+      handleAlert('success', '진단 검사의 상태가 접수로 변경되었습니다.');
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+  };
+
   const handleClose = () =>
     dispatch(
       setDiagnosticModal({
@@ -47,16 +116,35 @@ const DiagnosticBarcodeModal = () => {
     );
 
   useEffect(() => {
-    const canvas = document.createElement('canvas');
-    bwipjs.toCanvas(canvas, {
-      bcid: 'hibccode128',
-      text: new Date().getTime().toString(),
-      scale: 4,
-      height: 10,
-      includetext: true,
-      textxalign: 'center',
-    });
-    setBarcodeUrl(canvas.toDataURL('image/png'));
+    if (isOpened) {
+      setCompleted(false);
+
+      diagnosticList.map(({ presCode }, index) => {
+        const canvas = document.createElement('canvas');
+        const today = moment(new Date()).format('YYMMDD');
+        const barcodeText = `TEAM1-${diagTestId}-${presCode}-${today}`;
+        bwipjs.toCanvas(canvas, {
+          bcid: 'hibccode128',
+          text: barcodeText,
+          scale: 4,
+          height: 10,
+          includetext: true,
+          textxalign: 'center',
+        });
+
+        if (index === 0) {
+          setBarcodeList([canvas.toDataURL('image/png')]);
+        } else {
+          setBarcodeList((prevState) => {
+            const newState = prevState;
+            newState.push(canvas.toDataURL('image/png'));
+            return newState;
+          });
+        }
+      });
+      setCompleted(true);
+      // setBarcodeUrl(canvas.toDataURL('image/png'));
+    }
   }, [isOpened]);
   return (
     <Fragment>
@@ -73,7 +161,11 @@ const DiagnosticBarcodeModal = () => {
             className={classes.paper}
             style={{ display: 'flex', flexDirection: 'column' }}
           >
-            <ResponsiveContainer breakpoint={breakpoint} style={{ flex: 1 }}>
+            <ResponsiveContainer
+              breakpoint={breakpoint}
+              style={{ flex: 1 }}
+              className="printArea"
+            >
               <DrawerHeader breakpoint={breakpoint}>
                 <StyledTypography variant="h5" component="h5" weight={7}>
                   바코드 출력
@@ -86,17 +178,47 @@ const DiagnosticBarcodeModal = () => {
               </DrawerHeader>
               <div
                 style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
+                  marginTop: '1rem',
+                  marginBottom: '1rem',
                 }}
               >
-                {barcodeUrl && (
-                  <Fragment>
-                    <img src={barcodeUrl} alt="barcode" width="100%" />
-                    <img src={barcodeUrl} alt="barcode" width="100%" />
-                  </Fragment>
-                )}
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handlePrintAndStatus()}
+                >
+                  프린트 하기
+                </Button>
+              </div>
+
+              <div
+                style={{
+                  display: 'block',
+                  // justifyContent: 'center',
+                  // flexDirection: 'column',
+                  height: '30vh',
+                  minHeight: '300px',
+                  overflowY: 'scroll',
+                }}
+              >
+                <div ref={componentRef}>
+                  {isCompleted &&
+                    barcodeList &&
+                    barcodeList.map((url, index) => (
+                      <div
+                        key={'barcode' + index}
+                        style={{
+                          padding: '0.5rem',
+                        }}
+                      >
+                        <img src={url} alt="barcode" width="100%" />
+                      </div>
+                    ))}
+                </div>
+
+                {/* {barcodeUrl && (
+   
+                )} */}
               </div>
 
               {/* <canvas id="barcodeCanvas"></canvas> */}
