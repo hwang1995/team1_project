@@ -7,6 +7,7 @@ import {
   Select,
   MenuItem,
   TextField,
+  Paper,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,8 +29,9 @@ import StyledContainer from 'components/common/container/StyledContainer';
 import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
 import { useSnackbar } from 'notistack';
 import { addMember, memberImageUpload, isExistedEmail } from 'apis/memberAPI';
+import { CirclePicker } from 'react-color';
 
-const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
+const MemberDrawer = ({ isOpened, setOpened, currentUser, showMember }) => {
   const { breakpoint } = useWindowSize();
   const [selectVal, setSelectVal] = useState('의사');
   const [isEmailChecked, setIsEmailChecked] = useState(false);
@@ -39,8 +41,20 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
   const [keyboardDate, handleKeyDateChange] = useState(new Date());
   const [dateErrorMessage, setDateErrorMessage] = useState('');
 
+  const [currentColor, setCurrentColor] = useState('');
   const [pictures, setPictures] = useState('');
   const { enqueueSnackbar } = useSnackbar();
+
+  //Drawer창 on/off시 데이터 초기화
+  useEffect(() => {
+    setPictures('');
+    setMemberEmail('');
+    setSelectedGender({
+      female: false,
+      male: false,
+    });
+    setCurrentColor('');
+  }, [isOpened]);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -48,12 +62,30 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     });
   };
 
+  const colorChange = (color, event) => {
+    if (color) {
+      setCurrentColor(color.hex);
+      console.log(color.hex);
+    }
+  };
+
   const onDrop = async (event, picture) => {
-    setPictures(picture[0]);
-    const { data, status } = await memberImageUpload(picture);
-    if (status == 200) {
-      //해당 임직원의 이미지 변경
-      //setCurrentMember(data);
+    if (event.length === 1) {
+      let imageName = '';
+      imageName = event[0].name;
+      let imageInfo = {
+        hospitalCode: currentUser.hospitalCode,
+        imageName,
+        base64Content: picture[0],
+      };
+      setPictures(imageInfo);
+      console.log(imageInfo);
+      // const { data, status } = await memberImageUpload(pictures);
+      // console.log(data);
+    } else {
+      //창 닫을때
+      console.log('창닫힘', picture);
+      setPictures('');
     }
   };
 
@@ -124,18 +156,12 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
 
   //이메일 중복체크
   const handleEmailChecked = async () => {
-    //const {data,status}=await isExistedEmail(emailCheckInfo);
-    //병원코드, 이메일 요청
-    //if(data===true){
-    //handleAlert('error', '중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
-    //return;
-    //}
-    //else{
-    //handleAlert('success', '이메일을 사용해도 좋습니다.');
-    //setIsEmailChecked(true);
-    //}
+    if (memberEmail === '') {
+      handleAlert('error', '이메일을 입력해주세요.');
+      return;
+    }
 
-    // 이메일 정규 표현식
+    //유효성 검사
     const regExpEmail =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -144,11 +170,12 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
       handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
       return;
     }
-    const isInfo = member.find((member) => member.member_email === memberEmail);
-    if (!isInfo) {
+    try {
+      const { data, status } = await isExistedEmail(memberEmail);
+      console.log('이메일검사 결과: ', data);
       handleAlert('success', '이메일을 사용해도 좋습니다.');
       setIsEmailChecked(true);
-    } else {
+    } catch (error) {
       handleAlert('error', '중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
       return;
     }
@@ -200,13 +227,15 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     const memberPostal = event.target.memberAddress1.value;
     const memberAddr1 = event.target.memberAddress2.value;
     const memberAddr2 = event.target.memberAddress3.value;
-    const memberImg = pictures;
-    const memberIntroduce = event.target.memberIntroduce.value;
+    let memberImage = '';
+    const memberIntroduction = event.target.memberIntroduce.value;
+    const memberColor = currentColor;
+
     let gender = '';
     if (selectedGender['male'] === true) {
-      gender = '남';
+      gender = 'male';
     } else if (selectedGender['female'] === true) {
-      gender = '여';
+      gender = 'female';
     }
     const memberGender = gender;
 
@@ -227,7 +256,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
         '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
       );
       return;
-    } else if (gender === '') {
+    } else if (memberGender === '') {
       handleAlert('error', '성별을 선택해주세요.');
       return;
     } else if (memberName === '') {
@@ -255,11 +284,21 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
     } else if (memberAddr2 === '') {
       handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
       return;
+    } else if (memberColor === '') {
+      handleAlert('error', '색상이 입력되지 않았습니다. 색상을 골라주세요.');
+      return;
     }
 
-    const newMember = '';
+    //pictures 데이터가 존재
+    if (pictures !== '') {
+      const { data, status } = await memberImageUpload(pictures);
+      console.log('이미지가 등록됨: ', data);
+      memberImage = data;
+    }
+
     try {
-      const { data, status } = await addMember({
+      let memberInfo = {
+        hospitalCode: currentUser.hospitalCode,
         memberPw,
         memberBirth,
         memberEmail,
@@ -270,18 +309,19 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
         memberPostal,
         memberAddr1,
         memberAddr2,
-        memberImg,
-        memberIntroduce,
-      });
-      newMember = data;
-      setMember((member) => [...member, newMember]);
+        memberEnabled: 1,
+        memberImage,
+        memberIntroduction,
+        memberColor,
+      };
+      console.log(memberInfo);
+      const { data, status } = await addMember(memberInfo);
+      console.log(data);
     } catch (error) {
-      const { message } = error.response.data;
-      handleAlert('error', message);
-      return;
+      handleAlert('error', '추가도중에 오류가 발생하였습니다.');
     }
+    showMember();
     handleAlert('success', '임직원이 추가되었습니다.');
-    console.log('member: ', member);
     setOpened(false);
   };
 
@@ -571,7 +611,7 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                   name="memberBirth"
                   disableFuture
                   openTo="year"
-                  format="yyyy/MM/DD"
+                  format="yyyy-MM-DD"
                   views={['year', 'month', 'date']}
                   value={keyboardDate}
                   onChange={handleKeyDateChange}
@@ -642,10 +682,10 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 withIcon={true}
                 buttonText="이미지를 선택해주세요."
                 onChange={onDrop}
-                imgExtension={['.jpg', '.png']}
+                imgExtension={['.jpg', '.png', '.jpeg']}
                 fileSizeError="파일사이즈가 너무 큽니다. 최대크기(5242880)"
                 fileTypeError="파일확장자가 잘못되었습니다."
-                label="최대 파일 크기: 5mb, 확장자: jpg, png 가능"
+                label="최대 파일 크기: 5mb, 확장자: jpg, png만 가능"
                 maxFileSize={5242880}
                 singleImage
                 withPreview
@@ -664,7 +704,31 @@ const MemberDrawer = ({ isOpened, setOpened, setMember, member }) => {
                 fullWidth
               />
             </div>
-
+            <div
+              style={{
+                marginTop: 15,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <StyledTypography
+                variant="h6"
+                component="h5"
+                weight={5}
+                style={{ marginRight: 15 }}
+              >
+                색상선택
+              </StyledTypography>
+              <CirclePicker onChange={colorChange} />
+              <Paper
+                style={{
+                  width: 60,
+                  height: 60,
+                  marginLeft: 30,
+                  backgroundColor: currentColor,
+                }}
+              />
+            </div>
             <div
               style={{
                 position: 'fixed',
