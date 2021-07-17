@@ -29,6 +29,7 @@ import ClockSpinner from 'components/common/spinner/ClockSpinner';
  * * Header
  * * 환자 관리 (PatientSearch, Table, ColoredButton)
  * @returns {JSX.Element}
+ * @author SI HYUN PARK
  */
 const PatientPage = () => {
   const [isOpened, setOpened] = useState(false);

@@ -44,19 +44,27 @@ const getSteps = () => [
 ];
 
 const DiagnosisPage = () => {
+  // 페이지 상태를 가져오기 위한 함수
   const steps = getSteps();
+
   const dispatch = useDispatch();
+
+  // Redux store에 저장된 환자 정보
   const patientInfo = useSelector((state) => state.diagnosis.patient);
+
+  // Redux store에 저장된 진료 정보
   const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
   const activeStep = useSelector((state) => state.diagnosis.activeStep);
   const { enqueueSnackbar } = useSnackbar();
 
+  // Alert를 띄우기 위한 함수
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
       variant,
     });
   };
 
+  // 다음 버튼을 눌렀을 시에 반응하는 이벤트 함수
   const handleNext = () => {
     if (patientInfo.patientId === 0) {
       handleAlert('error', '환자를 선택해주세요.');

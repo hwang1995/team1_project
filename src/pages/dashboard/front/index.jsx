@@ -72,6 +72,18 @@ const FrontPage = () => {
     setLoading(true);
     const getNoticeAndTodoAndCorona = async () => {
       try {
+        // 3. 코로나 데이터 가져오기
+        const from = moment()
+          .subtract(3, 'days')
+          .startOf('day')
+          .format('YYYY-MM-DDTHH:mm:ss');
+        const to = moment().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+        console.log('from :', from);
+
+        console.log('to :', to);
+        const coronaContent = await getCoronaData(from, to);
+        setCorona(coronaContent);
+
         // 1. 공지사항 가져오기
         const noticeContent = await getNoticesList(hospitalCode);
         setNotice(noticeContent.data.data);
@@ -85,18 +97,6 @@ const FrontPage = () => {
         const todoContent = await getTodosListByMemberId(memberId);
         setTodoById(todoContent.data.data);
         setChanged(false);
-
-        // 3. 코로나 데이터 가져오기
-        const from = moment()
-          .subtract(3, 'days')
-          .startOf('day')
-          .format('YYYY-MM-DDTHH:mm:ss');
-        const to = moment().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
-        console.log('from :', from);
-
-        console.log('to :', to);
-        const coronaContent = await getCoronaData(from, to);
-        setCorona(coronaContent);
 
         // 4. 로딩 상태 바꾸기
         setLoading(false);
