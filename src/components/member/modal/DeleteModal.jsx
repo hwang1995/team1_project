@@ -8,6 +8,7 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
+import { deleteMember } from 'apis/memberAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -28,13 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeleteModal = ({
-  isOpenModal,
-  setOpenModal,
-  member_id,
-  member,
-  setMember,
-}) => {
+const DeleteModal = ({ isOpenModal, setOpenModal, memberData, showMember }) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
   const { enqueueSnackbar } = useSnackbar();
@@ -49,12 +44,16 @@ const DeleteModal = ({
     setOpenModal(false);
   };
 
-  const deleteMember = async () => {
-    const { data, status } = await deleteMember(member_id);
-    const index = member.findIndex((member) => member.member_id === member_id);
-    member.splice(index, 1);
-    setMember(member);
-    handleAlert('success', '삭제되었습니다.');
+  const removeMember = async () => {
+    try {
+      const { data, status } = await deleteMember(memberData.memberId);
+      console.log(data);
+      console.log(memberData.memberId);
+      handleAlert('success', '삭제되었습니다.');
+      showMember();
+    } catch (error) {
+      handleAlert('error', '삭제도중 오류가 발생하였습니다.');
+    }
     setOpenModal(false);
   };
 
@@ -81,7 +80,7 @@ const DeleteModal = ({
             <ResponsiveContainer breakpoint={breakpoint} style={{ flex: 1 }}>
               <DrawerHeader breakpoint={breakpoint}>
                 <StyledTypography variant="h5" component="h5" weight={7}>
-                  임직원 삭제 {member_id}번 회원
+                  임직원 삭제 - {memberData.memberName}님
                 </StyledTypography>
                 <div>
                   <IconButton>
@@ -92,23 +91,30 @@ const DeleteModal = ({
                   </IconButton>
                 </div>
               </DrawerHeader>
-              <div>
-                <h2
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <StyledTypography variant="h4" component="h5" weight={6}>
+                  정말 삭제하겠습니까?
+                </StyledTypography>
+
+                <div
                   style={{
-                    marginBottom: '1rem',
-                    marginLeft: '10rem',
+                    maxWidth: '300px',
                     display: 'flex',
-                    alignItems: 'center',
                   }}
                 >
-                  정말 삭제하겠습니까?
-                </h2>
-                <img
-                  src="http://localhost:3000/assets/image/question.jpeg"
-                  alt="Logo"
-                  width="100%"
-                  height="300px"
-                />
+                  <img
+                    src="http://localhost:3000/assets/image/question.jpeg"
+                    alt="deleteImg"
+                    width="100%"
+                  />
+                </div>
               </div>
               <div
                 style={{
@@ -120,16 +126,17 @@ const DeleteModal = ({
                 }}
               >
                 <StyledButton
-                  bgColor="lightblue"
+                  bgColor="rgb(11, 83, 151)"
                   color="white"
                   width="60"
-                  onClick={() => deleteMember()}
+                  onClick={() => removeMember()}
                   display="flex"
                 >
                   확인
                 </StyledButton>
                 <StyledButton
-                  bgColor="lightgray"
+                  bgColor="rgba(165, 10, 17, 0.637)"
+                  color="white"
                   width="60"
                   onClick={() => setOpenModal(false)}
                 >
