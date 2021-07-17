@@ -13,7 +13,7 @@ import axios from 'axios';
  * @author HYEONG YUN KIM
  */
 export const getTodosListByHospitalCode = async (hospitalCode) => {
-  return await axios.get('http://localhost:8080/api/v1/todo/search/code/', {
+  return await axios.get('/todo/search/code/', {
     params: {
       hospitalCode,
     },
@@ -33,7 +33,7 @@ export const getTodosListByHospitalCode = async (hospitalCode) => {
  * @author HYEONG YUN KIM
  */
 export const getTodosListByMemberId = async (memberId) => {
-  return await axios.get('http://localhost:8080/api/v1/todo/search/id/', {
+  return await axios.get('/todo/search/id/', {
     params: {
       memberId,
     },
@@ -54,11 +54,7 @@ export const getTodosListByMemberId = async (memberId) => {
  * @author HYEONG YUN KIM
  */
 export const createTodo = async (todoInfo) => {
-  return await axios.post('http://localhost:8080/api/v1/todo/', {
-    params: {
-      todoInfo,
-    },
-  });
+  return await axios.post('/todo', todoInfo);
 };
 
 /**
@@ -69,10 +65,34 @@ export const createTodo = async (todoInfo) => {
  * 성공: True, 실패: False
  * @author HYEONG YUN KIM
  */
-export const removeTodo = async (memberId) => {
-  return await axios.delete('http://localhost:8080/api/v1/todo/', {
+export const removeTodo = async (todoId) => {
+  return await axios.delete('/todo/', {
     params: {
-      memberId,
+      todoId,
     },
   });
+};
+
+/**
+ * * 목적 : 해당 TODO의 CHECKED를 1로 수정하기 위한 API
+ *
+ * @param {number} todoId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const modifyCheckedIn = async (todoId) => {
+  return await axios.put('todo/in?todoId=' + todoId);
+};
+
+/**
+ * * 목적 : 해당 TODO의 CHECKED를 0으로 수정하기 위한 API
+ *
+ * @param {number} todoId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const modifyCheckedOut = async (todoId) => {
+  return await axios.put('todo/out?todoId=' + todoId);
 };

@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { TablePagination } from '@material-ui/core';
+import moment from 'moment';
 import { BsPencilSquare } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -13,10 +14,9 @@ import { getNoticesList } from 'apis/noticeAPI';
 
 const NoticeDrawerMain = () => {
   const [searchVal, setSearchVal] = useState('');
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [notice, setNotice] = React.useState({  });
+  const [notice, setNotice] = React.useState([]);
 
   const hospitalCode = useSelector(
     (state) => state.common.loginInfo.hospitalCode,
@@ -27,7 +27,6 @@ const NoticeDrawerMain = () => {
     setSearchVal(e.target.value);
     console.log(e.target.value);
   };
-
 
   useEffect(() => {
     console.log(searchVal);
@@ -45,8 +44,6 @@ const NoticeDrawerMain = () => {
     work();
   }, []); //***** [] 없으면 무한실행합니다.
 
-  const noticeasd = Array.from(notice);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -62,9 +59,7 @@ const NoticeDrawerMain = () => {
     setPage(0);
   };
 
-  
-
-  const matchData = noticeasd.filter((data) =>
+  const matchData = notice.filter((data) =>
     data.noticeTitle.includes(searchVal),
   );
 
@@ -96,7 +91,7 @@ const NoticeDrawerMain = () => {
           .reverse()
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((data) => (
-            <Fragment>
+            <Fragment key={data.noticeId}>
               <div style={{ display: 'flex', marginTop: '10px' }}>
                 <div className="left-side" style={{ flex: 2 }}>
                   <div className="avatar-container">
@@ -117,12 +112,14 @@ const NoticeDrawerMain = () => {
                     <div align="left">{data.noticeHeadText}</div>
                   </div>
                   <div className="textDate-container">
-                    <div align="left">{data.createDate}</div>
+                    <div align="left">
+                      {moment(data.createDate).format('YY-MM-DD a h:mm')}
+                    </div>
                   </div>
                 </div>
                 {data.noticeHeadImage ? (
                   <div className="right-side" style={{ flex: 1 }}>
-                    <img src={data.noticeHeadImage} alt="Logo" width="100%" />
+                    <img src={data.noticeHeadImage} alt="Logo" width="80%" />
                   </div>
                 ) : (
                   <div className="right-side" style={{ flex: 1 }}></div>

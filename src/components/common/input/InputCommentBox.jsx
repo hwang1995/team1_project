@@ -4,6 +4,7 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import { useSnackbar } from 'notistack';
 import AddIcon from '@material-ui/icons/Add';
+import { addComment } from 'apis/noticeAPI';
 
 const SearchContainer = styled.div`
   padding: 0.5rem;
@@ -20,9 +21,43 @@ const SearchBase = styled(InputBase)`
   font-weight: 700;
 `;
 
-const InputCommentBox = ({ setInputComment, placeholder, noRemove }) => {
+const InputCommentBox = ({
+  setInputComment,
+  placeholder,
+  noRemove,
+  memberId,
+  noticeId,
+  memberName,
+  setChanged,
+}) => {
   const [inputVal, setInputVal] = useState('');
   const { enqueueSnackbar } = useSnackbar();
+
+  const handleAdd = async (event) => {
+    try {
+      // const now = new Date().toLocaleDateString();
+      // console.log('now :', now);
+      setInputComment(inputVal);
+      const sendInfo = {
+        createdDate: '2021-12-24T03:13',
+        comment: inputVal,
+        memberId,
+        memberName,
+        noticeId,
+      };
+      console.log('sendInfo : ', sendInfo);
+      if (inputVal === '') {
+        handleAlert('error', '값이 입력되지 않았습니다.');
+        return;
+      }
+      await addComment(sendInfo);
+      setInputVal('');
+      handleAlert('success', '등록이 완료되었습니다.');
+      setChanged(true);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -47,20 +82,6 @@ const InputCommentBox = ({ setInputComment, placeholder, noRemove }) => {
     }
   };
 
-  const handleClick = () => {
-    if (inputVal === '') {
-      handleAlert('error', '값이 입력되지 않았습니다.');
-
-      return;
-    }
-    setInputComment(inputVal);
-    if (noRemove === undefined) {
-      setTimeout(() => {
-        setInputVal('');
-      }, 10);
-    }
-  };
-
   return (
     <Fragment>
       <SearchContainer>
@@ -70,7 +91,7 @@ const InputCommentBox = ({ setInputComment, placeholder, noRemove }) => {
           onChange={handleChange}
           onKeyPress={handleKeyPress}
         />
-        <IconButton type="submit" onClick={handleClick}>
+        <IconButton type="submit" onClick={handleAdd}>
           <AddIcon />
         </IconButton>
       </SearchContainer>
