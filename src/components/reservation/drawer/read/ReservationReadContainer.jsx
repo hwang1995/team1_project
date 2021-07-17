@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
-  upateReservationTime,
   removeReservationTime,
 } from 'redux/features/reservation/reservationSlice';
+import { modifyReservationInfo, removeReservationInfo } from 'apis/reservationAPI';
 import moment from 'moment';
 import { Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
@@ -19,8 +20,11 @@ import StyledButton from 'components/common/button/StyledButton';
  * @returns {JSX.Element} view
  */
 
-const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
+const ReservationReadContainer = ({ setReadOpened, readPatient, setAddDisplay }) => {
   const dispatch = useDispatch();
+
+   const loginInfo = useSelector((state) => state.common.loginInfo);
+
   const { enqueueSnackbar } = useSnackbar();
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -68,18 +72,28 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
   */
   const updateReservationInfo = (id, changeVisitReason) => {
     //1)
-    if (visitReason === readPatient.drOpinion) {
+    if (visitReason === readPatient.visitPurpose) {
       handleAlert('error', '수정된 내용을 입력해주세요');
     } else {
       //2)
+      try{
       const updateInfo = {
-        id: id,
-        drOpinion: changeVisitReason,
+        diagId: id,
+        patientId: readPatient.patientId,
+        memberId: readPatient.memberId,
+        hospitalCode: loginInfo.hospitalCode,
+        visitPurpose: changeVisitReason,
       };
-      //2)
-      dispatch(upateReservationTime(updateInfo));
+      const{data,status} = modifyReservationInfo(updateInfo);
+      handleAlert('success', "내용이 변경되었습니다.");
+       //2)
+      //dispatch(upateReservationTime(updateInfo));
       ///3)
       setCheckPage('UPDATE');
+    }catch(error){
+      const {message} = error.response.data;
+      handleAlert('error', message);
+    }
     }
   };
   /*
@@ -87,9 +101,16 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
     1) 값을 삭제하기 위한 부분
     2) 컴포넌트 변화 (삭제 완료)
   */
-  const removeReservationInfo = (id) => {
+  const deleteReservationInfo = async (id) => {
     //1)
-    dispatch(removeReservationTime(id));
+    try{
+      const {data} = await removeReservationInfo(id);
+      handleAlert('success', '예약이 취소되었습니다.')
+    }catch(error) {
+      const {message} = error.response.data;
+      handleAlert('error', message);
+      console.log("error", error);
+    }
     //2)
     setCheckPage('REMOVE');
   };
@@ -111,6 +132,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             bgColor="#DDB892"
             color="white"
             onClick={() => {
+              setAddDisplay(true);
               setReadOpened(false);
               setCheckPage('');
             }}
@@ -139,6 +161,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             bgColor="#DDB892"
             color="white"
             onClick={() => {
+              setAddDisplay(true)
               setReadOpened(false);
               setCheckPage('');
             }}
@@ -299,7 +322,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             bgColor="#d90429"
             color="white"
             onClick={() => {
-              removeReservationInfo(readPatient.id);
+              deleteReservationInfo(readPatient.id);
             }}
           >
             예약취소

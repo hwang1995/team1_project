@@ -47,7 +47,7 @@ export const getPatientsList = async (hospitalCode) => {
  * @author SI HYUN PARK
  */
 export const getSearchPatientList = async (searchInfo) => {
-  return await axios.get('/patient', searchInfo);
+  return await axios.post('/patient/search', searchInfo);
 };
 
 /**
@@ -77,6 +77,7 @@ export const registerPatientInfo = async (patientInfo) => {
  * * 목적 : 환자에 대한 정보 수정을 위한 API
  * @param {PatientsDTO} updatePatientInfo
  * * [Patients Entity]
+ * * !int patientId
  * * !String patientName
  * * !String patientSsn;
  * * !String patientGender

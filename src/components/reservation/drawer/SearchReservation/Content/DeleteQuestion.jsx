@@ -5,6 +5,7 @@ const DeleteQuestion = ({
   setVisible,
   setReadOpened,
   setPageResult,
+  setAddDisplay,
 }) => {
   return (
     <div style={{ textAlign: 'center' }}>
@@ -22,10 +23,11 @@ const DeleteQuestion = ({
           bgColor="#DDB892"
           color="white"
           onClick={() => {
-            setVisible(false);
-            setCheckPage('');
-            setReadOpened(false);
-            setPageResult(false);
+           setCheckPage('');
+           setVisible(false);
+           setAddDisplay(true);
+           setPageResult(false);
+           setReadOpened(false);
           }}
         >
           이전 화면으로 돌아가기

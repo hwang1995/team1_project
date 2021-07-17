@@ -8,6 +8,8 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import { getPatientsList, getSearchPatientList } from 'apis/patientAPI';
 import PatientDrawer from '../../../components/patient/drawer/PatientDrawer';
 import PatientUpdateDrawer from '../../../components/patient/drawer/PatientUpdateDrawer';
 
@@ -18,6 +20,7 @@ import SearchBox from 'components/common/search/SearchBox';
 import DeleteModal from 'components/patient/modal/DeleteModal';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
+import ClockSpinner from 'components/common/spinner/ClockSpinner';
 
 /**
  * 이 페이지 컴포넌트는 환자 관리 페이지를 작성하기 위한 컴포넌트입니다.
@@ -33,19 +36,50 @@ const PatientPage = () => {
   const [readPatientData, setReadPatientData] = useState({});
   const [patientData, setPatients] = useState([]);
   const [deleteOpened, setDeleteOpened] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [addDisplay, setDisplay] = useState(false);
+
+  const loginInfo = useSelector((state) => state.common.loginInfo);
 
   useEffect(() => {
-    /// 수정
-    const newInfoData = patientData.map((patientInfo) => {
-      if (patientInfo.patient_id === readPatientData.patient_id) {
-        const newInfo = readPatientData;
-        return newInfo;
-      } else {
-        return patientInfo;
+    const getPatient = async () => {
+      try {
+        const { data } = await getPatientsList(loginInfo.hospitalCode);
+        setPatients(data.data);
+      } catch (error) {
+        console.log(error);
+        setPatients([]);
+        setLoading(false);
       }
-    });
-    setPatients(newInfoData);
-  }, [readPatientData]);
+    };
+    getPatient();
+  }, [loginInfo]);
+
+  useEffect(() => {
+    if (patientData.length > 0) {
+      setLoading(false);
+    }
+  }, [patientData]);
+
+  useEffect(() => {
+    if(addDisplay) {
+      setLoading(true);
+      const getAddPatient = async () => {
+        try {
+          const { data } = await getPatientsList(loginInfo.hospitalCode);
+          setPatients(data.data);
+        } catch (error) {
+          console.log(error);
+          setPatients([]);
+          setLoading(false);
+        }
+      };
+      getAddPatient();
+      setDisplay(false);
+    }
+  }, [addDisplay, loginInfo])
+
+
 
   const dateRemoveClick = (data) => {
     const removeDataInfo = patientData.filter((patientInfo) => {
@@ -56,20 +90,39 @@ const PatientPage = () => {
     });
     setPatients(removeDataInfo);
   };
-  const dateIndexRemoveClick = (data) => {
-    dateRemoveClick(data);
-    setDeleteOpened(true);
+
+
+  const setSearchVal = async (inputVal) => {
+    
+    setLoading(true);
+    try {
+      const { data } = await getSearchPatientList({
+        hospitalCode: loginInfo.hospitalCode,
+        patientName: inputVal,
+      });
+      setPatients(data.data);
+    } catch (error) {
+      setPatients([]);
+      console.log(error.response.data);
+  
+        setLoading(false);
+     
+    }
   };
 
-  const setSearchVal = (inputVal) => {
-    const newInfoData = patientData.filter((patientInfo) => {
-      if (patientInfo.patient_name === inputVal) {
-        return true;
-      }
-      return false;
-    });
-    console.log('newInfo', newInfoData.length);
-    setPatients(newInfoData);
+  const clockSpinner = () => {
+    return (
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ClockSpinner isLoading={isLoading} />
+      </div>
+    );
   };
 
   return (
@@ -94,7 +147,7 @@ const PatientPage = () => {
                   <span>환자 관리</span>
                 </TitleHeader>
                 <br />
-                <Grid container>
+                <Grid container justify="center">
                   <Grid item xs={9} lg={6}>
                     <SearchBox
                       setSearchVal={setSearchVal}
@@ -122,8 +175,10 @@ const PatientPage = () => {
                       추가
                     </StyledButton>
                   </Grid>
-                  {patientData.length === 0 ? (
-                    <Grid item xs={12}>
+                  {isLoading && clockSpinner()}
+
+                  <Grid item xs={12}>
+                    {!isLoading && patientData.length === 0 && (
                       <Grid container alignItems="center" justify="center">
                         <Grid
                           item
@@ -158,9 +213,8 @@ const PatientPage = () => {
                           />
                         </Grid>
                       </Grid>
-                    </Grid>
-                  ) : (
-                    <Grid item xs={12}>
+                    )}
+                    {!isLoading && patientData.length > 0 && (
                       <TableContainer style={{ marginTop: '1rem' }}>
                         <Table
                           style={{ minWidth: '600px', overflowX: 'scroll' }}
@@ -172,29 +226,33 @@ const PatientPage = () => {
                               <TableCell component="td">생년월일</TableCell>
                               <TableCell component="td">주소</TableCell>
                               <TableCell component="td"></TableCell>
-                              <TableCell component="td"></TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {patientData.map((data) => (
-                              <Fragment key={data.patient_id}>
+                              <Fragment key={data.patientId}>
                                 <TableRow>
                                   <TableCell component="th">
-                                    {data.patient_id}
+                                    {data.patientId}
                                   </TableCell>
                                   <TableCell component="th">
-                                    {data.patient_name}
+                                    {data.patientName}
                                   </TableCell>
                                   <TableCell component="th">
-                                    {data.patient_birth}
+                                    {data.patientBirth[0] +
+                                      '년 ' +
+                                      data.patientBirth[1] +
+                                      '월 ' +
+                                      data.patientBirth[2] +
+                                      '일'}
                                   </TableCell>
                                   <TableCell component="th">
-                                    {data.patient_addr2 === undefined &&
-                                      data.patient_addr1}
-                                    {data.patient_addr2 !== undefined &&
-                                      data.patient_addr1 +
+                                    {data.patientAddr2 === undefined &&
+                                      data.patientAddr1}
+                                    {data.patientAddr2 !== undefined &&
+                                      data.patientAddr1 +
                                         ' ' +
-                                        data.patient_addr2}
+                                        data.patientAddr2}
                                   </TableCell>
                                   <TableCell component="th">
                                     <StyledButton
@@ -208,25 +266,15 @@ const PatientPage = () => {
                                       변경
                                     </StyledButton>
                                   </TableCell>
-                                  <TableCell component="th">
-                                    <StyledButton
-                                      bgColor="rgb(228, 20, 30)"
-                                      color="white"
-                                      onClick={() => {
-                                        dateIndexRemoveClick(data);
-                                      }}
-                                    >
-                                      삭제
-                                    </StyledButton>
-                                  </TableCell>
+                                 
                                 </TableRow>
                               </Fragment>
                             ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
-                    </Grid>
-                  )}
+                    )}
+                  </Grid>
                 </Grid>
               </ContentContainer>
             </PageTransition>
@@ -238,6 +286,7 @@ const PatientPage = () => {
         setOpened={setOpened}
         setPatients={setPatients}
         patientData={patientData}
+        setDisplay={setDisplay}
       />
       <PatientUpdateDrawer
         isUpdateOpened={isUpdateOpened}
@@ -245,6 +294,7 @@ const PatientPage = () => {
         readPatientData={readPatientData}
         setReadPatientData={setReadPatientData}
         dateRemoveClick={dateRemoveClick}
+        setDisplay={setDisplay}
       />
       <DeleteModal
         deleteOpened={deleteOpened}

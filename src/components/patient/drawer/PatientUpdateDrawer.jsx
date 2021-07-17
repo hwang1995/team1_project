@@ -15,13 +15,13 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import AddressModal from '../modal/Modal';
 import SelectedUpdateGender from '../SelectedGender/selectedUpdateGender';
+import { modifyPatient, deletePatient } from 'apis/patientAPI';
 
 const PatientUpdateDrawer = ({
   isUpdateOpened,
   setUpdateOpened,
   readPatientData,
-  setReadPatientData,
-  dateRemoveClick,
+  setDisplay,
 }) => {
   const { breakpoint } = useWindowSize();
 
@@ -38,57 +38,64 @@ const PatientUpdateDrawer = ({
   const [isUpdateModalOpened, setUpdateModalOpened] = useState(false);
   const [changeView, setChange] = useState(false);
   const [removeOrUpdate, setStatus] = useState('');
-  const [patientInfo, setPatientInfo] = useState({
-    patient_id: '',
-    patient_name: '',
-    patient_birth: '',
-    patient_addr1: '',
-    patient_addr2: '',
-    patient_postal: '',
-    patient_tel: '',
-    patient_height: '',
-    patient_weight: '',
-    patient_gender: '',
-  });
+  const [patientInfo, setPatientInfo] = useState({});
 
   useEffect(() => {
-    if (breakpoint !== undefined) {
+    if (breakpoint !== readPatientData) {
       console.log('Current breakpoint is', breakpoint);
     }
   }, [breakpoint]);
 
   useEffect(() => {
-    console.log('실행', readPatientData);
-    setPatientInfo(readPatientData);
-  }, [readPatientData]);
+    if (isUpdateOpened) {
+      const [year, month, date] = readPatientData.patientBirth;
+      setPatientInfo({
+        ...readPatientData,
+        patientBirth: year + '/' + month + '/' + date,
+      });
+    }
+  }, [readPatientData, isUpdateOpened]);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
+      setPatientInfo({});
       return;
     }
+    setStatus('');
+    setChange(false);
+    dispatch(setGenderStatus(''));
     setUpdateOpened(open);
   };
 
-  const updateHandleClick = () => {
+  const updateHandleClick = async () => {
+    const [year, month, date] = readPatientData.patientBirth;
+   
+    const getBirth = year + "/" + month + "/" + date;
+    const birth = moment(getBirth).format('yyyy/MM/DD');
+    const updateBirth = moment(patientInfo.patientBirth).format('yyyy/MM/DD');
     if (
-      patientInfo.patient_name !== readPatientData.patient_name ||
-      patientInfo.patient_birth !== readPatientData.patient_birth ||
-      patientInfo.patient_addr1 !== readPatientData.patient_addr1 ||
-      patientInfo.patient_postal !== readPatientData.patient_postal ||
-      patientInfo.patient_tel !== readPatientData.patient_tel ||
-      patientInfo.patient_height !== readPatientData.patient_height ||
-      patientInfo.patient_weight !== readPatientData.patient_weight ||
-      patientInfo.patient_addr2 !== readPatientData.patient_addr2 ||
-      readPatientData.patient_gender !== gender
+      patientInfo.patientName !== readPatientData.patientName ||
+      updateBirth !== birth ||
+      patientInfo.patientAddr1 !== readPatientData.patientAddr1 ||
+      patientInfo.patientPostal !== readPatientData.patientPostal ||
+      patientInfo.patientTel !== readPatientData.patientTel ||
+      patientInfo.patientHeight !== readPatientData.patientHeight ||
+      patientInfo.patientWeight !== readPatientData.patientWeight ||
+      patientInfo.patientAddr2 !== readPatientData.patientAddr2 ||
+      patientInfo.patientGender !== gender
     ) {
-      if (gender === "") {
-        handleAlert('error', '변경된 사항이 없습니다.');
-      }else{
-      patientInfo.patient_gender = gender;
-      setReadPatientData(patientInfo);
-      setStatus('update');
-      dispatch(setGenderStatus(''));
-      setChange(true);
+      try {
+        patientInfo.patientGender = gender;
+        patientInfo.patientBirth = moment(patientInfo.patientBirth).format('yyyy-MM-DD');
+        setPatientInfo(patientInfo);
+        const { data } = await modifyPatient(patientInfo);
+        handleAlert('success', '내용이 변경 되었습니다.');
+      } catch (error) {
+        handleAlert('error', '내용이 변경되지 않았습니다.');
+      } finally {
+        setStatus('update');
+        dispatch(setGenderStatus(''));
+        setChange(true);
       }
     } else {
       handleAlert('error', '변경된 사항이 없습니다.');
@@ -98,17 +105,13 @@ const PatientUpdateDrawer = ({
   const addressClick = ({ fullAddress, postalcode }) => {
     setPatientInfo({
       ...patientInfo,
-      patient_postal: postalcode,
-      patient_addr1: fullAddress,
+      patientPostal: postalcode,
+      patientAddr1: fullAddress,
+      patientAddr2: '',
     });
   };
 
-  const deleteHandleClick = () => {
-    setStatus('remove');
-    dispatch(setGenderStatus(''));
-    dateRemoveClick(readPatientData);
-    setChange(true);
-  };
+
 
   const updateHandleChange = (event) => {
     setPatientInfo({
@@ -118,15 +121,14 @@ const PatientUpdateDrawer = ({
   };
 
   const dateUpdateHandleChange = (date) => {
-    const birth = moment(date).format('YYYY/MM/DD/');
+    const birth = moment(date).format('YYYY-MM-DD');
     setPatientInfo({
       ...patientInfo,
-      patient_birth: birth,
+      patientBirth: birth,
     });
   };
 
   const findAddressHandleClick = () => {
-    console.log('클릭 실행');
     setUpdateModalOpened(true);
   };
 
@@ -140,14 +142,11 @@ const PatientUpdateDrawer = ({
   const BackTotheMain = () => {
     if (removeOrUpdate === 'update') {
       setStatus('');
+      setDisplay(true);
       setUpdateOpened(false);
       setChange(false);
     }
-    if (removeOrUpdate === 'remove') {
-      setStatus('');
-      setUpdateOpened(false);
-      setChange(false);
-    }
+  
   };
 
   return (
@@ -187,8 +186,8 @@ const PatientUpdateDrawer = ({
               </Grid>
               <Grid item xs={9}>
                 <StyledInputBase
-                  name="patient_name"
-                  value={patientInfo.patient_name}
+                  name="patientName"
+                  value={patientInfo.patientName}
                   onChange={updateHandleChange}
                   style={{ width: '53%' }}
                 />
@@ -207,9 +206,7 @@ const PatientUpdateDrawer = ({
                 </StyledTypography>
               </Grid>
               <Grid item xs={9} style={{ marginTop: '1em' }}>
-                <SelectedUpdateGender
-                  genderValue={patientInfo.patient_gender}
-                />
+                <SelectedUpdateGender genderValue={patientInfo.patientGender} />
               </Grid>
               <Grid
                 item
@@ -238,7 +235,7 @@ const PatientUpdateDrawer = ({
                   openTo="year"
                   format="yyyy/MM/DD"
                   views={['year', 'month', 'date']}
-                  value={patientInfo.patient_birth}
+                  value={patientInfo.patientBirth}
                   onChange={dateUpdateHandleChange}
                 />
               </Grid>
@@ -257,8 +254,8 @@ const PatientUpdateDrawer = ({
               </Grid>
               <Grid item xs={9}>
                 <StyledInputBase
-                  name="patient_tel"
-                  value={patientInfo.patient_tel}
+                  name="patientTel"
+                  value={patientInfo.patientTel}
                   onChange={updateHandleChange}
                   style={{ width: '80%' }}
                 />
@@ -277,9 +274,9 @@ const PatientUpdateDrawer = ({
               </Grid>
               <Grid item xs={9}>
                 <StyledInputBase
-                  name="patient_height"
+                  name="patientHeight"
                   style={{ width: '53%' }}
-                  value={patientInfo.patient_height}
+                  value={patientInfo.patientHeight}
                   onChange={updateHandleChange}
                   type="number"
                 />
@@ -298,9 +295,9 @@ const PatientUpdateDrawer = ({
               </Grid>
               <Grid item xs={9}>
                 <StyledInputBase
-                  name="patient_weight"
+                  name="patientWeight"
                   style={{ width: '53%' }}
-                  value={patientInfo.patient_weight}
+                  value={patientInfo.patientWeight}
                   onChange={updateHandleChange}
                   type="number"
                 />
@@ -321,7 +318,7 @@ const PatientUpdateDrawer = ({
               <Grid item xs={9}>
                 <StyledInputBase
                   placeholder="우편번호"
-                  value={patientInfo.patient_postal}
+                  value={patientInfo.patientPostal}
                   readOnly
                 />
               </Grid>
@@ -343,22 +340,22 @@ const PatientUpdateDrawer = ({
               <Grid item xs={12}>
                 <StyledInputBase
                   placeholder="주소를 입력해주세요"
-                  value={patientInfo.patient_addr1}
+                  value={patientInfo.patientAddr1}
                   readOnly
                 />
               </Grid>
               <Grid item xs={12}>
                 <StyledInputBase
-                  name="patient_addr2"
+                  name="patientAddr2"
                   onChange={updateHandleChange}
                   value={
-                    patientInfo.patient_addr2 !== false &&
-                    patientInfo.patient_addr2
+                    patientInfo.patientAddr2 !== false &&
+                    patientInfo.patientAddr2
                   }
                   placeholder="상세 주소를 입력하세요."
                 />
               </Grid>
-              <Grid item xs={6} style={{ marginTop: '2em' }}>
+              <Grid item xs={8} style={{ marginTop: '2em' }}>
                 <div style={{ textAlign: 'center' }}>
                   <StyledButton
                     bgColor="#1E4C7C"
@@ -370,18 +367,7 @@ const PatientUpdateDrawer = ({
                   </StyledButton>
                 </div>
               </Grid>
-              <Grid item xs={6} style={{ marginTop: '2em' }}>
-                <div style={{ textAlign: 'center' }}>
-                  <StyledButton
-                    bgColor="#1E4C7C"
-                    width="80%"
-                    style={{ color: 'white' }}
-                    onClick={deleteHandleClick}
-                  >
-                    환자 삭제
-                  </StyledButton>
-                </div>
-              </Grid>
+             
             </Grid>
           ) : (
             <div style={{ textAlign: 'center' }}>
