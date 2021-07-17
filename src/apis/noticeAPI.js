@@ -15,7 +15,7 @@ import axios from 'axios';
  * @author HYEONG YUN KIM
  */
 export const getNoticesList = async (hospitalCode) => {
-  return await axios.get('http://localhost:8080/api/v1/notice/', {
+  return await axios.get('/notice/', {
     params: {
       hospitalCode,
     },
@@ -34,11 +34,12 @@ export const getNoticesList = async (hospitalCode) => {
  * @author HYEONG YUN KIM
  */
 export const getNoticeCommentsList = async (noticeId) => {
-  return await axios.get('http://localhost:8080/api/v1/notice/comments', {
+  const result = await axios.get('/notice/comments', {
     params: {
       noticeId,
     },
   });
+  return result.data.data;
 };
 
 /**
@@ -53,11 +54,12 @@ export const getNoticeCommentsList = async (noticeId) => {
  * @author HYEONG YUN KIM
  */
 export const getNoticeList = async (noticeId) => {
-  return await axios.get('http://localhost:8080/api/v1/notice/detail', {
+  const result = await axios.get('/notice/detail', {
     params: {
       noticeId,
     },
   });
+  return result.data.data;
 };
 
 /**
@@ -78,7 +80,7 @@ export const getNoticeList = async (noticeId) => {
  * @author HYEONG YUN KIM
  */
 export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
-  return await axios.get('http://localhost:8080/api/v1/notice/search', {
+  return await axios.get('/notice/search', {
     params: {
       searchNoticeByHospitalAndTitle,
     },
@@ -104,11 +106,7 @@ export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
  * @author HYEONG YUN KIM
  */
 export const createNotice = async (noticeInfo) => {
-  return await axios.post('http://localhost:8080/api/v1/notice/', {
-    params: {
-      noticeInfo,
-    },
-  });
+  return await axios.post('/notice', noticeInfo);
 };
 
 /**
@@ -126,11 +124,7 @@ export const createNotice = async (noticeInfo) => {
  * @author HYEONG YUN KIM
  */
 export const addComment = async (noiceCommentInfo) => {
-  return await axios.post('http://localhost:8080/api/v1/notice/comment', {
-    params: {
-      noiceCommentInfo,
-    },
-  });
+  return await axios.post('/notice/comment', noiceCommentInfo);
 };
 
 /**
@@ -139,18 +133,15 @@ export const addComment = async (noiceCommentInfo) => {
  * @param {AddNoticeImageVO} noticeImageInfo
  * * [AddNoticeImageVO Entity]
  * * * !String hospitalCode
- * * * !String String
+ * * * !String imageName
  * * * !String base64Content
  * @returns {String} filePath
  * * filePath : 파일저장 경로
  *
  */
 export const addNoticeImage = async (noticeImageInfo) => {
-  return await axios.post('http://localhost:8080/api/v1/notice/images', {
-    params: {
-      noticeImageInfo,
-    },
-  });
+  const result = await axios.post('/notice/images', noticeImageInfo);
+  return result.data;
 };
 
 /**
@@ -168,11 +159,7 @@ export const addNoticeImage = async (noticeImageInfo) => {
  * @author HYEONG YUN KIM
  */
 export const modifyNotice = async (noticeInfo) => {
-  return await axios.put('http://localhost:8080/api/v1/notice', {
-    params: {
-      noticeInfo,
-    },
-  });
+  return await axios.put('/notice', noticeInfo);
 };
 
 /**
@@ -187,7 +174,7 @@ export const modifyNotice = async (noticeInfo) => {
  * @author HYEONG YUN KIM
  */
 export const modifyComment = async (updateCommentInfo) => {
-  return await axios.put('http://localhost:8080/api/v1/notice/comment', {
+  return await axios.put('/notice/comment', {
     params: {
       updateCommentInfo,
     },
@@ -203,7 +190,7 @@ export const modifyComment = async (updateCommentInfo) => {
  * @author HYEONG YUN KIM
  */
 export const removeNotice = async (noticeId) => {
-  return await axios.delete('http://localhost:8080/api/v1/notice', {
+  return await axios.delete('/notice', {
     params: {
       noticeId,
     },
@@ -219,9 +206,25 @@ export const removeNotice = async (noticeId) => {
  * @author HYEONG YUN KIM
  */
 export const removeComment = async (noticeCommentId) => {
-  return await axios.delete('http://localhost:8080/api/v1/notice/comment', {
+  return await axios.delete('/notice/comment', {
     params: {
       noticeCommentId,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 게시물의 댓글들을 삭제하기 위한 API
+ *
+ * @param {number} noticeId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const removeComments = async (noticeId) => {
+  return await axios.delete('/notice/comments', {
+    params: {
+      noticeId,
     },
   });
 };

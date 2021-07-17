@@ -1,6 +1,4 @@
 import React, { Fragment } from 'react';
-import { useDispatch } from 'react-redux';
-import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose, AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsFillTrashFill } from 'react-icons/bs';
@@ -10,7 +8,10 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
-import { removeComments, removeNotice } from 'apis/noticeAPI';
+import { removeTodo } from 'apis/todoAPI';
+import { useSnackbar } from 'notistack';
+
+
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -27,28 +28,36 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: '1px solid rgba(0,0,0,0.12)',
     boxShadow: theme.shadows[5],
+    
     padding: theme.spacing(2, 4, 3),
   },
 }));
 
-const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
-  const dispatch = useDispatch();
+const DeleteTodoModal = ({ isOpenModal, setOpenModal, todoId, setChanged }) => {
+
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
+  const { enqueueSnackbar } = useSnackbar();
+
+
   const handleClose = () => {
     setOpenModal(false);
   };
-  console.log("comment : ", comment.length);
-  const handleRemoveNotice = async (event) => {
+
+  const handleRemoveTodo = async (event) => {
     try {
-      await removeNotice(noticeId);
-      if(comment.length !== 0) {
-        await removeComments(noticeId);
-      }
-      dispatch(setActiveStep('DELETE'));
-    } catch (error) {      
-      console.log(error.response);
+      await removeTodo(todoId);
+      setChanged(true);
+      handleAlert('success', '삭제가 완료되었습니다.');
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
   };
 
   // const handleDeleteBtn = () => {
@@ -89,9 +98,10 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
               <div>
                 <h2
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    // display: 'flex',
+                    // alignItems: 'center',
+                    // justifyContent: 'center',
+                    textAlign: 'center'
                   }}
                 >
                   <StyledTypography
@@ -104,6 +114,7 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
                   </StyledTypography>
                   <img style={{border: "5px solid", borderColor: "rgba(0,0,0,0.1)"}}
                   src="/assets/image/notFound.png" alt="Logo" width="50%" />
+                  
                 </h2>
               </div>
               <div
@@ -111,14 +122,13 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
                   display: 'flex',
                   justifyContent: 'center',
                   marginTop: '1rem'
-
                 }}
               >
                 <StyledButton
                   bgColor="rgb(8,78,127)"
                   color="white"
                   width="150px"
-                  onClick={handleRemoveNotice}
+                  onClick={handleRemoveTodo}
                 >
                   <AiOutlineCheckCircle style={{ marginRight: '5px' }} />
                   확인
@@ -141,4 +151,4 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
   );
 };
 
-export default DeleteModal;
+export default DeleteTodoModal;

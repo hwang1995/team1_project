@@ -1,16 +1,15 @@
 import React, { Fragment } from 'react';
-import { useDispatch } from 'react-redux';
-import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import { makeStyles, Modal, Backdrop, IconButton } from '@material-ui/core';
 import { AiOutlineClose, AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsFillTrashFill } from 'react-icons/bs';
+import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
-import { removeComments, removeNotice } from 'apis/noticeAPI';
+import { removeComment } from 'apis/noticeAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -31,23 +30,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
-  const dispatch = useDispatch();
+const DeleteCommentModal = ({ isOpenCommentModal, setOpenCommentModal, noticeCommentId, setChanged}) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleClose = () => {
-    setOpenModal(false);
+    setOpenCommentModal(false);
   };
-  console.log("comment : ", comment.length);
-  const handleRemoveNotice = async (event) => {
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
+  const handleRemoveComment = async (event) => {
     try {
-      await removeNotice(noticeId);
-      if(comment.length !== 0) {
-        await removeComments(noticeId);
-      }
-      dispatch(setActiveStep('DELETE'));
-    } catch (error) {      
-      console.log(error.response);
+      console.log(noticeCommentId)
+      await removeComment(noticeCommentId);
+      handleAlert('success', '삭제가 완료되었습니다.');
+
+      setChanged(true);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -59,7 +65,7 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
     <Fragment>
       <Modal
         className={classes.modal}
-        open={isOpenModal}
+        open={isOpenCommentModal}
         onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -70,7 +76,7 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
           justifyContent: 'center',
         }}
       >
-        <SpringFade in={isOpenModal}>
+        <SpringFade in={isOpenCommentModal}>
           <div
             className={classes.paper}
             style={{ display: 'flex', flexDirection: 'column' }}
@@ -89,9 +95,10 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
               <div>
                 <h2
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    // display: 'flex',
+                    // alignItems: 'center',
+                    // justifyContent: 'center',
+                    textAlign: 'center'
                   }}
                 >
                   <StyledTypography
@@ -111,14 +118,13 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
                   display: 'flex',
                   justifyContent: 'center',
                   marginTop: '1rem'
-
                 }}
               >
                 <StyledButton
                   bgColor="rgb(8,78,127)"
                   color="white"
                   width="150px"
-                  onClick={handleRemoveNotice}
+                  onClick={handleRemoveComment}
                 >
                   <AiOutlineCheckCircle style={{ marginRight: '5px' }} />
                   확인
@@ -141,4 +147,4 @@ const DeleteModal = ({ isOpenModal, setOpenModal, noticeId, comment }) => {
   );
 };
 
-export default DeleteModal;
+export default DeleteCommentModal;

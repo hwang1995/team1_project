@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 import Divider from '@material-ui/core/Divider';
@@ -23,7 +24,6 @@ const NoticeContainer = styled.div`
 `;
 
 const NoticeItem = ({ data }) => {
-  console.log(data);
   const { noticeTitle, createDate, noticeAuthor } = data;
   return (
     <ListItem>
@@ -48,7 +48,7 @@ const NoticeItem = ({ data }) => {
             weight={3}
             className="text-margin"
           >
-            {createDate}
+            {moment(createDate).format('YY-MM-DD dd요일 a h:mm')}
           </StyledTypography>
           <StyledTypography
             variant="subtitle1"

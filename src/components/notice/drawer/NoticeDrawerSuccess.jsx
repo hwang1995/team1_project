@@ -40,7 +40,7 @@ const NoticeDrawerSuccess = () => {
         }}
       >
         <div style={{ flex: '2' }}></div>
-        {activeStep !== 'DELETE' && (
+        {/* {activeStep !== 'DELETE' && (
           <div style={{ flex: '2', marginRight: '10px' }}>
             <StyledButton
               bgColor="rgb(8,78,127)"
@@ -50,7 +50,7 @@ const NoticeDrawerSuccess = () => {
               작성 게시물 보기
             </StyledButton>
           </div>
-        )}
+        )} */}
 
         <div style={{ flex: '2' }}>
           <StyledButton
