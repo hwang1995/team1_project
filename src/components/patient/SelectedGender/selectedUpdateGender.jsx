@@ -36,6 +36,7 @@ const SelectedMan = (genderValue) => {
   };
 
   useEffect(() => {
+    dispatch(setGenderStatus(genderValue.genderValue));
     setSelectedGender({
       [gender]: true,
     });

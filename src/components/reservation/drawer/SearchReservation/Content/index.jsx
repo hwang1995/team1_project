@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
+import moment from 'moment';
 
 const Content = ({
   readPatient,
@@ -50,7 +51,7 @@ const Content = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={readPatient.birth} />
+        <StyledInputBase readOnly value={readPatient.patientBirth} />
       </Grid>
       <Grid
         item
@@ -110,7 +111,7 @@ const Content = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={readPatient.drRoom} />
+        <StyledInputBase readOnly value={readPatient.doctorRoom} />
       </Grid>
       <Grid
         item
@@ -125,7 +126,7 @@ const Content = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={readPatient.memberName} />
+        <StyledInputBase readOnly value={readPatient.doctorName} />
       </Grid>
       <Grid
         item

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setGenderStatus } from 'redux/features/member/memberSlice';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
+import { registerPatientInfo } from 'apis/patientAPI';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
@@ -16,8 +17,15 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import PatientModal from '../modal/Modal';
 
-const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
+const PatientDrawer = ({
+  isOpened,
+  setOpened,
+  setPatients,
+  patientData,
+  setDisplay,
+}) => {
   const gender = useSelector((state) => state.member.gender);
+  const loginInfo = useSelector((state) => state.common.loginInfo);
   const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
   const [isModalOpened, setModalOpened] = useState(false);
@@ -30,16 +38,18 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     });
   };
   const [isPatient, setPatient] = useState({
-    patient_id: '',
-    patient_name: '',
-    patient_birth: '',
-    patient_addr1: '',
-    patient_addr2: '',
-    patient_postal: '',
-    patient_tel: '',
-    patient_height: '',
-    patient_weight: '',
-    patient_gender: '',
+    patientName: '',
+    patientSsn: '',
+    patientBirth: '',
+    patientAddr1: '',
+    patientAddr2: '',
+    patientPostal: '',
+    patientTel: '',
+    patientHeight: '',
+    patientWeight: '',
+    patientGender: '',
+    recentDate: '',
+    hospitalCode: '',
   });
 
   useEffect(() => {
@@ -56,11 +66,13 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     setOpened(open);
   };
 
-  const addHandleClick = () => {
+  const addHandleClick = async () => {
     console.log(isPatient);
-    isPatient.patient_birth = moment(keyboardDate).format('YYYY/MM/DD');
+    isPatient.patientBirth = moment(keyboardDate).format('YYYY-MM-DD');
+    isPatient.patientSsn = moment(keyboardDate).format('YYYY-MM-DD');
+    isPatient.recentDate = moment(new Date()).format('yyyy-MM-DDTHH:mm');
 
-    if (isPatient.patient_name === undefined || isPatient.patient_name === '') {
+    if (isPatient.patientName === undefined || isPatient.patientName === '') {
       handleAlert('error', '이름을 입력해주세요.');
       return;
     }
@@ -69,50 +81,57 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       handleAlert('error', '성별을 선택해주세요.');
       return;
     } else {
-      isPatient.patient_gender = gender;
+      isPatient.patientGender = gender;
     }
 
-    if (isPatient.patient_birth === '') {
+    if (isPatient.patientBirth === '') {
       handleAlert('error', '생년월일을 입력해주세요.');
       return;
     }
     const reg = /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/;
-    if (!reg.test(isPatient.patient_tel)) {
+    if (!reg.test(isPatient.patientTel)) {
       handleAlert('error', '전화번호 형식이 맞지 않습니다.');
 
       return;
     }
 
     if (
-      Number.parseInt(isPatient.patient_height) === isNaN ||
-      isPatient.patient_height === undefined
+      Number.parseInt(isPatient.patientHeight) === isNaN ||
+      isPatient.patientHeight === undefined
     ) {
-      console.log(Number.parseInt(isPatient.patient_height));
       handleAlert('error', '키는 숫자만 입력 가능합니다.');
       return;
     }
     if (
-      Number.parseInt(isPatient.patient_weight) === isNaN ||
-      isPatient.patient_weight === undefined
+      Number.parseInt(isPatient.patientWeight) === isNaN ||
+      isPatient.patientWeight === undefined
     ) {
-      console.log(typeof isPatient.patient_weight);
       handleAlert('error', '몸무게 숫자만 입력 가능합니다.');
       return;
     }
     if (
-      isPatient.patient_postal === undefined ||
-      isPatient.patient_addr1 === undefined
+      isPatient.patientPostal === undefined ||
+      isPatient.patientAddr1 === undefined
     ) {
       handleAlert('error', '주소를 입력해주세요.');
       return;
     }
-    isPatient.patient_id = patientData.length + 1;
-    const newPatient = patientData.concat(isPatient);
-    setPatients(newPatient);
-    setPatient({});
-    dispatch(setGenderStatus(''));
-    handleKeyDateChange(new Date());
-    setOpened(false);
+    isPatient.hospitalCode = loginInfo.hospitalCode;
+    console.log(isPatient);
+
+    try {
+      const { data } = await registerPatientInfo(isPatient);
+      handleAlert('success', '환자가 등록되었습니다.');
+      setDisplay(true);
+      setPatient({});
+      dispatch(setGenderStatus(''));
+      handleKeyDateChange(new Date());
+      setOpened(false);
+    } catch (error) {
+      const { message } = error.response.data;
+      console.log(message);
+      handleAlert('error', message);
+    }
   };
 
   const handleChange = (event) => {
@@ -129,8 +148,8 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
   const addressClick = ({ fullAddress, postalcode }) => {
     setPatient({
       ...isPatient,
-      patient_postal: postalcode,
-      patient_addr1: fullAddress,
+      patientPostal: postalcode,
+      patientAddr1: fullAddress,
     });
   };
 
@@ -178,7 +197,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_name"
+                name="patientName"
                 onChange={handleChange}
                 style={{ width: '53%' }}
               />
@@ -242,7 +261,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_tel"
+                name="patientTel"
                 onChange={handleChange}
                 style={{ width: '80%' }}
               />
@@ -261,7 +280,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_height"
+                name="patientHeight"
                 style={{ width: '53%' }}
                 onChange={handleChange}
                 type="number"
@@ -281,7 +300,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_weight"
+                name="patientWeight"
                 style={{ width: '53%' }}
                 onChange={handleChange}
                 type="number"
@@ -303,7 +322,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             <Grid item xs={9}>
               <StyledInputBase
                 placeholder="우편번호"
-                value={isPatient.patient_postal || ''}
+                value={isPatient.patientPostal || ''}
                 readOnly
               />
             </Grid>
@@ -324,14 +343,14 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={12}>
               <StyledInputBase
-                value={isPatient.patient_addr1 || ''}
+                value={isPatient.patientAddr1 || ''}
                 placeholder="주소를 입력해주세요"
                 readOnly
               />
             </Grid>
             <Grid item xs={12}>
               <StyledInputBase
-                name="patient_addr2"
+                name="patientAddr2"
                 onChange={handleChange}
                 placeholder="상세 주소를 입력하세요."
               />

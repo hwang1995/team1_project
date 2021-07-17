@@ -78,6 +78,7 @@ export const registerPatientInfo = async (patientInfo) => {
  * * 목적 : 환자에 대한 정보 수정을 위한 API
  * @param {PatientsDTO} updatePatientInfo
  * * [Patients Entity]
+ * * !int patientId
  * * !String patientName
  * * !String patientSsn;
  * * !String patientGender

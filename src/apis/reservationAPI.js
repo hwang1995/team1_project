@@ -101,7 +101,7 @@ export const removeReservationInfo = async (diagId) => {
  * @author SI HYUN PARK
  */
 export const getPatientInfo = async (patientVO) => {
-  return await axios.get('/reservation/patient', patientVO);
+  return await axios.post('/reservation/patient', patientVO);
 };
 
 /**
@@ -146,5 +146,5 @@ export const getDoctorInfo = async (hospitalCode) => {
  * @author SI HYUN PARK
  */
 export const getSearchReservationPatient = async (patientSearchVO) => {
-  return await axios.get('/reservation/waitingPatient', patientSearchVO);
+  return await axios.post('/reservation/waitingPatient', patientSearchVO);
 };

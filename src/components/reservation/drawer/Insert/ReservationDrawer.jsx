@@ -27,9 +27,12 @@ doctorInfo: 의사에 관한 데이터이다
 const ReservationDrawer = ({
   isOpened,
   setOpened,
+  setClosed,
   reservationTime,
   doctorInfo,
-}) => {
+  registerPageResult,
+  setAddDisplay
+}, props) => {
   /*
   컴포넌트 변경 부분이다. 완료버튼을 누르면 다시 한번 확인하는 화면이 나타난다
   검색: changePage
@@ -38,6 +41,8 @@ const ReservationDrawer = ({
   const dispatch = useDispatch();
 
   const { breakpoint } = useWindowSize();
+
+  
 
   /*
   환자의 정보를 세팅하는 상태 데이터
@@ -49,12 +54,13 @@ const ReservationDrawer = ({
     patient_gender: '',
     patient_birth: '',
   });
+ 
   /*
     false: 검색어 (SearchBox) true: 해당내용이 맞습니까? 상태에 따라 컴포넌트 구성도가 달라짐
     검색: checkChange
   */
   const [checkChange, setCheckChange] = useState(false);
-
+ 
   // drawer 오픈에 관한 메소드
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
@@ -63,6 +69,7 @@ const ReservationDrawer = ({
     if (!open) {
       dispatch(changePage('INFO'));
     }
+    setClosed(true);
     setOpened(open);
   };
 
@@ -75,6 +82,7 @@ const ReservationDrawer = ({
   */
   const handleChangeCloseClick = () => {
     setOpened(false);
+    setClosed(true);
     dispatch(changePage('INFO'));
   };
 
@@ -104,11 +112,13 @@ const ReservationDrawer = ({
     검색: patientInfoSetting
   */
   const setPatientInfo = (patient) => {
-    setPatient({
-      patient_id: patient.patient_id,
-      patient_name: patient.patient_name,
-      patient_gender: patient.patient_gender,
-      patient_birth: patient.patient_birth,
+    const [year, month, date ] = patient.patientBirth;
+     setPatient({
+      patientId: patient.patientId,
+      patientName: patient.patientName,
+      patientGender: patient.patientGender,
+      patientBirth: patient.patientBirth,
+      patientBirthContent: year+"년 " + month+"월 " + date +"일"
     });
   };
 
@@ -121,12 +131,15 @@ const ReservationDrawer = ({
 
     검색: keywordSetting, changePage
   */
-  const setSearchVal = (inputVal) => {
+  const setSearchVal = async(inputVal) => {
     dispatch(changePage('SEARCH_INFO'));
     dispatch(chaneInputVal(inputVal));
   };
 
+  
+
   return (
+    
     <Fragment>
       <SwipeableDrawer
         anchor="right"
@@ -176,7 +189,7 @@ const ReservationDrawer = ({
             </div>
           )}
           {/* changePage */}
-          {page === 'INFO' ? (
+          {page === 'INFO' && (
             //예약정보를 세팅하는 컴포넌트
             <ReservationInfoContainer
               reservationTime={reservationTime}
@@ -184,11 +197,19 @@ const ReservationDrawer = ({
               patientInfo={patientInfo}
               setOpened={setOpened}
               setCheckChange={setCheckChange}
+              setClosed={setClosed}
+              setAddDisplay={setAddDisplay}
             />
-          ) : (
+          ) }
+          {page === 'SEARCH_INFO' && (
             // 환자 정보를 검색하는 컴포넌트 (검색: patientInfoSetting)
-            <ReservationPatientListContainer setPatientInfo={setPatientInfo} />
+          
+            <ReservationPatientListContainer setPatientInfo={setPatientInfo} registerPageResult={registerPageResult}/> 
+            
           )}
+          
+
+
         </ResponsiveContainer>
       </SwipeableDrawer>
     </Fragment>
