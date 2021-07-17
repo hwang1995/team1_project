@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { TablePagination } from '@material-ui/core';
+import { IconButton, TablePagination } from '@material-ui/core';
 import moment from 'moment';
 import { BsPencilSquare } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
+import { motion } from 'framer-motion';
 import {
   setNoticeCurrentIndex,
   setActiveStep,
@@ -11,6 +12,8 @@ import SearchBox from 'components/common/search/SearchBox';
 import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 import StyledButton from 'components/common/button/StyledButton';
 import { getNoticesList } from 'apis/noticeAPI';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { GrPowerReset } from 'react-icons/gr';
 
 const NoticeDrawerMain = () => {
   const [searchVal, setSearchVal] = useState('');
@@ -22,7 +25,11 @@ const NoticeDrawerMain = () => {
     (state) => state.common.loginInfo.hospitalCode,
   );
   const dispatch = useDispatch();
-
+  const buttonSetting = {
+    rest: { scale: 1 },
+    hover: { scale: 1.2 },
+    pressed: { scale: 0.95 },
+  };
   const handleChange = (e) => {
     setSearchVal(e.target.value);
     console.log(e.target.value);
@@ -63,6 +70,10 @@ const NoticeDrawerMain = () => {
     data.noticeTitle.includes(searchVal),
   );
 
+  const handleReset = () => {
+    setSearchVal('');
+  };
+
   return (
     <Fragment>
       <div style={{ marginTop: '3rem', display: 'flex' }}>
@@ -85,26 +96,59 @@ const NoticeDrawerMain = () => {
             placeholder="제목을 입력해주세요."
           />
         </div>
+        <div
+          className="icon-area"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+
+            paddingTop: '0.5rem',
+            paddingBottom: '0.5rem',
+          }}
+        >
+          <motion.div
+            variants={buttonSetting}
+            initial="rest"
+            whileHover="hover"
+            whileTap="pressed"
+          >
+            <IconButton
+              type="button"
+              size="small"
+              style={{
+                border: '1px solid rgba(0,0,0,0.12)',
+                marginLeft: '0.5rem',
+                marginRight: '0.5rem',
+                padding: '0.5rem',
+              }}
+              onClick={() => handleReset()}
+            >
+              <GrPowerReset />
+            </IconButton>
+          </motion.div>
+        </div>
       </div>
       <NoticeDrawerItem>
         {matchData
-          .reverse()
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((data) => (
             <Fragment key={data.noticeId}>
-              <div style={{ display: 'flex', marginTop: '10px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  marginTop: '10px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  handleClick(data);
+                }}
+              >
                 <div className="left-side" style={{ flex: 2 }}>
                   <div className="avatar-container">
                     <h4 style={{ marginLeft: '5px' }}>{data.noticeAuthor}</h4>
                   </div>
                   <div className="textTitle-container">
-                    <div
-                      key={data.noticeId}
-                      align="left"
-                      onClick={() => {
-                        handleClick(data);
-                      }}
-                    >
+                    <div key={data.noticeId} align="left">
                       {data.noticeTitle}
                     </div>
                   </div>
@@ -113,7 +157,7 @@ const NoticeDrawerMain = () => {
                   </div>
                   <div className="textDate-container">
                     <div align="left">
-                      {moment(data.createDate).format('YY-MM-DD a h:mm')}
+                      {moment(data.createDate).format('YY-MM-DD')}
                     </div>
                   </div>
                 </div>

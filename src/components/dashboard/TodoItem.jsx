@@ -77,12 +77,17 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
             )}
             {/* <MdCheckBox /> */}
             {memberId === loginMemberId ? (
-              <div style={{ flex: 1 }}>
+              <div
+                style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}
+              >
                 <IconButton onClick={handleModify}>
                   {isChecked ? (
-                    <MdCheckBox style={{ color: '#ff6b6b' }} />
+                    <MdCheckBox size={20} style={{ color: '#ff6b6b' }} />
                   ) : (
-                    <MdCheckBoxOutlineBlank style={{ color: '#ff6b6b' }} />
+                    <MdCheckBoxOutlineBlank
+                      size={20}
+                      style={{ color: '#ff6b6b' }}
+                    />
                   )}
                 </IconButton>
               </div>
@@ -111,7 +116,7 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
               weight={2}
               className="text-margin"
             >
-              {moment(createdDate).format('YY-MM-DD a h:mm')}
+              {moment(createdDate).subtract(1, 'months').format('YY-MM-DD')}
             </StyledTypography>
             <StyledTypography
               variant="subtitle1"
@@ -143,7 +148,7 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
           </div>
           {memberId === loginMemberId ? (
             <div
-              style={{ flex: 1 }}
+              style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}
               onClick={() => {
                 setOpenModal((prevState) => !prevState);
               }}

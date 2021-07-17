@@ -25,6 +25,7 @@ import {
   memberImageUpload,
   modifyMemberInfo,
 } from 'apis/memberAPI';
+import { v4 as uuid } from 'uuid';
 import { CirclePicker } from 'react-color';
 import ImageUploader from 'react-images-upload';
 
@@ -68,43 +69,66 @@ const MemberUpdateDrawer = ({
   };
 
   const onDrop = async (event, picture) => {
-    if (event.length === 1) {
-      let imageName = '';
-      imageName = event[0].name;
+    if (event.length === 0 || picture.length === 0) {
+      return;
+    }
+
+    try {
+      let ext = '.jpg';
+
+      if (event[0].type === 'image/jpeg') {
+        ext = '.jpg';
+      } else if (event[0].type === 'image/gif') {
+        ext = '.gif';
+      } else if (event[0].type === 'image/png') {
+        ext = '.png';
+      } else if (event[0].type === 'image/webp') {
+        ext = '.webp';
+      }
+
+      const imageName = uuid() + ext;
+
       let imageInfo = {
         hospitalCode: currentUser.hospitalCode,
         imageName,
         base64Content: picture[0],
       };
-      setPictures(imageInfo);
-      console.log(imageInfo);
-      //  const { data, status } = await memberImageUpload(pictures);
-      //  console.log(data);
-    } else {
-      //창 닫을때
-      setPictures('');
+
+      await memberImageUpload(imageInfo);
+      const sendImageName = `/${imageInfo.hospitalCode}/${imageInfo.imageName}`;
+      setMemberInfo((prevState) => ({
+        ...prevState,
+        memberImage: sendImageName,
+      }));
+      // setPictures(imageInfo);
+    } catch (error) {
+      // const { message } = error.response.data;
+
+      handleAlert('error', '알 수 없는 이유로 이미지 업로드에 실패하였습니다.');
+      return;
     }
   };
 
   //Drawer창이 켜졌을때 데이터 받아오기
   useEffect(() => {
-    console.log(memberData);
-    setMemberInfo({
-      memberId: memberData.memberId,
-      memberName: memberData.memberName,
-      memberTel: memberData.memberTel,
-      memberAuthority: memberData.memberAuthority,
-      memberPostal: memberData.memberPostal,
-      memberAddr1: memberData.memberAddr1,
-      memberAddr2: memberData.memberAddr2,
-      memberColor: memberData.memberColor,
-      memberEmail: memberData.memberEmail,
-      memberPw: memberData.memberPw,
-      memberImage: memberData.memberImage,
-      memberIntroduction: memberData.memberIntroduction,
-    });
-
-    setSelectVal(memberData.memberAuthority);
+    if (isUpdateOpened) {
+      setMemberInfo({
+        memberId: memberData.memberId,
+        memberName: memberData.memberName,
+        memberTel: memberData.memberTel,
+        memberAuthority: memberData.memberAuthority,
+        memberPostal: memberData.memberPostal,
+        memberAddr1: memberData.memberAddr1,
+        memberAddr2: memberData.memberAddr2,
+        memberColor: memberData.memberColor,
+        memberEmail: memberData.memberEmail,
+        memberPw: memberData.memberPw,
+        memberImage: memberData.memberImage,
+        memberIntroduction: memberData.memberIntroduction,
+      });
+      console.log('updateOpened', memberData);
+      setSelectVal(memberData.memberAuthority);
+    }
   }, [isUpdateOpened]);
 
   const dispatch = useDispatch();
@@ -114,6 +138,7 @@ const MemberUpdateDrawer = ({
   );
 
   useEffect(() => {
+    console.log('currentCOlor', currentColor);
     setMemberInfo({
       ...memberInfo,
       memberColor: currentColor,
@@ -122,6 +147,7 @@ const MemberUpdateDrawer = ({
 
   // 권한 변경시 데이터 저장
   useEffect(() => {
+    console.log('memberAuthority', selectVal);
     setMemberInfo({
       ...memberInfo,
       memberAuthority: selectVal,
@@ -138,7 +164,7 @@ const MemberUpdateDrawer = ({
   }, [member_postal, member_addr1]);
 
   // 수정버튼
-  const handleSubmit = async (event) => {
+  const handlePrevSubmit = async (event) => {
     event.preventDefault();
     console.log('submit동작: ', memberInfo);
 
@@ -229,6 +255,82 @@ const MemberUpdateDrawer = ({
     handleAlert('success', '임직원 정보가 변경 되었습니다.');
     showMember();
     setUpdateOpened(false);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      // 이메일 정규 표현식
+      const regExpEmail =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+      // 비밀번호 정규 표현식
+      // 숫자, 특수문자 각 1회 이상, 영문은 2개 이상 사용하여 8자리 이상 입력
+      const regExpPw =
+        /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
+
+      // 전화번호 정규표현식
+      const regExpTel =
+        /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+
+      const isValidEmail = regExpEmail.test(memberInfo.memberEmail);
+      const isValidPW = regExpPw.test(memberInfo.memberPw);
+      const isValidTel = regExpTel.test(memberInfo.memberTel);
+
+      if (!isEmailChecked) {
+        handleAlert('error', '이메일 중복 체크를 해주세요.');
+        return;
+      } else if (!isValidEmail) {
+        handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
+        return;
+      } else if (!isValidPW) {
+        handleAlert(
+          'error',
+          '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
+        );
+        return;
+      } else if (memberInfo.memberName === '') {
+        handleAlert('error', '이름이 공백입니다.');
+        return;
+      } else if (!isValidTel) {
+        handleAlert(
+          'error',
+          '전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)',
+        );
+        return;
+      } else if (
+        memberInfo.memberPostal === '' ||
+        memberInfo.memberAddr1 === ''
+      ) {
+        handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
+        return;
+      } else if (memberInfo.memberAddr2 === '') {
+        handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
+        return;
+      } else if (memberInfo.memberColor === '') {
+        handleAlert('error', '색상이 없습니다. 색을 골라주세요.');
+        return;
+      }
+      console.log('modifyInfo', memberInfo);
+      await modifyMemberInfo(memberInfo);
+
+      handleAlert('success', '임직원 정보가 변경 되었습니다.');
+      showMember();
+      setUpdateOpened(false);
+    } catch (error) {
+      const { message } = error.response.data;
+
+      if (message === undefined) {
+        handleAlert(
+          'error',
+          '알 수 없는 이유로 임직원 정보 수정에 실패하였습니다.',
+        );
+        return;
+      }
+
+      handleAlert('error', message);
+      return;
+    }
   };
 
   //이메일 중복체크

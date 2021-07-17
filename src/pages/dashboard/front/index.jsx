@@ -10,6 +10,7 @@ import {
   getTodosListByHospitalCode,
   getTodosListByMemberId,
 } from 'apis/todoAPI';
+import parse from 'html-react-parser';
 import { getHospitalInfo } from 'apis/hospitalAPI';
 import 'react-calendar/dist/Calendar.css';
 import NoticeItem from 'components/dashboard/NoticeItem';
@@ -87,7 +88,7 @@ const FrontPage = () => {
 
         // 3. 코로나 데이터 가져오기
         const from = moment()
-          .subtract(2, 'days')
+          .subtract(3, 'days')
           .startOf('day')
           .format('YYYY-MM-DDTHH:mm:ss');
         const to = moment().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
@@ -107,11 +108,12 @@ const FrontPage = () => {
     getNoticeAndTodoAndCorona();
   }, [changed]);
 
-
   const TodosListByMemberId = async () => {
     try {
       const response = await getTodosListByMemberId(memberId);
+
       setTodoById(response.data.data);
+
       setMineText(700);
       setAllText(300);
       setChanged(false);
@@ -123,6 +125,7 @@ const FrontPage = () => {
   const TodosListByHospitalCode = async () => {
     try {
       const response = await getTodosListByHospitalCode(hospitalCode);
+
       setTodoById(response.data.data);
       setMineText(300);
       setAllText(700);
@@ -131,7 +134,6 @@ const FrontPage = () => {
       console.log(error);
     }
   };
-
 
   useEffect(() => {
     console.log('변화가 일어났어요.');
@@ -202,39 +204,10 @@ const FrontPage = () => {
                               <StyledTypography
                                 variant="h6"
                                 component="h6"
-                                weight={7}
-                                style={{
-                                  marginTop: '1rem',
-                                }}
+                                weight={5}
+                                style={{ marginTop: '1rem' }}
                               >
-                                <p>&nbsp;</p>
-                                <p>
-                                  &nbsp; &nbsp; 서울더존병원은 1989년 6월 개원
-                                  이래 끊임없는 연구개발과 임상 진료에 대한
-                                  아낌없는 투자로 세계적 수준의 의료성과를
-                                  달성해 왔다.
-                                </p>
-                                <p>&nbsp;</p>
-                                <p>
-                                  &nbsp; 또한 ‘생명 존중의 정신’과 이웃과 아픔을
-                                  함께 하는 ‘나눔 정신’을 실천함으로써 존경받는
-                                  병원으로 사회적 책임을 다해오고 있다. 최고의
-                                  의료 수준과 첨단 의료 장비를 갖추고 선진
-                                  외국의 의료와 어깨를 나란히 하면서 우리나라의
-                                  의료 발전을 이끌고 있다.
-                                </p>
-                                <p>&nbsp;</p>
-                                <p>
-                                  &nbsp; 서울더존병원은 연건평 8만5천여평 총
-                                  2,715 병상의 국내 최대 병원 이다.
-                                  선진의료체계를 기반으로 한 최고 의료진과
-                                  최적의 진료 시스템, 최첨단 의료 장비를 갖추고
-                                  고객만족을 실천하며 우리나라의 의료 발전을
-                                  선도해 왔다. 그 결과 이제 서울더존병원은 1일
-                                  평균 외래환자 11,680명, 재원환자 2,427명,
-                                  응급환자 256명을 진료하며, 연간 66,838여건의
-                                  고난이도 수술을 시행 하고있다.
-                                </p>
+                                {parse(hospital.hospitalDescription)}
                               </StyledTypography>
                             </div>
                             <Hidden xsDown>
@@ -302,9 +275,14 @@ const FrontPage = () => {
                               <TitleHeaderDashBoard>
                                 <span>코로나바이러스감염증-19</span>
                               </TitleHeaderDashBoard>
-                              <div style={{ dispaly: 'flex' }}>
+                              <div style={{ display: 'flex' }}>
                                 {/* {console.log("corona.data : ", corona.data)} */}
-                                {/* {corona.data[0].Date.split('T00:00:00Z')[0]} 기준 */}
+                                {
+                                  corona.data[
+                                    corona.data.length - 1
+                                  ].Date.split('T00:00:00Z')[0]
+                                }{' '}
+                                기준
                               </div>
                             </h4>
 
@@ -341,16 +319,28 @@ const FrontPage = () => {
                                     style={{
                                       color: 'rgb(236,73,64)',
                                       marginBottom: '1.5rem',
+                                      display: 'flex',
+                                      alignItems: 'center',
                                     }}
                                   >
                                     <AiFillCaretUp />
-                                    <span style={{ fontSize: '1.3rem' }}>
-                                      {/* {corona.data[1].Confirmed -
-                                        corona.data[0].Confirmed} */}
+                                    <span
+                                      style={{
+                                        fontSize: '1.3rem',
+                                        marginLeft: '0.3rem',
+                                      }}
+                                    >
+                                      {corona.data[corona.data.length - 1]
+                                        .Confirmed -
+                                        corona.data[corona.data.length - 2]
+                                          .Confirmed}
                                     </span>
                                   </div>
                                   <div style={{}}>
-                                    {/* {corona.data[1].Confirmed} */}
+                                    {
+                                      corona.data[corona.data.length - 1]
+                                        .Confirmed
+                                    }
                                   </div>
                                 </div>
                                 <div
@@ -369,15 +359,29 @@ const FrontPage = () => {
                                     style={{
                                       color: 'rgb(67,100,193)',
                                       marginBottom: '1.5rem',
+                                      display: 'flex',
+                                      alignItems: 'center',
                                     }}
                                   >
                                     <AiFillCaretUp />
-                                    <span style={{ fontSize: '1.3rem' }}>
-                                      {/* {corona.data[1].Recovered -
-                                      corona.data[0].Recovered} */}
+                                    <span
+                                      style={{
+                                        fontSize: '1.3rem',
+                                        marginLeft: '0.3rem',
+                                      }}
+                                    >
+                                      {corona.data[corona.data.length - 1]
+                                        .Recovered -
+                                        corona.data[corona.data.length - 2]
+                                          .Recovered}
                                     </span>
                                   </div>
-                                  {/* <div>{corona.data[1].Recovered}</div> */}
+                                  <div>
+                                    {
+                                      corona.data[corona.data.length - 1]
+                                        .Recovered
+                                    }
+                                  </div>
                                 </div>
                                 <div
                                   style={{
@@ -391,19 +395,29 @@ const FrontPage = () => {
                                   <div>
                                     <br />
                                   </div>
-                                  <div style={{ marginBottom: '1.5rem' }}>
+                                  <div
+                                    style={{
+                                      marginBottom: '1.5rem',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
                                     <AiFillCaretUp />
                                     <span
                                       style={{
                                         fontSize: '1.3rem',
-                                        marginBottom: '0.5rem',
+                                        marginLeft: '0.3rem',
                                       }}
                                     >
-                                      {/* {corona.data[1].Deaths -
-                                      corona.data[0].Deaths} */}
+                                      {corona.data[corona.data.length - 1]
+                                        .Deaths -
+                                        corona.data[corona.data.length - 2]
+                                          .Deaths}
                                     </span>
                                   </div>
-                                  {/* <div>{corona.data[1].Deaths}</div> */}
+                                  <div>
+                                    {corona.data[corona.data.length - 1].Deaths}
+                                  </div>
                                 </div>
                                 <div
                                   style={{
@@ -417,19 +431,30 @@ const FrontPage = () => {
                                   <div>
                                     <br />
                                   </div>
-                                  <div style={{ marginBottom: '1.5rem' }}>
+                                  <div
+                                    style={{
+                                      marginBottom: '1.5rem',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
                                     <AiFillCaretUp />
                                     <span
                                       style={{
                                         fontSize: '1.3rem',
-                                        marginBottom: '0.5rem',
+                                        marginLeft: '0.3rem',
+                                        // marginBottom: '0.5rem',
                                       }}
                                     >
-                                      {/* {corona.data[1].Active -
-                                      corona.data[0].Active} */}
+                                      {corona.data[corona.data.length - 1]
+                                        .Active -
+                                        corona.data[corona.data.length - 2]
+                                          .Active}
                                     </span>
                                   </div>
-                                  {/* <div>{corona.data[1].Active}</div> */}
+                                  <div>
+                                    {corona.data[corona.data.length - 1].Active}
+                                  </div>
                                 </div>
                               </div>
                             </StyledContainer>
@@ -472,10 +497,16 @@ const FrontPage = () => {
                                     cursor: 'pointer',
                                   }}
                                 >
-                                  <span style={{fontWeight: mineText}} onClick={TodosListByMemberId}>
+                                  <span
+                                    style={{ fontWeight: mineText }}
+                                    onClick={TodosListByMemberId}
+                                  >
                                     나의 할 일 |
                                   </span>
-                                  <span style={{fontWeight: allText}} onClick={TodosListByHospitalCode}>
+                                  <span
+                                    style={{ fontWeight: allText }}
+                                    onClick={TodosListByHospitalCode}
+                                  >
                                     전체의 할 일
                                   </span>
                                 </TitleHeaderDashBoard>

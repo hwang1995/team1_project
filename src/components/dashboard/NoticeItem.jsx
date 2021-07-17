@@ -39,7 +39,7 @@ const NoticeItem = ({ data }) => {
         <Divider className="divider" />
         <div className="description">
           <StyledTypography variant="subtitle1" component="span" weight={7}>
-            작성일자 :
+            작성일 :
           </StyledTypography>
 
           <StyledTypography
@@ -48,7 +48,7 @@ const NoticeItem = ({ data }) => {
             weight={3}
             className="text-margin"
           >
-            {moment(createDate).format('YY-MM-DD dd요일 a h:mm')}
+            {moment(createDate).format('YY-MM-DD')}
           </StyledTypography>
           <StyledTypography
             variant="subtitle1"

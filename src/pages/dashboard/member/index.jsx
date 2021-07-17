@@ -324,13 +324,13 @@ const MemberPage = () => {
                                           overflowX: 'scroll',
                                         }}
                                       ></TableCell>
-                                      <TableCell
+                                      {/* <TableCell
                                         component="td"
                                         style={{
                                           minWidth: '100px',
                                           overflowX: 'scroll',
                                         }}
-                                      ></TableCell>
+                                      ></TableCell> */}
                                       <TableCell
                                         component="td"
                                         style={{
@@ -350,6 +350,7 @@ const MemberPage = () => {
                                   )
                                   .map((data) => (
                                     <Fragment key={data.memberId}>
+                                      {console.log('JONG HYUN HAT DA', data)}
                                       <TableRow hover="true">
                                         <TableCell component="th">
                                           {data.memberAuthority ===
@@ -364,7 +365,7 @@ const MemberPage = () => {
                                             'ROLE_NURSE' && '간호사'}
                                         </TableCell>
                                         <TableCell component="th">
-                                          {data.memberImage ? (
+                                          {data.memberImage !== null ? (
                                             <Avatar
                                               src={
                                                 'http://localhost:8080/image?path=' +
@@ -453,7 +454,7 @@ const MemberPage = () => {
                                                 변경
                                               </StyledButton>
                                             </TableCell>
-                                            <TableCell component="th">
+                                            {/* <TableCell component="th">
                                               <StyledButton
                                                 bgColor="rgba(165, 10, 17, 0.637)"
                                                 color="white"
@@ -466,7 +467,7 @@ const MemberPage = () => {
                                               >
                                                 삭제
                                               </StyledButton>
-                                            </TableCell>
+                                            </TableCell> */}
                                             <TableCell component="th">
                                               <Button
                                                 size="small"

@@ -45,7 +45,7 @@ const InputBox = ({
         todoContent: inputVal,
         memberId,
         hospitalCode,
-        memberName
+        memberName,
       };
       if (inputVal === '') {
         handleAlert('error', '값이 입력되지 않았습니다.');
@@ -101,8 +101,7 @@ const InputBox = ({
           onChange={handleChange}
           onKeyPress={handleKeyPress}
         />
-        <IconButton type="submit"
-        onClick={handleAdd}>
+        <IconButton type="submit" onClick={handleAdd}>
           <AddIcon />
         </IconButton>
       </SearchContainer>
