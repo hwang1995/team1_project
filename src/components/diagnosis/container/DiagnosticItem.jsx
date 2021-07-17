@@ -2,11 +2,13 @@ import React, { Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Container, Divider } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import {
   addDiagnosticGroupItem,
   addDiagnosticInfo,
   removeDiagnosticInfo,
 } from 'redux/features/diagnosis/diagnosisSlice';
+import { searchDiagnosticListByCode } from 'apis/searchAPI';
 
 const DiagnosticContainer = styled(Container)`
   width: 100%;
@@ -103,6 +105,13 @@ const DiagnosticContainer = styled(Container)`
 
 const DiagnosticItem = ({ data, isRemove }) => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const handleAddButton = (data) => {
     dispatch(addDiagnosticInfo(data));
@@ -112,8 +121,17 @@ const DiagnosticItem = ({ data, isRemove }) => {
     dispatch(removeDiagnosticInfo(data));
   };
 
-  const handleGroupButton = (data) => {
-    dispatch(addDiagnosticGroupItem(data));
+  const handleGroupButton = async (data) => {
+    const { bundleCode } = data;
+    try {
+      const result = await searchDiagnosticListByCode(bundleCode);
+      dispatch(addDiagnosticGroupItem(result));
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+
+    // dispatch(addDiagnosticGroupItem({ bundleCode }));
   };
   return (
     <DiagnosticContainer>
@@ -121,7 +139,7 @@ const DiagnosticItem = ({ data, isRemove }) => {
         <p className="title">그룹 코드 </p>
         <Divider />
         <div className="group-code-container">
-          <p className="group-code">{data.bundle_code}</p>
+          <p className="group-code">{data.bundleCode}</p>
         </div>
       </div>
 
@@ -129,17 +147,17 @@ const DiagnosticItem = ({ data, isRemove }) => {
         <div className="row">
           <span className="title">그룹 명</span>
           <span>|</span>
-          <span className="content">{data.bundle_name}</span>
+          <span className="content">{data.bundleName}</span>
         </div>
         <div className="row">
           <span className="title">처방 코드</span>
           <span>|</span>
-          <span className="content">{data.pres_code}</span>
+          <span className="content">{data.presCode}</span>
         </div>
         <div className="row">
           <span className="title">처방 명</span>
           <span>|</span>
-          <span className="content">{data.pres_name}</span>
+          <span className="content">{data.presName}</span>
         </div>
         <div className="row">
           <div className="button-area">

@@ -14,7 +14,7 @@ import axios from 'axios';
  */
 export const sendMqttMessage = async (pushMessage) => {
     const result = await axios.post('/mqtt', pushMessage);
-    return result;
+    return result.data.data;
 }
 
 /**

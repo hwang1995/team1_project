@@ -101,6 +101,7 @@ const AuthModal = () => {
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
       variant,
+      autoHideDuration: 2000,
     });
   };
 
@@ -144,14 +145,41 @@ const AuthModal = () => {
       handleAlert('error', message);
     }
   };
-  const handleKeyPress = (event) => {
+  const handleKeyPress = async (event) => {
     const { key } = event;
+
     const hospital = hospitalCode.value;
     const email = memberEmail.value;
     const password = memberPw.value;
     if (key === 'Enter' && hospital && email && password) {
+      try {
+        const { data, status } = await getAuthentication({
+          hospitalCode: hospital,
+          memberEmail: email,
+          memberPw: password,
+        });
+
+        const { authToken, ...rest } = data;
+
+        addAuthHeader(authToken);
+
+        dispatch(setAuthToken(authToken));
+        dispatch(setLoginInfo(rest));
+
+        sessionStorage.setItem('authToken', authToken);
+        sessionStorage.setItem('userInfo', JSON.stringify(rest));
+
+        handleAlert('success', '로그인에 성공하였습니다.');
+
+        handleClose();
+        history.push('/dashboard');
+      } catch (error) {
+        // alert(error.response);
+        const { message } = error.response.data;
+        handleAlert('error', message);
+      }
     } else if (key === 'Enter' && !hospital && !email && !password) {
-      handleAlert('error', '값이 존재하지 않습니다.');
+      handleAlert('error', '값을 올바르게 채워주세요.');
     }
   };
   return (
@@ -171,7 +199,11 @@ const AuthModal = () => {
             className={classes.paper}
             style={{ display: 'flex', flexDirection: 'column' }}
           >
-            <ResponsiveContainer breakpoint={breakpoint} style={{ flex: 1 }}>
+            <ResponsiveContainer
+              breakpoint={breakpoint}
+              style={{ flex: 1 }}
+              onKeyPress={handleKeyPress}
+            >
               <DrawerHeader breakpoint={breakpoint}>
                 <StyledTypography variant="h5" component="h5" weight={7}>
                   로그인
@@ -207,9 +239,10 @@ const AuthModal = () => {
                       <RiHospitalLine size={24} color="black" />
                     </div>
                     <InputBase
-                      type="text"
+                      // type="text"
                       className="input-area"
                       {...hospitalCode}
+                      autoCapitalize="true"
                     />
                   </InputBox>
                   <StyledTypography
@@ -256,7 +289,6 @@ const AuthModal = () => {
                       marginTop: '2rem',
                     }}
                     onClick={() => handleLogin()}
-                    onKeyPress={handleKeyPress}
                   >
                     로그인
                   </Button>

@@ -14,7 +14,7 @@ const MedicineItem = ({ data, removeMedicine }) => {
     <SearchContainer>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <h2 style={{ flex: 3, margin: 0 }}>
-          {data.medicine_name} | {data.count}개
+          {data.medicineName} | {data.count}개
         </h2>
         <div>
           <ClrButton setcolor="#495057" onClick={() => handleRemoveBtn(data)}>

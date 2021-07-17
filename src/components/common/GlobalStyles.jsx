@@ -77,6 +77,28 @@ a{
   color: black;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
+}
+
+@media print {
+
+  @page { 
+    size: A4;
+    display: block;
+    overflow: scroll;
+    height: 100%;
+    margin: 4rem;
+  }
+  .printArea {
+    display: block;
+
+  }
+}
 
 `;
 

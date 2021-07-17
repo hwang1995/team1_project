@@ -21,11 +21,12 @@ import axios from 'axios';
  * @author SUNG WOOK HWANG
  */
 export const searchMedicineList = async (medicineName) => {
-    return await axios.get("/search/medicine", {
+    const result = await axios.get("/search/medicine", {
         params: {
             medicineName
         }
     });
+    return result.data.data;
 };
 
 /**
@@ -49,11 +50,13 @@ export const searchMedicineList = async (medicineName) => {
  * @author SUNG WOOK HWANG
  */
 export const searchInjectorList = async (medicineName) => {
-    return await axios.get("/search/injector", {
+    const result = await axios.get("/search/injector", {
         params: {
             medicineName
         }
     });
+    return result.data.data;
+
 };
 
 
@@ -82,11 +85,13 @@ export const searchInjectorList = async (medicineName) => {
  * @author SUNG WOOK HWANG
  */
 export const searchDiagnosticList = async (bundleName) => {
-    return await axios.get("/search/diagnostic", {
+    const result = await axios.get("/search/diagnostic", {
         params: {
             bundleName
         }
     });
+    return result.data.data;
+
 };
 
 /**
@@ -114,11 +119,12 @@ export const searchDiagnosticList = async (bundleName) => {
  * @author SUNG WOOK HWANG
  */
 export const searchDiagnosticListByCode = async (bundleCode) => {
-    return await axios.get("/search/diagnostic-code", {
+    const result = await axios.get("/search/diagnostic-code", {
         params: {
             bundleCode
         }
     });
+    return result.data.data;
 };
 
 /**
@@ -142,5 +148,35 @@ export const searchDiagnosticListByCode = async (bundleCode) => {
  * @author SUNG WOOK HWANG
  */
 export const searchPatientInfoByName = async (patientInfo) => {
-    return await axios.get("/search/patient", patientInfo);
+    const result = await axios.post("/search/patient", patientInfo);
+    return result.data.data;
+}
+
+
+/**
+ * * 목표 : 진료의 식별자로 환자의 ID를 알아내고 진료 정보를 만들어 내어 리턴하는 API
+ * @param {number} diagId 
+ * @returns {DiagnosisInfoVO} result
+ * * !int diagId (진료 ID)
+ * * !String visitPurpose (내방 목적)
+ * * !String patientName (환자 이름)
+ * * !String patientGender (환자 성별)
+ * * !String patientBirth (환자 생년월일)
+ */
+export const getDiagnosisInfo = async (diagId) => {
+    return await axios.get("/search/diagnosisInfo", {
+        params: {
+            diagId
+        }
+    })
+};
+
+export const showDiagnosticTestListByPatientId = async (patientId) => {
+    const result = await axios.get('/search/diagnosticInfo', {
+        params: {
+            patientId
+        }
+    });
+
+    return result.data.data;
 }

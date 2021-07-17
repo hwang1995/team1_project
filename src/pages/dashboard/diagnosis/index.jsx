@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, Fragment } from 'react';
 import {
   Divider,
   Grid,
@@ -20,6 +20,7 @@ import {
   setDiagnosisHistoryDrawer,
   setDiagnosisModal,
   setActiveStep,
+  resetDiagnosisInfos,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import StyledButton from 'components/common/button/StyledButton';
 
@@ -57,15 +58,15 @@ const DiagnosisPage = () => {
   };
 
   const handleNext = () => {
-    if (patientInfo.id === 0) {
+    if (patientInfo.patientId === 0) {
       handleAlert('error', '환자를 선택해주세요.');
       // alert('환자를 선택해주세요.');
       return;
-    } else if (activeStep === 1 && diagnosisInfo.dr_opinion === '') {
+    } else if (activeStep === 1 && diagnosisInfo.drOpinion === '') {
       handleAlert('error', '의사 의견을 입력해주세요.');
       // alert('의사 의견을 입력해주세요.');
       return;
-    } else if (activeStep === 1 && diagnosisInfo.dr_opinion !== '') {
+    } else if (activeStep === 1 && diagnosisInfo.drOpinion !== '') {
       dispatch(setDiagnosisModal(true));
       return;
     }
@@ -84,6 +85,12 @@ const DiagnosisPage = () => {
     dispatch(setActiveStep(activeStep - 1));
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(setActiveStep(0));
+      dispatch(resetDiagnosisInfos());
+    };
+  }, []);
   const getStepContent = (step) => {
     switch (step) {
       case 0:
@@ -208,11 +215,16 @@ const DiagnosisPage = () => {
                 {getStepContent(activeStep)}
 
                 {/* Medicine Drawer */}
-                <MedicineDrawer />
-                <InjectorDrawer />
-                <DiagnosticDrawer />
-                <DiagnosisHistoryDrawer />
-                <DiagnosisModal />
+                {activeStep === 1 && (
+                  <Fragment>
+                    <MedicineDrawer />
+                    <InjectorDrawer />
+                    <DiagnosticDrawer />
+                    <DiagnosisHistoryDrawer />
+                    <DiagnosisModal />
+                  </Fragment>
+                )}
+
                 <div
                   style={{
                     display: 'flex',

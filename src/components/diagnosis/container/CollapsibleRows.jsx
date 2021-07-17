@@ -13,7 +13,7 @@ import CollapsibleMedicineRows from './CollapsibleMedicineRows';
 import CollapsibleDiagnosticsRows from './CollapsibleDiagnosticsRows';
 
 const CollapsibleRows = ({ data }) => {
-  const { pharmacies, injectors, diagnostics } = data;
+  const { medicines, injectors, diagnostics } = data;
   const [isOpened, setOpened] = useState(false);
 
   return (
@@ -25,13 +25,13 @@ const CollapsibleRows = ({ data }) => {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {data.start_date}
+          {data.startDate}
         </TableCell>
         <TableCell component="th" scope="row">
-          {data.visit_purpose}
+          {data.visitPurpose}
         </TableCell>
         <TableCell component="th" scope="row">
-          {data.dr_opinion}
+          {data.drOpinion}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -54,7 +54,7 @@ const CollapsibleRows = ({ data }) => {
                     component="div"
                     weight={4}
                   >
-                    {data.dr_opinion}
+                    {data.drOpinion}
                   </StyledTypography>
                 </Grid>
                 <Grid item xs={12} sm={2}>
@@ -67,7 +67,21 @@ const CollapsibleRows = ({ data }) => {
                   </StyledTypography>
                 </Grid>
                 <Grid item xs={12} sm={10}>
-                  <CollapsibleMedicineRows data={pharmacies} />
+                  {medicines.length === 0 && (
+                    <StyledTypography
+                      variant="subtitle1"
+                      component="div"
+                      weight={7}
+                      style={{
+                        padding: '1rem',
+                      }}
+                    >
+                      약 처방 내역이 존재하지 않습니다.
+                    </StyledTypography>
+                  )}
+                  {medicines.length > 0 && (
+                    <CollapsibleMedicineRows data={medicines} />
+                  )}
                 </Grid>
 
                 <Grid item xs={12} sm={2}>
@@ -80,7 +94,21 @@ const CollapsibleRows = ({ data }) => {
                   </StyledTypography>
                 </Grid>
                 <Grid item xs={12} sm={10}>
-                  <CollapsibleMedicineRows data={injectors} />
+                  {injectors.length === 0 && (
+                    <StyledTypography
+                      variant="subtitle1"
+                      component="div"
+                      weight={7}
+                      style={{
+                        padding: '1rem',
+                      }}
+                    >
+                      주사 처방 내역이 존재하지 않습니다.
+                    </StyledTypography>
+                  )}
+                  {injectors.length > 0 && (
+                    <CollapsibleMedicineRows data={injectors} />
+                  )}
                 </Grid>
 
                 <Grid item xs={12} sm={2}>
@@ -93,7 +121,21 @@ const CollapsibleRows = ({ data }) => {
                   </StyledTypography>
                 </Grid>
                 <Grid item xs={12} sm={10}>
-                  <CollapsibleDiagnosticsRows data={diagnostics} />
+                  {diagnostics.length === 0 && (
+                    <StyledTypography
+                      variant="subtitle1"
+                      component="div"
+                      weight={7}
+                      style={{
+                        padding: '1rem',
+                      }}
+                    >
+                      진단 검사 내역이 존재하지 않습니다.
+                    </StyledTypography>
+                  )}
+                  {diagnostics.length > 0 && (
+                    <CollapsibleDiagnosticsRows data={diagnostics} />
+                  )}
                 </Grid>
               </Grid>
             </Box>

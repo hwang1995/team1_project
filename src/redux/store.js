@@ -3,7 +3,7 @@ import reservationReducer from './features/reservation/reservationSlice';
 import diagnosisReducer from './features/diagnosis/diagnosisSlice';
 import noticeReducer from './features/notice/noticeSlice';
 import emergencyReducer from './features/emergency/emergencySlice';
-
+import diagnosisHistoryReducer from './features/history/diagnosisHistorySlice';
 import memberReducer from './features/member/memberSlice';
 import commonReducer, { setAuthToken, setLoginInfo } from './features/common/commonSlice';
 import diagnosticReducer from './features/diagnostic/diagnosticSlice';
@@ -16,6 +16,7 @@ const store = configureStore({
     common: commonReducer,
     reservation: reservationReducer,
     diagnosis: diagnosisReducer,
+    diagnosisHistory: diagnosisHistoryReducer,
     notice: noticeReducer,
     diagnostic: diagnosticReducer,
     member: memberReducer,

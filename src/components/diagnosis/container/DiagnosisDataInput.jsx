@@ -33,18 +33,19 @@ const DiagnosisTextarea = styled.textarea`
 `;
 
 const DiagnosisDataPage = () => {
+  const { memberId } = useSelector((state) => state.common.loginInfo);
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const dispatch = useDispatch();
 
   const handleBlurOut = (e) => {
-    const { diag_id, member_id, patient_id } = patientInfo;
-    const dr_opinion = e.target.value;
+    const { diagId, patientId } = patientInfo;
+    const drOpinion = e.target.value;
     dispatch(
       setDiagnosisInfo({
-        diag_id,
-        member_id,
-        patient_id,
-        dr_opinion,
+        diagId,
+        memberId,
+        patientId,
+        drOpinion,
       }),
     );
   };
@@ -56,25 +57,25 @@ const DiagnosisDataPage = () => {
           <DiagnosisLabel>이름</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.patient_name} />
+          <SearchBase readOnly value={patientInfo.patientName} />
         </Grid>
         <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>생년월일</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.patient_birth} />
+          <SearchBase readOnly value={patientInfo.patientBirth} />
         </Grid>
         <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>성별</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.patient_gender} />
+          <SearchBase readOnly value={patientInfo.patientGender} />
         </Grid>
         <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>내원사유</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.visit_purpose} />
+          <SearchBase readOnly value={patientInfo.visitPurpose} />
         </Grid>
         <Grid item xs={12} md={3} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>의사소견</DiagnosisLabel>

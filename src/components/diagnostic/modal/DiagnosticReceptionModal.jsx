@@ -9,6 +9,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -16,6 +17,10 @@ import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
 import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
+import {
+  changeStatusToPendingWithMemberId,
+  diagnosticChangeStatus,
+} from 'apis/diagnosisInsepctionAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -45,6 +50,17 @@ const DiagnosticReceptionModal = () => {
   const isOpened = useSelector(
     (state) => state.diagnostic.modalStatus.reception,
   );
+  const diagTestId = useSelector((state) => state.diagnostic.currentDiagTestId);
+  const diagnosticList = useSelector(
+    (state) => state.diagnostic.currentDiagTestList,
+  );
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   const handleClose = () =>
     dispatch(
@@ -53,6 +69,33 @@ const DiagnosticReceptionModal = () => {
         status: false,
       }),
     );
+
+  const handleReceptionCancel = async () => {
+    try {
+      // 1. 진단 검사 상세의 상태를 대기로 바꾼다.
+      await diagnosticChangeStatus({
+        status: 'pending',
+        diagTestId,
+      });
+      // 2. 진단 검사의 상태를 대기로 바꾼다.
+      const sendInfo = diagnosticList.map(({ diagTestRecordId }) => ({
+        diagTestRecordId,
+        diagTestValue: 0,
+        inspectorMemberId: null,
+      }));
+
+      console.log(sendInfo);
+
+      await changeStatusToPendingWithMemberId(sendInfo);
+      handleAlert('success', '접수의 상태가 대기로 변경되었습니다.');
+      handleClose();
+      // 3. 끝났다고 알려준다.
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+  };
+
   return (
     <Fragment>
       <Modal
@@ -97,7 +140,7 @@ const DiagnosticReceptionModal = () => {
                   }}
                 >
                   <StyledTypography variant="h5" component="h5" weight={7}>
-                    정말로 진단 검사를
+                    정말로 진단 검사를{' '}
                   </StyledTypography>
                   <StyledTypography variant="h5" component="h5" weight={7}>
                     취소하시나요?
@@ -115,6 +158,7 @@ const DiagnosticReceptionModal = () => {
                         minWidth: '6rem',
                         marginRight: '0.5rem',
                       }}
+                      onClick={() => handleReceptionCancel()}
                     >
                       네
                     </Button>
@@ -125,6 +169,7 @@ const DiagnosticReceptionModal = () => {
                         minWidth: '6rem',
                         marginRight: '0.5rem',
                       }}
+                      onClick={handleClose}
                     >
                       아니요
                     </Button>

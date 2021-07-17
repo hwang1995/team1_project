@@ -86,6 +86,7 @@ const MobileDrawer = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
+  const { memberAuthority } = useSelector((state) => state.common.loginInfo);
   const isOpened = useSelector((state) => state.common.headerInfo.drawer);
 
   const [collapseInfo, setCollapseInfo] = useState({
@@ -143,55 +144,69 @@ const MobileDrawer = () => {
             </IconButton>
           </div>
           <PageTransition>
-            <div
-              className={clsx('content-area', {
-                'selected-item': isDiagnosis,
-              })}
-              onClick={() =>
-                handleHeaderCollapse({
-                  name: 'diagnosis',
-                  value: !diagnosis,
-                })
-              }
-            >
-              진료
-            </div>
-            <Collapse in={diagnosis}>
-              <div className="collapsed-container">
+            {memberAuthority !== 'ROLE_DIRECTOR' && (
+              <Fragment>
                 <div
-                  className={clsx('collapsed-item', {
-                    'text-underline': specificPath === 'reservation',
+                  className={clsx('content-area', {
+                    'selected-item': isDiagnosis,
                   })}
-                  onClick={() => goPage('/dashboard/reservation')}
+                  onClick={() =>
+                    handleHeaderCollapse({
+                      name: 'diagnosis',
+                      value: !diagnosis,
+                    })
+                  }
                 >
-                  <span>진료 접수</span>
+                  진료
                 </div>
-                <div
-                  className={clsx('collapsed-item', {
-                    'text-underline': specificPath === 'diagnosis',
-                  })}
-                  onClick={() => goPage('/dashboard/diagnosis')}
-                >
-                  <span>진료 등록</span>
-                </div>
-                <div
-                  className={clsx('collapsed-item', {
-                    'text-underline': specificPath === 'diagnostic',
-                  })}
-                  onClick={() => goPage('/dashboard/diagnostic')}
-                >
-                  <span>진료 검사 보기</span>
-                </div>
-                <div
-                  className={clsx('collapsed-item', {
-                    'text-underline': specificPath === 'diagnosis-history',
-                  })}
-                  onClick={() => goPage('/dashboard/diagnosis-history')}
-                >
-                  <span>진료 기록 보기</span>
-                </div>
-              </div>
-            </Collapse>
+                <Collapse in={diagnosis}>
+                  <div className="collapsed-container">
+                    {memberAuthority !== 'ROLE_INSPECTOR' && (
+                      <div
+                        className={clsx('collapsed-item', {
+                          'text-underline': specificPath === 'reservation',
+                        })}
+                        onClick={() => goPage('/dashboard/reservation')}
+                      >
+                        <span>진료 접수</span>
+                      </div>
+                    )}
+
+                    {!(
+                      memberAuthority === 'ROLE_NURSE' ||
+                      memberAuthority === 'ROLE_INSPECTOR'
+                    ) && (
+                      <div
+                        className={clsx('collapsed-item', {
+                          'text-underline': specificPath === 'diagnosis',
+                        })}
+                        onClick={() => goPage('/dashboard/diagnosis')}
+                      >
+                        <span>진료 등록</span>
+                      </div>
+                    )}
+
+                    <div
+                      className={clsx('collapsed-item', {
+                        'text-underline': specificPath === 'diagnostic',
+                      })}
+                      onClick={() => goPage('/dashboard/diagnostic')}
+                    >
+                      <span>진료 검사 보기</span>
+                    </div>
+                    <div
+                      className={clsx('collapsed-item', {
+                        'text-underline': specificPath === 'diagnosis-history',
+                      })}
+                      onClick={() => goPage('/dashboard/diagnosis-history')}
+                    >
+                      <span>진료 기록 보기</span>
+                    </div>
+                  </div>
+                </Collapse>
+              </Fragment>
+            )}
+
             <div
               className={clsx('content-area', {
                 'selected-item': isPatient,

@@ -1,48 +1,118 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   Grid,
-  Table,
+  IconButton,
+  Paper,
   TableContainer,
+  Table,
   TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   TablePagination,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { setDiagnosisHistoryDrawer } from 'redux/features/history/diagnosisSlice';
+import { motion } from 'framer-motion';
+import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
-import SearchBox from 'components/common/search/SearchBox';
-import StyledButton from 'components/common/button/StyledButton';
-import patientData from './patientData';
-import DiagnosisHistoryDrawer from './DiagnosisHistoryDrawer';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
+import { AiOutlineSearch } from 'react-icons/ai';
+import { GrPowerReset } from 'react-icons/gr';
+import { getPatientsList } from 'apis/patientAPI';
+import HashSpinner from 'components/common/spinner/HashSpinner';
+import DiagnosisHistoryTableHead from 'components/diagnosis-history/table/DiagnosisHistoryTableHead';
+import DiagnosisHistoryTableRow from 'components/diagnosis-history/table/DiagnosisHistoryTableRow';
+import PatientDiagnosisHistoryDrawer from 'components/diagnosis-history/drawer/PatientDiagnosisHistoryDrawer';
+import DiagnosisHistorySearchModal from 'components/diagnosis-history/modal/DiagnosisHistorySearchModal';
+import { setModalStatus } from 'redux/features/history/diagnosisHistorySlice';
 
 const DiagnosisHistoryPage = () => {
-  const [isOpened, setOpened] = useState(false);
-  const [searchVal, setSearchVal] = useState('');
   const dispatch = useDispatch();
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // Loading의 상태를 저장
+  const [isLoading, setLoading] = useState(true);
 
-  const matchData = patientData.filter((patientData) =>
-    patientData.patient_name.includes(searchVal),
+  // 환자의 정보를 저장 하기 위한 상태
+  const [patientList, setPatientList] = useState([]);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { hospitalCode } = useSelector((state) => state.common.loginInfo);
+  const currentPatientId = useSelector(
+    (state) => state.diagnosisHistory.currentPatientId,
   );
+  const [pager, setPager] = useState({
+    page: 0,
+    rowsPerPage: 10,
+  });
 
-  const showAll = (event) => {
-    setSearchVal('');
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
   };
 
+  const handleSearchModal = () => {
+    dispatch(
+      setModalStatus({
+        name: 'search',
+        status: true,
+      }),
+    );
+  };
+  const buttonSetting = {
+    rest: { scale: 1 },
+    hover: { scale: 1.2 },
+    pressed: { scale: 0.95 },
+  };
+
+  async function getPatientInfo(hospitalCode) {
+    try {
+      const result = await getPatientsList(hospitalCode);
+      setPatientList(result.data.data);
+      setLoading(false);
+    } catch (error) {
+      const { message } = error.response.data;
+      if (message !== undefined) {
+        handleAlert('error', message);
+        setLoading(false);
+        return;
+      }
+      handleAlert('error', error);
+      setLoading(false);
+      return;
+    }
+  }
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      getPatientInfo(hospitalCode);
+    }, 1000);
+  }, []);
+
   const handleChangePage = (e, newPage) => {
-    setPage(newPage);
+    setPager({
+      page: newPage,
+      ...pager,
+    });
   };
 
   const handleChangeRowsPerPage = (e) => {
-    setRowsPerPage(e.target.value);
-    setPage(0);
+    console.log('hello', e.target.value);
+    setPager({
+      ...pager,
+      rowsPerPage: parseInt(e.target.value, 10),
+    });
+  };
+
+  const handleReset = () => {
+    setLoading(true);
+    setPatientList([]);
+    setPager({ page: 0, rowsPerPage: 10 });
+    setTimeout(() => {
+      getPatientInfo(hospitalCode);
+    }, 1000);
   };
 
   return (
@@ -66,99 +136,111 @@ const DiagnosisHistoryPage = () => {
                   <span>진료 | </span>
                   <span>진료 기록 보기</span>
                 </TitleHeader>
-                <br />
-                <Grid container>
-                  <Grid item xs={9} lg={4}>
-                    <SearchBox
-                      setSearchVal={setSearchVal}
-                      placeholder="환자 이름을 입력하세요."
-                    />
-                  </Grid>
-                  <Grid item xs={3} lg={1}>
-                    <StyledButton
-                      bgColor="#1E4C7C"
-                      color="white"
-                      onClick={showAll}
-                      style={{ marginLeft: '10px', marginTop: '10px' }}
+                <div
+                  className="icon-area"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    borderTop: '1px solid rgba(0,0,0,0.08)',
+                    borderBottom: '1px solid rgba(0,0,0,0.08)',
+                    paddingTop: '0.5rem',
+                    paddingBottom: '0.5rem',
+                  }}
+                >
+                  <motion.div
+                    variants={buttonSetting}
+                    initial="rest"
+                    whileHover="hover"
+                    whileTap="pressed"
+                  >
+                    <IconButton
+                      type="button"
+                      size="small"
+                      style={{
+                        border: '1px solid rgba(0,0,0,0.12)',
+                        marginLeft: '0.5rem',
+                        marginRight: '0.5rem',
+                        padding: '0.5rem',
+                      }}
+                      onClick={() => handleSearchModal()}
                     >
-                      전체 환자 목록
-                    </StyledButton>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TableContainer style={{ marginTop: '1rem' }}>
-                      <Table style={{ minWidth: '600px', overflowX: 'scroll' }}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell component="td">순번</TableCell>
-                            <TableCell component="td">이름</TableCell>
-                            <TableCell component="td">생년월일</TableCell>
-                            <TableCell component="td">성별</TableCell>
-                            <TableCell component="td">연락처</TableCell>
-                            <TableCell component="td">주소</TableCell>
-                            <TableCell component="td"></TableCell>
-                          </TableRow>
-                        </TableHead>
+                      <AiOutlineSearch />
+                    </IconButton>
+                  </motion.div>
+
+                  <motion.div
+                    variants={buttonSetting}
+                    initial="rest"
+                    whileHover="hover"
+                    whileTap="pressed"
+                  >
+                    <IconButton
+                      type="button"
+                      size="small"
+                      style={{
+                        border: '1px solid rgba(0,0,0,0.12)',
+                        marginLeft: '0.5rem',
+                        marginRight: '0.5rem',
+                        padding: '0.5rem',
+                      }}
+                      onClick={() => handleReset()}
+                    >
+                      <GrPowerReset />
+                    </IconButton>
+                  </motion.div>
+                </div>
+
+                {isLoading && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100vw',
+                      height: '80vh',
+                    }}
+                  >
+                    <HashSpinner />
+                  </div>
+                )}
+
+                {!isLoading && patientList.length > 0 && (
+                  <Fragment>
+                    <TableContainer
+                      component={Paper}
+                      style={{
+                        marginTop: '1.5rem',
+                      }}
+                    >
+                      <Table style={{ minWidth: '930px', overflowX: 'scroll' }}>
+                        {/* TableHead */}
+                        <DiagnosisHistoryTableHead />
                         <TableBody>
-                          {matchData
+                          {patientList
                             .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage,
+                              pager.page * pager.rowsPerPage,
+                              pager.page * pager.rowsPerPage +
+                                pager.rowsPerPage,
                             )
-                            .map((data) => (
-                              <Fragment>
-                                <TableRow>
-                                  <TableCell component="th">
-                                    {data.patient_id}
-                                  </TableCell>
-                                  <TableCell component="th">
-                                    {data.patient_name}
-                                  </TableCell>
-                                  <TableCell component="th">
-                                    {data.patient_ssn}
-                                  </TableCell>
-                                  <TableCell component="th">
-                                    {data.patient_gender}
-                                  </TableCell>
-                                  <TableCell component="th">
-                                    {data.patient_tel}
-                                  </TableCell>
-                                  <TableCell component="th">
-                                    {data.patient_addr1}
-                                  </TableCell>
-                                  <TableCell component="th">
-                                    <StyledButton
-                                      bgColor="#1E4C7C"
-                                      color="white"
-                                      onClick={() =>
-                                        dispatch(
-                                          setDiagnosisHistoryDrawer(true),
-                                        )
-                                      }
-                                    >
-                                      상세 보기
-                                    </StyledButton>
-                                  </TableCell>
-                                </TableRow>
+                            .map((data, index) => (
+                              <Fragment key={data.patientId + 'Patients'}>
+                                <DiagnosisHistoryTableRow data={data} />
                               </Fragment>
                             ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
-                  </Grid>
-                </Grid>
-                <DiagnosisHistoryDrawer
-                  isOpened={isOpened}
-                  setOpened={setOpened}
-                />
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 15]}
-                  component="div"
-                  count={matchData.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onChangePage={handleChangePage}
-                  onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
+                    <TablePagination
+                      rowsPerPage={[10, 30, 50]}
+                      component="div"
+                      count={patientList.length}
+                      rowsPerPage={pager.rowsPerPage}
+                      page={pager.page}
+                    />
+                  </Fragment>
+                )}
+                {currentPatientId !== 0 && <PatientDiagnosisHistoryDrawer />}
+                <DiagnosisHistorySearchModal />
               </ContentContainer>
             </PageTransition>
           </Grid>

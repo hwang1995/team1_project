@@ -5,60 +5,58 @@ import ColorCircleContainer from 'components/common/container/ColorCircleContain
 
 const DiagnosticDetailTableRows = ({ data }) => {
   return (
-    <TableRow>
-      <TableCell size="small">{data.bundle_code}</TableCell>
-      <TableCell size="small">{data.pres_code}</TableCell>
-      <TableCell size="small">{data.bundle_name}</TableCell>
-      <TableCell size="small">{data.pres_name}</TableCell>
+    <TableRow hover>
+      <TableCell size="small">{data.bundleCode}</TableCell>
+      <TableCell size="small">{data.presCode}</TableCell>
+      <TableCell size="small">{data.bundleName}</TableCell>
+      <TableCell size="small">{data.presName}</TableCell>
       <TableCell size="small">
-        {data.diag_test_value === null && 'X'}{' '}
-        {data.diag_test_value !== null && data.diag_test_value}
+        {data.diagTestValue === 0.0 && 'X'}{' '}
+        {data.diagTestValue !== 0.0 && data.diagTestValue}
       </TableCell>
+      <TableCell size="small">{data.diagTestAvgValue}</TableCell>
       <TableCell size="small">
-        {' '}
-        {((data.pres_lower_limit + data.pres_upper_limit) / 2).toFixed(2)}{' '}
-        {data.pres_unit}
-      </TableCell>
-      <TableCell size="small">
-        {data.pres_specimen_name === '' && (
+        {data.presSpecimenName === '' && (
           <StyledTypography variant="subtitle2" component="h5" weight={9}>
             X
           </StyledTypography>
         )}
 
-        {data.pres_specimen_name !== '' && (
+        {data.presSpecimenName !== '' && (
           <StyledTypography variant="subtitle2" component="h5" weight={9}>
-            {data.pres_specimen_name}
+            {data.presSpecimenName}
           </StyledTypography>
         )}
       </TableCell>
 
       <TableCell size="small">
-        {data.pres_vessel === '' && (
+        {data.presVessel === '' && (
           <StyledTypography variant="subtitle2" component="h5" weight={9}>
             X
           </StyledTypography>
         )}
-        {data.pres_vessel !== '' && (
+        {data.presVessel !== '' && (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <ColorCircleContainer size={10} color={data.pres_vessel} />
+            <ColorCircleContainer size={10} color={data.presVessel} />
             <StyledTypography
               variant="subtitle2"
               component="h5"
               weight={9}
               style={{ marginLeft: '0.75rem' }}
             >
-              {data.pres_vessel}
+              {data.presVessel}
             </StyledTypography>
           </div>
         )}
       </TableCell>
-      <TableCell size="small">{data.member_name}</TableCell>
-      <TableCell size="small">{data.inspector_member_name}</TableCell>
+      <TableCell size="small">{data.doctorName}</TableCell>
+      <TableCell size="small">
+        {data.inspectorName ? data.inspectorName : '지정되지 않음'}
+      </TableCell>
       <TableCell size="small">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ColorCircleContainer size={10} color={data.diag_test_status} />
-          {data.diag_test_status === 'PENDING' && (
+          <ColorCircleContainer size={10} color={data.diagTestStatus} />
+          {data.diagTestStatus === 'DIAGNOSTIC_PENDING' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
@@ -68,7 +66,7 @@ const DiagnosticDetailTableRows = ({ data }) => {
               대기
             </StyledTypography>
           )}
-          {data.diag_test_status === 'REGISTER' && (
+          {data.diagTestStatus === 'DIAGNOSTIC_REGISTER' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
@@ -78,7 +76,7 @@ const DiagnosticDetailTableRows = ({ data }) => {
               접수
             </StyledTypography>
           )}
-          {data.diag_test_status === 'COMPLETED' && (
+          {data.diagTestStatus === 'DIAGNOSTIC_COMPLETED' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
