@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { Fragment, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {setGenderStatus} from "redux/features/member/memberSlice";
 import { Grid } from '@material-ui/core';
 import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
@@ -18,33 +18,37 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 const SelectedMan = () => {
 
   const dispatch = useDispatch();
-
+  const genderStatus = useSelector((state) => state.member.gender);
   // 성별 선택을 위한 상태 데이터
   const [selectedGender, setSelectedGender] = useState({
     male: false,
     female: false,
   });
 
+  useEffect(() => {
+     dispatch(setGenderStatus('male'));
+  }, [dispatch])
+
   // 남,여 클릭시 변경하기 위한 onChange
   const handleChange = (name) => {
-    console.log(name);
-    let balance = '';
-    if (name === 'male') {
-      balance = 'female';
-    } else {
-      balance = 'male';
-    }
+    // console.log(name);
+    // let balance = '';
+    // if (name === 'male') {
+    //   balance = 'female';
+    // } else {
+    //   balance = 'male';
+    // }
 
-    const value = selectedGender[name];
-    let balanceValue = selectedGender[balance];
-    if (!value === balanceValue) {
-      balanceValue = !balanceValue;
-    }
-    setSelectedGender({
-      ...selectedGender,
-      [name]: !value,
-      [balance]: balanceValue,
-    });
+    // const value = selectedGender[name];
+    // let balanceValue = selectedGender[balance];
+    // if (!value === balanceValue) {
+    //   balanceValue = !balanceValue;
+    // }
+    // setSelectedGender({
+    //   ...selectedGender,
+    //   [name]: !value,
+    //   [balance]: balanceValue,
+    // });
     dispatch(setGenderStatus(name));
   };
  
@@ -67,7 +71,7 @@ const SelectedMan = () => {
                   }}
                   onClick={() => handleChange('male')}
                 >
-                  {!selectedGender.male && (
+                  {genderStatus === 'female' && (
                     <Fragment>
                       <IoManOutline color="rgb(217,217,217)" size={64} />
                       <div
@@ -87,7 +91,7 @@ const SelectedMan = () => {
                       </div>
                     </Fragment>
                   )}
-                  {selectedGender.male && (
+                  {genderStatus === 'male' && (
                     <Fragment>
                       <IoManOutline color="rgb(244,213,51)" size={64} />
                       <div
@@ -119,7 +123,7 @@ const SelectedMan = () => {
                   }}
                   onClick={() => handleChange('female')}
                 >
-                  {!selectedGender.female && (
+                  {genderStatus === 'male' && (
                     <Fragment>
                       <IoWomanOutline color="rgb(217,217,217)" size={64} />
                       <div
@@ -139,7 +143,7 @@ const SelectedMan = () => {
                       </div>
                     </Fragment>
                   )}
-                  {selectedGender.female && (
+                  {genderStatus === 'female' && (
                     <Fragment>
                       <IoWomanOutline color="rgb(244,213,51)" size={64} />
                       <div
