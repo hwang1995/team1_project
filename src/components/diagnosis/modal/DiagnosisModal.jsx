@@ -1,4 +1,4 @@
-import React, { Fragment} from 'react';
+import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setDiagnosisModal,
@@ -20,6 +20,7 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import { registDiagnosisInfo } from 'apis/diagnosisAPI';
 import { useSnackbar } from 'notistack';
+import { sendMqttMessage } from 'apis/pushAPI';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -61,6 +62,8 @@ const DiagnosisModal = () => {
   const vitalInfo = useSelector(
     (state) => state.diagnosis.diagnosisInfo.vitalInfo,
   );
+  const { patientName } = useSelector((state) => state.diagnosis.patient);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const handleAlert = (variant, message) => {
@@ -106,6 +109,16 @@ const DiagnosisModal = () => {
         vital,
       };
       await registDiagnosisInfo(sendInfo);
+
+      if (diagnostics.length > 0) {
+        // push 메시지를 날려준다.
+        const sendMessageInfo = {
+          topic: `/${hospitalCode}/inspector`,
+          priority: 'success',
+          message: `${patientName}님이 진단 검사를 요청하셨습니다.`,
+        };
+        await sendMqttMessage(sendMessageInfo);
+      }
       handleAlert('success', '등록에 성공하였습니다.');
       dispatch(setActiveStep(activeStep + 1));
       dispatch(setDiagnosisModal(false));

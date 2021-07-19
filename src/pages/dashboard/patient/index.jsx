@@ -225,7 +225,7 @@ const PatientPage = () => {
                         >
                           <TableHead>
                             <TableRow>
-                              <TableCell component="td">Id</TableCell>
+                              <TableCell component="td">번호</TableCell>
                               <TableCell component="td">이름</TableCell>
                               <TableCell component="td">생년월일</TableCell>
                               <TableCell component="td">주소</TableCell>
