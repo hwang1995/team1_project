@@ -9,6 +9,12 @@ import {
 } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 
+/**
+ * * 목표 : 약품 처방 기록에 대한 테이블 행을 나타내기 위한 컴포넌트
+ * @param {object} data
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const CollapsibleMedicineRows = ({ data }) => {
   return (
     <TableContainer>

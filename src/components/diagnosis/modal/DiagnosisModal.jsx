@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진료를 실시하고 결과를 추가하기 전에 띄우는 모달이며, 여기에서 진행 버튼을 클릭한다면 서버에 결과를 넘어가게 하는 것이 목표
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisModal = () => {
   const classes = useStyles();
 

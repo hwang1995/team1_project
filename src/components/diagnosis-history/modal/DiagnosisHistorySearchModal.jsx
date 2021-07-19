@@ -49,13 +49,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진료 기록을 검색하기 위한 Modal
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisHistorySearchModal = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
   const [isLoading, setLoading] = useState(true);
+  // 가져온 환자의 리스트를 저장하기 위한 상태
   const [patientList, setPatientList] = useState([]);
+
+  // 선택된 환자의 정보를 저장하기 위한 상태
   const [selectedPatientInfo, setSelectedPatientInfo] = useState({});
   const [searchVal, setSearchVal] = useState('');
   const { hospitalCode } = useSelector((state) => state.common.loginInfo);
@@ -83,6 +91,10 @@ const DiagnosisHistorySearchModal = () => {
     setSearchVal('');
   };
 
+  /**
+   * * 환자의 정보를 가져오기 위한 Async function
+   * @param {string} hospitalCode
+   */
   async function getPatientsInfo(hospitalCode) {
     try {
       const result = await getPatientsList(hospitalCode);
@@ -104,6 +116,11 @@ const DiagnosisHistorySearchModal = () => {
     }
   }
 
+  /**
+   * * 환자의 이름으로 환자의 정보를 가져오기 위한 Async function
+   * @param {string} patientInfo
+   * @returns {object} result
+   */
   async function getPatientsInfoByName(patientInfo) {
     try {
       const result = await searchPatientInfoByName(patientInfo);
@@ -148,6 +165,9 @@ const DiagnosisHistorySearchModal = () => {
     { field: 'patientPostal', headerName: '우편번호', width: 140 },
   ];
 
+  /**
+   * * 검색어(searchVal)가 바뀌는 effect가 발생 시에 병원코드와 환자의 이름을 가져오기 위한 side-effect
+   */
   useEffect(() => {
     if (searchVal === '') {
       return;
@@ -162,8 +182,12 @@ const DiagnosisHistorySearchModal = () => {
     setTimeout(() => {
       getPatientsInfoByName(patientInfo);
     }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal]);
 
+  /**
+   * * Drawer가 열리는 effect가 발생할 때에 환자의 정보를 가져오기 위한 side-effect
+   */
   useEffect(() => {
     if (isOpened) {
       setLoading(true);
@@ -172,6 +196,7 @@ const DiagnosisHistorySearchModal = () => {
         getPatientsInfo(hospitalCode);
       }, 1000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
 
   const handleReset = () => {

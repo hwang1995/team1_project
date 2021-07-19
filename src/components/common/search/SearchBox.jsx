@@ -20,6 +20,14 @@ const SearchBase = styled(InputBase)`
   font-weight: 700;
 `;
 
+/**
+ * * 검색어를 입력하기 위한 컴포넌트
+ * @param {function} setSearchVal
+ * @param {string} placeholder
+ * @param {boolean} noRemove 
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
   const [inputVal, setInputVal] = useState('');
   const { enqueueSnackbar } = useSnackbar();
@@ -33,6 +41,7 @@ const SearchBox = ({ setSearchVal, placeholder, noRemove }) => {
     setInputVal(event.target.value);
   };
 
+  // 사용자가 Enter키를 눌렀을 시에 실행할 이벤트 함수
   const handleKeyPress = (event) => {
     const { key } = event;
     if (key === 'Enter' && inputVal) {

@@ -32,11 +32,20 @@ const DiagnosisTextarea = styled.textarea`
   font-family: 'Noto Sans KR';
 `;
 
+/**
+ * * 진료의 정보를 보여주기 위한 Template 컴포넌트
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisDataPage = () => {
+  // Redux store에 저장되어 있는 회원 정보
   const { memberId } = useSelector((state) => state.common.loginInfo);
+
+  // Redux store에 저장되어 있는 환자의 정보
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const dispatch = useDispatch();
 
+  // 정보를 입력시에 포인팅을 다른곳으로 옮겼을 시에 작동하는 이벤트 함수
   const handleBlurOut = (e) => {
     const { diagId, patientId } = patientInfo;
     const drOpinion = e.target.value;

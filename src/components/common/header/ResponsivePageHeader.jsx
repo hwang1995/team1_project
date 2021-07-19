@@ -116,6 +116,7 @@ const SidebarContainer = styled.div`
 /**
  * * 목표 : 반응형 웹 헤더를 제공
  * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
  */
 const ResponsivePageHeader = () => {
   const { breakpoint } = useWindowSize();

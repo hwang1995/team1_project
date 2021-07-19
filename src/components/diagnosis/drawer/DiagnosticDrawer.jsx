@@ -13,16 +13,32 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import DiagnosticItem from '../container/DiagnosticItem';
 import { searchDiagnosticList } from 'apis/searchAPI';
 import HashSpinner from 'components/common/spinner/HashSpinner';
+
+/**
+ * * 목표 : 진단 검사 Drawer 컴포넌트
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticDrawer = () => {
+  // 해상도 Breakpoint를 가져오기 위한 Custom Hook
   const { breakpoint } = useWindowSize();
+
+  // 검색어를 저장하기 위한 상태
   const [searchVal, setSearchVal] = useState('');
+
+  // Spinner를 띄울지 결정하는 상태
   const [isLoading, setLoading] = useState(false);
+
+  // 검색 결과 저장하기 위한 상태
   const [searchData, setSearchData] = useState([]);
   const dispatch = useDispatch();
+
+  // 진단 검사 Drawer의 상태
   const isOpened = useSelector(
     (state) => state.diagnosis.drawerStatus.diagnostic,
   );
 
+  // 진단 검사의 상태
   const diagnosticInfo = useSelector((state) => state.diagnosis.diagnosticInfo);
 
   const toggleDrawer = (open) => (e) => {
@@ -46,6 +62,7 @@ const DiagnosticDrawer = () => {
     }
     setLoading(false);
 
+    // 진단 검사를 가져오기 위한 함수
     async function getDiagnosticList(searchVal) {
       try {
         const result = await searchDiagnosticList(searchVal);
@@ -58,14 +75,9 @@ const DiagnosticDrawer = () => {
       }
     }
     getDiagnosticList(searchVal);
-    // setTimeout(() => {
-    //   setLoading(true);
-    //   const filteredData = diagnosticData.filter(({ bundle_name }) => {
-    //     return bundle_name.includes(searchVal);
-    //   });
-    //   dispatch(setSearchDiagnosticInfo(filteredData));
-    // }, 1000);
+
     console.log('검색 창에서 searchVal의 값이 변경되었습니다.', searchVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal, dispatch]);
 
   return (

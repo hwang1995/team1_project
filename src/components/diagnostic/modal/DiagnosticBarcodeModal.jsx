@@ -43,8 +43,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진단 검사에서 바코드를 보고 출력하기 위한 Modal 컴포넌트 (Template)
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticBarcodeModal = () => {
   const classes = useStyles();
+
+  // React-print의 instance를 저장하기 위한 Reference
   const componentRef = useRef();
 
   const dispatch = useDispatch();
@@ -64,7 +71,10 @@ const DiagnosticBarcodeModal = () => {
 
   const loginInfo = useSelector((state) => state.common.loginInfo);
 
+  // 진단 검사의 정보를 토대로 바코드 이미지의 상태를 저장하기 위함.
   const [barcodeList, setBarcodeList] = useState([]);
+
+  // 바코드 생성이 완료 되었는지의 상태를 저장하기 위함.
   const [isCompleted, setCompleted] = useState(false);
 
   const handlePrint = useReactToPrint({
@@ -115,10 +125,14 @@ const DiagnosticBarcodeModal = () => {
       }),
     );
 
+  /**
+   * Modal이 열렸을 시에 (effect) 바코드를 생성하고 보여주기 위한 side-effect
+   */
   useEffect(() => {
     if (isOpened) {
       setCompleted(false);
 
+      // eslint-disable-next-line array-callback-return
       diagnosticList.map(({ presCode }, index) => {
         const canvas = document.createElement('canvas');
         const today = moment(new Date()).format('YYMMDD');
@@ -145,6 +159,7 @@ const DiagnosticBarcodeModal = () => {
       setCompleted(true);
       // setBarcodeUrl(canvas.toDataURL('image/png'));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
   return (
     <Fragment>

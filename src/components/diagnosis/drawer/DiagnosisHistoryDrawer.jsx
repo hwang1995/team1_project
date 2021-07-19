@@ -22,11 +22,23 @@ import CollapsibleRows from '../container/CollapsibleRows';
 import { showDiagnosisHistoryByPatientId } from 'apis/diagnosisAPI';
 import HashSpinner from 'components/common/spinner/HashSpinner';
 
+/**
+ * * 목표 : 진료 기록을 보여주기 위한 Drawer 컴포넌트
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisHistoryDrawer = () => {
+  // 해상도 breakpoint를 설정하기 위한 Custom Hook
   const { breakpoint } = useWindowSize();
+
+  // Spinner를 띄우기 위한 상태
   const [isLoading, setLoading] = useState(false);
+
+  // 진료 기록을 저장하기 위한 상태
   const [historyData, setHistoryData] = useState([]);
   const dispatch = useDispatch();
+
+  // 진료 Drawer의 상태
   const isOpened = useSelector(
     (state) => state.diagnosis.drawerStatus.diagnosisHistory,
   );
@@ -37,6 +49,8 @@ const DiagnosisHistoryDrawer = () => {
       variant,
     });
   };
+
+  // Redux store에 저장되어있는 환자 정보
   const patientInfo = useSelector((state) => state.diagnosis.patient);
 
   const toggleDrawer = (open) => (e) => {
@@ -46,6 +60,9 @@ const DiagnosisHistoryDrawer = () => {
     dispatch(setDiagnosisHistoryDrawer(open));
   };
 
+  /**
+   * * 목표 : isOpened가 바꼈을 시에 작동하는 side-effect
+   */
   useEffect(() => {
     if (isOpened) {
       const { patientId } = patientInfo;
@@ -67,6 +84,7 @@ const DiagnosisHistoryDrawer = () => {
       setHistoryData([]);
       setLoading(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
 
   return (

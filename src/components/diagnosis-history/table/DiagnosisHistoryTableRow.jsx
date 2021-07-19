@@ -7,6 +7,12 @@ import {
   setPatientId,
 } from 'redux/features/history/diagnosisHistorySlice';
 
+/**
+ * * 진료 기록의 정보를 보여주기 위한 테이블 행 컴포넌트 (Template)
+ * @param {object} data
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisHistoryTableRow = ({ data }) => {
   const dispatch = useDispatch();
 

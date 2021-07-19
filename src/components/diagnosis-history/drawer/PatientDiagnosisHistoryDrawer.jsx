@@ -22,6 +22,11 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import CollapsibleRows from 'components/diagnosis/container/CollapsibleRows';
 import HashSpinner from 'components/common/spinner/HashSpinner';
 
+/**
+ * * 환자가 받은 진료 기록을 보여주기 위한 Drawer
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const PatientDiagnosisHistoryDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [isLoading, setLoading] = useState(false);
@@ -54,6 +59,11 @@ const PatientDiagnosisHistoryDrawer = () => {
     );
   };
 
+  /**
+   * * 환자의 식별자 (ID)로 진료 기록을 가져오기 위한 Async function
+   * @param {number} patientId 
+   * @returns {object} result
+   */
   async function getDiagnosisHistory(patientId) {
     try {
       const result = await showDiagnosisHistoryByPatientId(patientId);
@@ -71,6 +81,9 @@ const PatientDiagnosisHistoryDrawer = () => {
     }
   }
 
+  /**
+   * * Drawer가 열렸을 시에 (Effect 발생) 진료 기록을 가져오기 위한 side-effect
+   */
   useEffect(() => {
     if (isOpened) {
       setTimeout(() => {
@@ -82,6 +95,7 @@ const PatientDiagnosisHistoryDrawer = () => {
       setHistoryData([]);
       setLoading(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
 
   return (

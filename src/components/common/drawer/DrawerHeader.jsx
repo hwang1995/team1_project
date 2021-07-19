@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+/**
+ * Drawer의 헤더를 설정하기 위한 컴포넌트
+ * @author SUNG WOOK HWANG
+ */
 const DrawerHeader = styled.div`
   display: flex;
   position: sticky;

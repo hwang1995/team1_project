@@ -119,7 +119,7 @@ const AuthModal = () => {
     const email = memberEmail.value;
     const password = memberPw.value;
     try {
-      const { data, status } = await getAuthentication({
+      const { data } = await getAuthentication({
         hospitalCode: hospital,
         memberEmail: email,
         memberPw: password,
@@ -153,7 +153,7 @@ const AuthModal = () => {
     const password = memberPw.value;
     if (key === 'Enter' && hospital && email && password) {
       try {
-        const { data, status } = await getAuthentication({
+        const { data } = await getAuthentication({
           hospitalCode: hospital,
           memberEmail: email,
           memberPw: password,

@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+/**
+ * 색상이 포함된 정사각형 컴포넌트 (Atom)
+ * 사용법
+ * <ColorCircleContainer size={120} color="DIAGNOSTIC_PENDING"/>
+ * <ColorCircleContainer size={120} color="#FFFFFF"/>
+ * @author SUNG WOOK HWANG
+ */
 const ColorCircleContainer = styled.div`
   width: ${({ size }) => size + 'px'};
   height: ${({ size }) => size + 'px'};
