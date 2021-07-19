@@ -23,9 +23,9 @@ import 'tui-time-picker/dist/tui-time-picker.css';
 // Custom Components by Team1
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
-import ReservationDrawer from 'components/reservation/drawer/Insert/ReservationDrawer';
+import ReservationDrawer from 'components/reservation/drawer/insert/ReservationDrawer';
 import ReservationReadDrawer from 'components/reservation/drawer/read/ReservationReadDrawer';
-import SearchReservation from 'components/reservation/drawer/SearchReservation';
+import SearchReservation from 'components/reservation/drawer/searchReservation';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
 import ClockSpinner from 'components/common/spinner/ClockSpinner';
@@ -187,6 +187,7 @@ const ReservationPage = () => {
         setReservationData(data.data);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
     // 의사 데이터 가져오기
@@ -204,6 +205,7 @@ const ReservationPage = () => {
         reservationListData(data.data[0].memberId);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       } 
     };
  
@@ -229,6 +231,7 @@ const ReservationPage = () => {
         setReservationData(data.data);
       } catch (error) {
          console.log(error);
+         setLoading(false)
       }
     };
 
