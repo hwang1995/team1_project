@@ -95,6 +95,7 @@ export const registerPatientInfo = async (patientInfo) => {
  * @author SI HYUN PARK
  */
 export const modifyPatient = async (updatePatientInfo) => {
+  console.log("update", updatePatientInfo)
   return await axios.put('/patient', updatePatientInfo);
 };
 

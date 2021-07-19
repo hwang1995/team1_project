@@ -3,8 +3,8 @@ import { Grid } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
-import moment from 'moment';
 
+// 검색된 예약 데이터에 대한 상세정보를 볼 수 있는 컴포넌트
 const Content = ({
   readPatient,
   reservationTime,

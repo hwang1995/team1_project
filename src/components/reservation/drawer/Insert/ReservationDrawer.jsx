@@ -27,7 +27,6 @@ doctorInfo: 의사에 관한 데이터이다
 const ReservationDrawer = ({
   isOpened,
   setOpened,
-  setClosed,
   reservationTime,
   doctorInfo,
   registerPageResult,
@@ -56,7 +55,8 @@ const ReservationDrawer = ({
   });
  
   /*
-    false: 검색어 (SearchBox) true: 해당내용이 맞습니까? 상태에 따라 컴포넌트 구성도가 달라짐
+    false일때 검색어 (SearchBox), true일때 해당내용이 맞습니까? 
+    상태에 따라 컴포넌트 구성도가 달라짐
     검색: checkChange
   */
   const [checkChange, setCheckChange] = useState(false);
@@ -69,7 +69,6 @@ const ReservationDrawer = ({
     if (!open) {
       dispatch(changePage('INFO'));
     }
-    setClosed(true);
     setOpened(open);
   };
 
@@ -82,7 +81,6 @@ const ReservationDrawer = ({
   */
   const handleChangeCloseClick = () => {
     setOpened(false);
-    setClosed(true);
     dispatch(changePage('INFO'));
   };
 
@@ -112,13 +110,11 @@ const ReservationDrawer = ({
     검색: patientInfoSetting
   */
   const setPatientInfo = (patient) => {
-    const [year, month, date ] = patient.patientBirth;
      setPatient({
       patientId: patient.patientId,
       patientName: patient.patientName,
       patientGender: patient.patientGender,
-      patientBirth: patient.patientBirth,
-      patientBirthContent: year+"년 " + month+"월 " + date +"일"
+      patientBirth: patient.patientBirth
     });
   };
 
@@ -197,7 +193,6 @@ const ReservationDrawer = ({
               patientInfo={patientInfo}
               setOpened={setOpened}
               setCheckChange={setCheckChange}
-              setClosed={setClosed}
               setAddDisplay={setAddDisplay}
             />
           ) }

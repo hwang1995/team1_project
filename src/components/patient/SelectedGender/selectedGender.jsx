@@ -6,16 +6,26 @@ import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
 import StyledContainer from 'components/common/container/StyledContainer';
 import StyledTypography from 'components/common/typography/StyledTypography';
 
+/**
+ * 이 페이지 컴포넌트는 환자의 성별을 작성한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * Sider
+ * * Header
+ * * 환자 관리 (PatientSearch, Table, ColoredButton)
+ * @returns {JSX.Element}
+ * @author SI HYUN PARK
+ */
 const SelectedMan = () => {
 
   const dispatch = useDispatch();
 
+  // 성별 선택을 위한 상태 데이터
   const [selectedGender, setSelectedGender] = useState({
     male: false,
     female: false,
   });
 
-
+  // 남,여 클릭시 변경하기 위한 onChange
   const handleChange = (name) => {
     console.log(name);
     let balance = '';

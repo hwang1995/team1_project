@@ -26,14 +26,18 @@ function ReservationPatientListContainer(props) {
   const loginInfo = useSelector((state) => state.common.loginInfo);
   const dispatch = useDispatch();
 
-  /*
-    filter를 통해 keyword 와 같은 환자 데이터들을 세팅할 상태 데이터이다.
-  */
+  // 키원드를 통해 얻은 데이터를 담을 상태 데이터
   const [searchResults, setResult] = useState([]);
+
+  // clockSpinner에 쓰일 boolean
   const [isLoading, setLoading] = useState(true);
+
+  // 검색결과 데이터가 존재한다면, 1로 세팅 존재하지않는다면 2로 세팅하여 setLoading 값에 대한 변화를줌, 65번쨰줄 useEffect 참조
   const [page, setPage] = useState(0);
+
+
   /*
-    keyword 값이 변경될 때 마다, filter를 통해 검색어에 맞는 환자데이터를 
+    keyword 값이 변경될 때 마다, keyword에 맞는 환자데이터를 가져온다
     갖고오는 부분이다.
   */
   useEffect(() => {
@@ -60,6 +64,10 @@ function ReservationPatientListContainer(props) {
    }
   }, [keyword, loginInfo]); // 바뀌는 값 기준
 
+/*
+  page=2 일때는 환자데이터가 존재, page = 0 일때는 환자데이터 가져오기시작, page=1 때는 환자데이터가 존재하지 않음
+  0일때는 spinner를 실행하기위해서, 그 외에는 spinner를 멈추기 위해서 세팅을 함
+*/
   useEffect(() => {
     if(page>0){
       setLoading(false);
@@ -96,6 +104,7 @@ function ReservationPatientListContainer(props) {
     [dispatch, closeClick, setPatientInfo],
   );
 
+// clockspinner 컴포넌트
  const clockSpinner = () => {
     return (
       <div
@@ -111,6 +120,7 @@ function ReservationPatientListContainer(props) {
     );
   };
 
+// 환자결과 값을 리스트로 나타내는 컴포넌트
   const listContent = () => {
     return (
       <div>

@@ -15,8 +15,17 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import AddressModal from '../modal/Modal';
 import SelectedUpdateGender from '../SelectedGender/selectedUpdateGender';
-import { modifyPatient, deletePatient } from 'apis/patientAPI';
+import { modifyPatient } from 'apis/patientAPI';
 
+/**
+ * 이 페이지 컴포넌트는 환자를 수정하기 위해 작성한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * Sider
+ * * Header
+ * * 환자 관리 (PatientSearch, Table, ColoredButton)
+ * @returns {JSX.Element}
+ * @author SI HYUN PARK
+ */
 const PatientUpdateDrawer = ({
   isUpdateOpened,
   setUpdateOpened,
@@ -25,6 +34,9 @@ const PatientUpdateDrawer = ({
 }) => {
   const { breakpoint } = useWindowSize();
 
+  // 생년월일을 수정하기 위해 사용할 상태 데이터
+  const [keyboardDate, handleKeyDateChange] = useState(new Date());
+  // 성별을 수정하기 위해 사용할 리덕스
   const gender = useSelector((state) => state.member.gender);
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -35,47 +47,46 @@ const PatientUpdateDrawer = ({
     });
   };
 
+  // 주소 API 창을 띄울 모달 창 상태 데이터
   const [isUpdateModalOpened, setUpdateModalOpened] = useState(false);
+
+  // 수정 완료 클릭시 다시 한번 수정 하시겠습니까? 라는 컴포넌트를 띄어줄 상태 데이터
   const [changeView, setChange] = useState(false);
-  const [removeOrUpdate, setStatus] = useState('');
+
+  //환자의 정보를 담을 상태 데이터
   const [patientInfo, setPatientInfo] = useState({});
 
   useEffect(() => {
     if (breakpoint !== readPatientData) {
       console.log('Current breakpoint is', breakpoint);
     }
-  }, [breakpoint]);
+  }, [breakpoint, readPatientData]);
 
+
+  // Drawer창이 열릴 때마다 props를 통해 받아온 readPatientData를 patientInfo와 keyboardDate에 세팅하는 부분
   useEffect(() => {
     if (isUpdateOpened) {
-      const [year, month, date] = readPatientData.patientBirth;
-      setPatientInfo({
-        ...readPatientData,
-        patientBirth: year + '/' + month + '/' + date,
-      });
+       handleKeyDateChange(readPatientData.patientBirth);
+       setPatientInfo(readPatientData);
     }
-  }, [readPatientData, isUpdateOpened]);
+  }, [readPatientData, isUpdateOpened, patientInfo.patientBirth]);
 
   const toggleDrawer = (open) => (e) => {
     if (e && e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
       setPatientInfo({});
       return;
     }
-    setStatus('');
     setChange(false);
     dispatch(setGenderStatus(''));
     setUpdateOpened(open);
   };
 
+  // 수정버튼 클릭시 일어나는 이벤트
   const updateHandleClick = async () => {
-    const [year, month, date] = readPatientData.patientBirth;
-   
-    const getBirth = year + "/" + month + "/" + date;
-    const birth = moment(getBirth).format('yyyy/MM/DD');
-    const updateBirth = moment(patientInfo.patientBirth).format('yyyy/MM/DD');
+    // 유효성검사
     if (
       patientInfo.patientName !== readPatientData.patientName ||
-      updateBirth !== birth ||
+      keyboardDate !== readPatientData.patientBirth ||
       patientInfo.patientAddr1 !== readPatientData.patientAddr1 ||
       patientInfo.patientPostal !== readPatientData.patientPostal ||
       patientInfo.patientTel !== readPatientData.patientTel ||
@@ -84,24 +95,26 @@ const PatientUpdateDrawer = ({
       patientInfo.patientAddr2 !== readPatientData.patientAddr2 ||
       patientInfo.patientGender !== gender
     ) {
+      // 수정하는 부분
       try {
         patientInfo.patientGender = gender;
-        patientInfo.patientBirth = moment(patientInfo.patientBirth).format('yyyy-MM-DD');
+        patientInfo.patientBirth = moment(keyboardDate).format('yyyy-MM-DD');
+
         setPatientInfo(patientInfo);
         const { data } = await modifyPatient(patientInfo);
+        console.log(data.data)
         handleAlert('success', '내용이 변경 되었습니다.');
-      } catch (error) {
-        handleAlert('error', '내용이 변경되지 않았습니다.');
-      } finally {
-        setStatus('update');
         dispatch(setGenderStatus(''));
         setChange(true);
+      } catch (error) {
+        handleAlert('error', '내용이 변경되지 않았습니다.');
       }
     } else {
       handleAlert('error', '변경된 사항이 없습니다.');
     }
   };
 
+  // 주소버튼 클릭시 주소 모달에 해당 함수를 넘겨 주소 정보를 담아오는 부분
   const addressClick = ({ fullAddress, postalcode }) => {
     setPatientInfo({
       ...patientInfo,
@@ -112,7 +125,7 @@ const PatientUpdateDrawer = ({
   };
 
 
-
+  // 수정된 정보를 담는 부분
   const updateHandleChange = (event) => {
     setPatientInfo({
       ...patientInfo,
@@ -120,33 +133,30 @@ const PatientUpdateDrawer = ({
     });
   };
 
+  // 생년월일을 변경하는 부분
   const dateUpdateHandleChange = (date) => {
-    const birth = moment(date).format('YYYY-MM-DD');
-    setPatientInfo({
-      ...patientInfo,
-      patientBirth: birth,
-    });
+    console.log('Date', keyboardDate);
+    const birth = moment(date).format('yyyy/MM/DD');
+    handleKeyDateChange(birth);
   };
 
+  // 클릭시 주소 모달창이 열린다
   const findAddressHandleClick = () => {
     setUpdateModalOpened(true);
   };
 
+  // 클릭시 드로어가 다친다
   const closeHandleClick = () => {
-    setStatus('');
     setChange(false);
     dispatch(setGenderStatus(''));
     setUpdateOpened(false);
   };
 
+  // 메인함수에서 값을 다시 받아오기 위해 실해하는 함수
   const BackTotheMain = () => {
-    if (removeOrUpdate === 'update') {
-      setStatus('');
       setDisplay(true);
       setUpdateOpened(false);
       setChange(false);
-    }
-  
   };
 
   return (
@@ -235,7 +245,7 @@ const PatientUpdateDrawer = ({
                   openTo="year"
                   format="yyyy/MM/DD"
                   views={['year', 'month', 'date']}
-                  value={patientInfo.patientBirth}
+                  value={keyboardDate}
                   onChange={dateUpdateHandleChange}
                 />
               </Grid>
@@ -367,7 +377,6 @@ const PatientUpdateDrawer = ({
                   </StyledButton>
                 </div>
               </Grid>
-             
             </Grid>
           ) : (
             <div style={{ textAlign: 'center' }}>
@@ -376,8 +385,7 @@ const PatientUpdateDrawer = ({
               </div>
               <div>
                 <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
-                  {removeOrUpdate === 'update' && '수정이 완료되었습니다.'}
-                  {removeOrUpdate === 'remove' && '삭제가 완료되었습니다.'}
+                    수정이 완료되었습니다.
                 </h1>
               </div>
               <div>
@@ -394,6 +402,8 @@ const PatientUpdateDrawer = ({
           )}
         </ResponsiveContainer>
       </SwipeableDrawer>
+
+      {/* 주소 APi 모달 */}
       <AddressModal
         isModalOpened={isUpdateModalOpened}
         setModalOpened={setUpdateModalOpened}

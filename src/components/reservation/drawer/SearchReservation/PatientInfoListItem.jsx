@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect} from 'react';
+import React, { Fragment} from 'react';
 import moment from 'moment';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
