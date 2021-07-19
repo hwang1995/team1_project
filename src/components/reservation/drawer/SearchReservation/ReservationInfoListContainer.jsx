@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import Content from './Content';
 import UpdateQuestion from './Content/UpdateQuestion';
@@ -30,7 +30,7 @@ const ReservationInfoListContainer = ({
   setPageResult,
   setAddDisplay
 }) => {
-  const dispatch = useDispatch();
+  
   const { enqueueSnackbar } = useSnackbar();
   const loginInfo = useSelector((state) => state.common.loginInfo);
 
@@ -87,6 +87,7 @@ const ReservationInfoListContainer = ({
       };
       try{
         const { data } = await modifyReservationInfo(updateInfo);
+        console.log(data.data);
          handleAlert('success', '내용이 변경되었습니다');
         setCheckPage('UPDATE');
         setVisible(true);
@@ -102,6 +103,7 @@ const ReservationInfoListContainer = ({
   const deleteReservationInfo = async(id) => {
     try{
       const { data } = await removeReservationInfo(id);
+      console.log(data.data);
       handleAlert('success', '예약이 취소되었습니다.');
       setCheckPage('REMOVE');
       setVisible(true);

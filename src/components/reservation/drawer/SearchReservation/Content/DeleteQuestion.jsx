@@ -1,5 +1,6 @@
 import StyledButton from "components/common/button/StyledButton";
 
+//삭제가 완료되었을때 나타내는 컴포넌트
 const DeleteQuestion = ({
   setCheckPage,
   setVisible,

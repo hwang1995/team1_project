@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { RiUserSearchFill } from 'react-icons/ri';
-//import useWindowSize from 'hooks/useWindowSize';
 
 // Toast UI Calendar Library & monent.js
 import Calendar from '@toast-ui/react-calendar';
@@ -29,7 +28,6 @@ import ReservationReadDrawer from 'components/reservation/drawer/read/Reservatio
 import SearchReservation from 'components/reservation/drawer/SearchReservation';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
-import { useSnackbar } from 'notistack';
 import ClockSpinner from 'components/common/spinner/ClockSpinner';
 
 
@@ -53,17 +51,8 @@ const ReservationPage = () => {
    7) readReservationData (예약데이터 읽기)
   */
 
-  /*
-    알림 설정 부분
-   */
-  const { enqueueSnackbar } = useSnackbar();
+  
 
-  /*
-  리덕스에 있는 예약 정보관련 데이터 상태를 갖고 오는 부분
-  검색: reservationData
-  */
-
-  // const { breakpoint } = useWindowSize();
 
   /*
   리덕스에 있는 로그인 정보를 가져오는 부분
@@ -86,7 +75,6 @@ const ReservationPage = () => {
 
   // 검색: Drawer-add
   const [isOpened, setOpened] = useState(false);
-  const [isClosed, setClosed] = useState(false);
   // 검색: Drawer-update
   const [readOpened, setReadOpened] = useState(false);
   // 검색: Drawer-search
@@ -98,6 +86,8 @@ const ReservationPage = () => {
   // errorText
   const [errorText, setError] = useState(false);
 
+  // 추가,수정,삭제를 완료후 true로 세팅하게 되면, 캘린더 컴포넌트에서는 addDisplay값이 변경될 때마다 예약데이터를 다시 받아올 수 있도록 세팅된 상태 데이터이다.
+  // 220번째 useEffect 내용 참조
   const [addDisplay, setAddDisplay] = useState(false);
 
   /*
@@ -143,9 +133,7 @@ const ReservationPage = () => {
   */
   const [readPatient, setReadPatient] = useState({});
 
-  /*
-    수정, 삭제, 추가, 클릭에 대한 식별 상태
-  */
+ 
  
 
   // 캘린더 헤더 부분에 위클리 데이트세팅, 초기값 세팅부분
@@ -172,7 +160,7 @@ const ReservationPage = () => {
 
   
 
- 
+ // toast ui calendar dom을 가져오기 위한 useEffect
   useEffect(() => {
     setCalInstance(calendarRef.current.getInstance());
   }, [calendarRef])
@@ -182,9 +170,12 @@ const ReservationPage = () => {
  
   /*
   의사에 대한 정보를 불러오기 위해 useEffect 사용
+  의사데이터 가져온 후 -> 의사 정보 세팅(setDoctorListInfo) -> select에 의사 default 값 세팅(selectOnChange)
+  -> reservationListData를 통해 예약 데이터 가져오기
   */
 
   useEffect(() => {
+    // 예약 데이터 가져오기
     const reservationListData = async (memberId) => {
       try {
         const { data } = await getReservationInfo({
@@ -192,11 +183,13 @@ const ReservationPage = () => {
           memberId,
           hospitalCode: loginInfo.hospitalCode,
         });
+        console.log(data.data);
         setReservationData(data.data);
       } catch (error) {
-        const { message } = error.response.data;
+        console.log(error);
       }
     };
+    // 의사 데이터 가져오기
     const doctorData = async () => {
       try {
         const { data } = await getDoctorInfo(loginInfo.hospitalCode);
@@ -210,7 +203,7 @@ const ReservationPage = () => {
         selectOnChange(data.data[0].memberId);
         reservationListData(data.data[0].memberId);
       } catch (error) {
-        const { message } = error.response.data;
+        console.log(error);
       } 
     };
  
@@ -221,6 +214,9 @@ const ReservationPage = () => {
   
 
 
+  /*
+    추가, 수정, 삭제를 완료했을때, 수정된 값을 다시 받아오기 위한 useEffect 
+  */
   useEffect(() => {
   
       const reservationListData = async () => {
@@ -232,7 +228,7 @@ const ReservationPage = () => {
         });
         setReservationData(data.data);
       } catch (error) {
-        const { message } = error.response.data;
+         console.log(error);
       }
     };
 
@@ -241,8 +237,13 @@ const ReservationPage = () => {
       setAddDisplay(false);
       reservationListData();
     }
-  }, [addDisplay,titleDate,doctorInfo, loginInfo])
-  
+  }, [addDisplay,titleDate,doctorInfo, loginInfo]);
+
+
+  /*
+    예약데이터를 가져왔을때, 1개이상의 데이터가 존재하면 실행되는 useEffect이다.
+    여기에서 calendar에 데이터가 세팅이 된다.
+  */
   useEffect(() => {
     if(reservationDataList.length >0 ){
       calInstance.clear();
@@ -253,19 +254,6 @@ const ReservationPage = () => {
   }, [reservationDataList, calInstance]);
 
 
-
-
-
-  /*
-    reservationInfo -> 리덕스에서 정의한 상태데이터
-    값이 변경될 때마다
-    select에 있는 의사이름이 변경될 때마다
-    calInstance 값이 변경될때 (그리고 null값이 아닐때)
-    1) clear()를 통해 캘린더에 있는 데이터들을 삭제한다.
-    2) 의사 정보(id)에 해당한 예약 데이터를 가져와 세팅한다
-    3) render()를 통해 세팅된 데이터를 화면에 보여준다
-    검색: reservationData
-  */
  
 
   /*
@@ -289,7 +277,7 @@ const ReservationPage = () => {
         setReservationData(data.data);
         
       } catch (error) {
-        const { message } = error.response.data;
+         console.log(error);
         setReservationData([]);
         calInstance.clear();
         setLoading(false);
@@ -305,7 +293,7 @@ const ReservationPage = () => {
     reservationInfo(item.memberId);
   };
 
-  // 캘린더 주단위를 넘기기 위한 부분 (+)
+  // 캘린더 주단위를 넘기기 위한 부분 (-)
   const handlePrevClick = () => {
     setLoading(true);
     calInstance.prev();
@@ -331,7 +319,7 @@ const ReservationPage = () => {
         });
          setReservationData(data.data);
       } catch (error) {
-        const { message } = error.response.data;
+         console.log(error);
          setReservationData([]);
         calInstance.clear();
         setLoading(false);
@@ -341,7 +329,7 @@ const ReservationPage = () => {
 
   };
 
-  // 캘린더 주단위를 넘기기 위한 부분 (-)
+  // 캘린더 주단위를 넘기기 위한 부분 (+)
   const handleNextClick = async() => {
     setLoading(true);
     calInstance.next();
@@ -368,7 +356,7 @@ const ReservationPage = () => {
         });
          setReservationData(data.data);
       } catch (error) {
-        const { message } = error.response.data;
+         console.log(error);
          setReservationData([]);
         calInstance.clear();
         setLoading(false);
@@ -432,18 +420,11 @@ const ReservationPage = () => {
     const result = reservationDataList.filter(
       (schedule) => schedule.id === event.schedule.id,
     );
-    const birthDay =
-      result[0].patientBirth[0] +
-      '/' +
-      result[0].patientBirth[1] +
-      '/' +
-      result[0].patientBirth[2];
-    result[0].patientBirth = birthDay;
+   
     /*
     2)
     검색: readReservationData
     */
-    console.log(result[0]);
     setReadPatient(result[0]);
     /*
     3)
@@ -488,7 +469,6 @@ const ReservationPage = () => {
                     labelId="label-id"
                     id="select-id"
                     value={selectId}
-                    //onChange={(e) => selectOnChange(e.target.value)}
                     label="Doctor"
                   >
                     {doctorListInfo.map((item) => (
@@ -573,30 +553,26 @@ const ReservationPage = () => {
                   height="100%"
                   view="week"
                   ref={calendarRef}
-                  //reservationData
                   onBeforeCreateSchedule={onBeforeCreateSchedule}
-                  //readReservationData
-
                   onClickSchedule={onClickSchedule}
                 />
               </div>
-              {/* Drawer-add */}
+              {/* Drawer-add*/}
               <ReservationDrawer
                 isOpened={isOpened}
-                setClosed={setClosed}
                 setOpened={setOpened}
                 reservationTime={reservationTime}
                 doctorInfo={doctorInfo}
                 setAddDisplay={setAddDisplay}
               />
-              {/* Drawer-update */}
+              {/* Drawer-read -> update, delete 기능을 할 수 있음 */}
               <ReservationReadDrawer
                 readOpened={readOpened}
                 setReadOpened={setReadOpened}
                 readPatient={readPatient}
                 setAddDisplay={setAddDisplay}
               />
-              {/* Drawer-search */}
+              {/* Drawer-search -> 예약된 환자를 검색할 수 있는 drawer*/}
               <SearchReservation
                 searchOpened={searchOpened}
                 setSearchOpened={setSearchOpened}

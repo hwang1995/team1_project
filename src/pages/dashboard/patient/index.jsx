@@ -17,10 +17,10 @@ import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import StyledButton from 'components/common/button/StyledButton';
 import SearchBox from 'components/common/search/SearchBox';
-import DeleteModal from 'components/patient/modal/DeleteModal';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
 import ClockSpinner from 'components/common/spinner/ClockSpinner';
+import moment from 'moment';
 
 /**
  * 이 페이지 컴포넌트는 환자 관리 페이지를 작성하기 위한 컴포넌트입니다.
@@ -32,16 +32,28 @@ import ClockSpinner from 'components/common/spinner/ClockSpinner';
  * @author SI HYUN PARK
  */
 const PatientPage = () => {
+  // 환자 추가시 환자의 정보를 입력하는 드로어에 대한 open/close 여부 상태 데이터
   const [isOpened, setOpened] = useState(false);
+
+  // 환자 정보 변경시 내용을 변경을 하기 위한 드로어에 대한 open/close 여부 상태 데이터
   const [isUpdateOpened, setUpdateOpened] = useState(false);
+
+  // 수정 드로어에 세팅할 환자정보
   const [readPatientData, setReadPatientData] = useState({});
+
+  // 데이터베이스에서 환자에 대한 정보 객체를 담을 상태 데이터 ([{환자1}, {환자2}.....])
   const [patientData, setPatients] = useState([]);
-  const [deleteOpened, setDeleteOpened] = useState(false);
+
+  // spinner를 나타내는 상태데이터
   const [isLoading, setLoading] = useState(true);
+
+  // 추가 수정할때 addDisplay의 값은 변경이 된다. 그리고 변경됨에 따라 환자 리스트를 다시 불러오기 위해 설정한 상태 데이터
   const [addDisplay, setDisplay] = useState(false);
 
+  // 로그인 유저에 대한 정보
   const loginInfo = useSelector((state) => state.common.loginInfo);
 
+  // 처음 렌더링 되었을 때, 환자의 데이터를 불러온다
   useEffect(() => {
     const getPatient = async () => {
       try {
@@ -56,12 +68,14 @@ const PatientPage = () => {
     getPatient();
   }, [loginInfo]);
 
+  // 환자의 데이터(patientData)가 변경됨에 따라 isLoading이 false 값 세팅 해준다
   useEffect(() => {
     if (patientData.length > 0) {
       setLoading(false);
     }
   }, [patientData]);
 
+// 추가, 수정시 addDisplay 값이 변경된다, 그렇게 되면 다시 환자데이터를 불러와 뷰에 세팅한다
   useEffect(() => {
     if(addDisplay) {
       setLoading(true);
@@ -82,17 +96,7 @@ const PatientPage = () => {
 
 
 
-  const dateRemoveClick = (data) => {
-    const removeDataInfo = patientData.filter((patientInfo) => {
-      if (patientInfo.patient_id === data.patient_id) {
-        return false;
-      }
-      return true;
-    });
-    setPatients(removeDataInfo);
-  };
-
-
+  // 환자 이름 검색을 통해 가져온 환자 리스트
   const setSearchVal = async (inputVal) => {
     
     setLoading(true);
@@ -105,12 +109,11 @@ const PatientPage = () => {
     } catch (error) {
       setPatients([]);
       console.log(error.response.data);
-  
-        setLoading(false);
+      setLoading(false);
      
     }
   };
-
+  // 스피너 컴포넌트
   const clockSpinner = () => {
     return (
       <div
@@ -240,12 +243,9 @@ const PatientPage = () => {
                                     {data.patientName}
                                   </TableCell>
                                   <TableCell component="th">
-                                    {data.patientBirth[0] +
-                                      '년 ' +
-                                      data.patientBirth[1] +
-                                      '월 ' +
-                                      data.patientBirth[2] +
-                                      '일'}
+                                    {moment(data.patientBirth).format(
+                                      'yyyy년 MM월 DD일',
+                                    )}
                                   </TableCell>
                                   <TableCell component="th">
                                     {data.patientAddr2 === undefined &&
@@ -267,7 +267,6 @@ const PatientPage = () => {
                                       변경
                                     </StyledButton>
                                   </TableCell>
-                                 
                                 </TableRow>
                               </Fragment>
                             ))}
@@ -282,24 +281,18 @@ const PatientPage = () => {
           </Grid>
         </Grid>
       </main>
+      {/* 환자를 추가할때 나타나는 드로어 */}
       <PatientDrawer
         isOpened={isOpened}
         setOpened={setOpened}
-        setPatients={setPatients}
-        patientData={patientData}
         setDisplay={setDisplay}
       />
+      {/* 환자를 수정할때 나타나는 드로어 */}
       <PatientUpdateDrawer
         isUpdateOpened={isUpdateOpened}
         setUpdateOpened={setUpdateOpened}
         readPatientData={readPatientData}
-        setReadPatientData={setReadPatientData}
-        dateRemoveClick={dateRemoveClick}
         setDisplay={setDisplay}
-      />
-      <DeleteModal
-        deleteOpened={deleteOpened}
-        setDeleteOpened={setDeleteOpened}
       />
     </div>
   );

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { registerReservationInfo} from 'apis/reservationAPI';
-import { setAddChangeView} from "redux/features/reservation/reservationSlice";
 import { Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import StyledTypography from 'components/common/typography/StyledTypography';
@@ -32,7 +31,6 @@ const ReservationInfoContainer = ({
   doctorInfo,
   patientInfo,
   setOpened,
-  setClosed,
   setCheckChange,
   setAddDisplay
 }, props) => {
@@ -47,10 +45,10 @@ const ReservationInfoContainer = ({
 
   // 진료예약,true -> (진료예약 + 이전으로돌아가기 버튼),false
   const [buttonChange, setButtonChange] = useState(false);
-  const dispatch = useDispatch();
-
+  // 로그인한 멤버의 정보를 가져오는 redux
   const loginInfo = useSelector((state) => state.common.loginInfo);
 
+ // 내원사유 값을 받아오는 onChange
   const visitReasonHandleChange = (event) => {
     setReason(event.target.value);
   };
@@ -120,12 +118,13 @@ const ReservationInfoContainer = ({
         memberId: doctorInfo.memberId,
         hospitalCode: loginInfo.hospitalCode,
       };
+      //1) db 등록
       const { data } = await registerReservationInfo(reservationInfo);
+      console.log(data.data);
       //2)
       setCheckChange(false);
       //3)
       setButtonChange(false);
-      setClosed(true);
       handleAlert('success', '예약이 접수되었습니다.');
       setAddDisplay(true);
       setOpened(false);
@@ -138,11 +137,7 @@ const ReservationInfoContainer = ({
     } 
  
   };
-  /*
-    내원사유 데이터를 세팅하기 위해 함수
 
-    검색: 
-  */
 
 
 
@@ -183,7 +178,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={patientInfo.patientBirthContent} />
+        <StyledInputBase readOnly value={patientInfo.patientBirth} />
       </Grid>
       <Grid
         item
