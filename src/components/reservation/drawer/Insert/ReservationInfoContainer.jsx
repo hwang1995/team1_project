@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
-import { useSelector, useDispatch } from 'react-redux';
-import { registerReservationInfo} from 'apis/reservationAPI';
-import { setAddChangeView} from "redux/features/reservation/reservationSlice";
+import { useSelector } from 'react-redux';
+import { registerReservationInfo } from 'apis/reservationAPI';
 import { Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
-
+import { sendMqttMessage } from 'apis/pushAPI';
 
 /*
   예약정보 (환자정보, 의사정보, 예약시간, 내원사유)를 입력하고 
@@ -27,15 +26,17 @@ import StyledButton from 'components/common/button/StyledButton';
   검색:
 
 */
-const ReservationInfoContainer = ({
-  reservationTime,
-  doctorInfo,
-  patientInfo,
-  setOpened,
-  setClosed,
-  setCheckChange,
-  setAddDisplay
-}, props) => {
+const ReservationInfoContainer = (
+  {
+    reservationTime,
+    doctorInfo,
+    patientInfo,
+    setOpened,
+    setCheckChange,
+    setAddDisplay,
+  },
+  props,
+) => {
   /*
     내원사유를 세팅하기 위한 상태 데이터
 
@@ -43,14 +44,12 @@ const ReservationInfoContainer = ({
   */
   const [visitReason, setReason] = useState('');
 
-  
-
   // 진료예약,true -> (진료예약 + 이전으로돌아가기 버튼),false
   const [buttonChange, setButtonChange] = useState(false);
-  const dispatch = useDispatch();
-
+  // 로그인한 멤버의 정보를 가져오는 redux
   const loginInfo = useSelector((state) => state.common.loginInfo);
 
+  // 내원사유 값을 받아오는 onChange
   const visitReasonHandleChange = (event) => {
     setReason(event.target.value);
   };
@@ -97,7 +96,7 @@ const ReservationInfoContainer = ({
 
     검색: 
   */
-  const handleInsertInfoClick = async() => {
+  const handleInsertInfoClick = async () => {
     try {
       const startDate = moment(reservationTime.start.toDate()).format(
         'yyyy-MM-DDTHH:mm',
@@ -120,32 +119,34 @@ const ReservationInfoContainer = ({
         memberId: doctorInfo.memberId,
         hospitalCode: loginInfo.hospitalCode,
       };
+      //1) db 등록
       const { data } = await registerReservationInfo(reservationInfo);
+      console.log(data.data);
       //2)
       setCheckChange(false);
       //3)
       setButtonChange(false);
-      setClosed(true);
       handleAlert('success', '예약이 접수되었습니다.');
+
+      // Push Alert를 보낸다. (의사에게)
+      const sendPushMessage = {
+        topic: `/${loginInfo.hospitalCode}/doctor`,
+        priority: 'success',
+        message: `${patientInfo.patientName} 환자가 ${doctorInfo.memberName} 의사에게 진료가 예약되었습니다.`,
+      };
+
+      await sendMqttMessage(sendPushMessage);
+
       setAddDisplay(true);
       setOpened(false);
     } catch (error) {
-      console.log("error", error);
+      console.log('error', error);
       const { message } = error.response.data;
       handleAlert('error', message);
       setCheckChange(false);
       setButtonChange(false);
-    } 
- 
+    }
   };
-  /*
-    내원사유 데이터를 세팅하기 위해 함수
-
-    검색: 
-  */
-
-
-
 
   return (
     <Grid
@@ -183,7 +184,7 @@ const ReservationInfoContainer = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={patientInfo.patientBirthContent} />
+        <StyledInputBase readOnly value={patientInfo.patientBirth} />
       </Grid>
       <Grid
         item

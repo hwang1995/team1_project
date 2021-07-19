@@ -8,6 +8,7 @@ import { useState, useCallback } from 'react';
  * <input {...usernawme}/> <input {...email}/>
  * @param {*} initialForm
  * @returns {object} formState
+ * @author SUNG WOOK HWANG
  */
 const useFormInput = (initialForm) => {
   const [form, setForm] = useState(initialForm);

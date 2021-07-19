@@ -180,6 +180,7 @@ const DiagnosticSearchModal = () => {
         getPatientsInfo(hospitalCode);
       }, 1000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
 
   useEffect(() => {
@@ -197,6 +198,7 @@ const DiagnosticSearchModal = () => {
     }, 1000);
 
     console.log(searchVal);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal]);
 
   const columns = [

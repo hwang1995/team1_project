@@ -26,6 +26,12 @@ import PatientDiagnosisHistoryDrawer from 'components/diagnosis-history/drawer/P
 import DiagnosisHistorySearchModal from 'components/diagnosis-history/modal/DiagnosisHistorySearchModal';
 import { setModalStatus } from 'redux/features/history/diagnosisHistorySlice';
 
+/**
+ * * 목표 : 진료 기록을 보여주기 위한 페이지 컴포넌트
+ *
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisHistoryPage = () => {
   const dispatch = useDispatch();
 
@@ -37,10 +43,14 @@ const DiagnosisHistoryPage = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  // Redux store에 저장된 병원코드
   const { hospitalCode } = useSelector((state) => state.common.loginInfo);
+
+  // Redux store에 저장된 현재 환자의 ID
   const currentPatientId = useSelector(
     (state) => state.diagnosisHistory.currentPatientId,
   );
+
   const [pager, setPager] = useState({
     page: 0,
     rowsPerPage: 10,
@@ -66,6 +76,11 @@ const DiagnosisHistoryPage = () => {
     pressed: { scale: 0.95 },
   };
 
+  /**
+   * * 목표 : 병원코드를 통해 환자 정보를 가지고 오기 위한 함수
+   * @param {string} hospitalCode
+   * @returns {object} result
+   */
   async function getPatientInfo(hospitalCode) {
     try {
       const result = await getPatientsList(hospitalCode);
@@ -84,28 +99,35 @@ const DiagnosisHistoryPage = () => {
     }
   }
 
+  /**
+   * 렌더링 시에 발생되는 side-effect
+   */
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       getPatientInfo(hospitalCode);
     }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleChangePage = (e, newPage) => {
-    setPager({
-      page: newPage,
-      ...pager,
-    });
-  };
+  // const handleChangePage = (e, newPage) => {
+  //   setPager({
+  //     page: newPage,
+  //     ...pager,
+  //   });
+  // };
 
-  const handleChangeRowsPerPage = (e) => {
-    console.log('hello', e.target.value);
-    setPager({
-      ...pager,
-      rowsPerPage: parseInt(e.target.value, 10),
-    });
-  };
+  // const handleChangeRowsPerPage = (e) => {
+  //   console.log('hello', e.target.value);
+  //   setPager({
+  //     ...pager,
+  //     rowsPerPage: parseInt(e.target.value, 10),
+  //   });
+  // };
 
+  /**
+   * 초기화 버튼을 클릭시에 초기화가 되면서 값도 다시 불러온다.
+   */
   const handleReset = () => {
     setLoading(true);
     setPatientList([]);
@@ -231,7 +253,7 @@ const DiagnosisHistoryPage = () => {
                       </Table>
                     </TableContainer>
                     <TablePagination
-                      rowsPerPage={[10, 30, 50]}
+                      // rowsPerPage={[10, 30, 50]}
                       component="div"
                       count={patientList.length}
                       rowsPerPage={pager.rowsPerPage}

@@ -7,7 +7,7 @@ import { registerPatientInfo } from 'apis/patientAPI';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import SelectedMan from '../SelectedGender/selectedGender';
+import SelectedMan from '../selectedGender/selectedGender';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -17,18 +17,32 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import PatientModal from '../modal/Modal';
 
+/**
+ * 이 페이지 컴포넌트는 환자를 추가하기 위해 작성한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * Sider
+ * * Header
+ * * 환자 관리 (PatientSearch, Table, ColoredButton)
+ * @returns {JSX.Element}
+ * @author SI HYUN PARK
+ */
 const PatientDrawer = ({
   isOpened,
   setOpened,
-  setPatients,
-  patientData,
   setDisplay,
 }) => {
+  // redux에서 선택된 성별을 가져온다
   const gender = useSelector((state) => state.member.gender);
+
+  // 로그 유저에 대한 정보
   const loginInfo = useSelector((state) => state.common.loginInfo);
   const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
+
+  // 주소 API를 나타내는 상태 데이터
   const [isModalOpened, setModalOpened] = useState(false);
+
+  // 생년월일 (데이터 피커)에 대한 상태 데이터
   const [keyboardDate, handleKeyDateChange] = useState(new Date());
   const { enqueueSnackbar } = useSnackbar();
 
@@ -37,6 +51,8 @@ const PatientDrawer = ({
       variant,
     });
   };
+
+  // 데이터 베이스에 추가하기 위한 객체 상태 데이터
   const [isPatient, setPatient] = useState({
     patientName: '',
     patientSsn: '',
@@ -65,13 +81,13 @@ const PatientDrawer = ({
     }
     setOpened(open);
   };
-
+  // 추가버튼 클릭시 일어나는 이벤트
   const addHandleClick = async () => {
-    console.log(isPatient);
+    // 생년월일, 환자의 ssn, 등록일을 세팅하는 부분
     isPatient.patientBirth = moment(keyboardDate).format('YYYY-MM-DD');
     isPatient.patientSsn = moment(keyboardDate).format('YYYY-MM-DD');
     isPatient.recentDate = moment(new Date()).format('yyyy-MM-DDTHH:mm');
-
+    // 유효성 검사
     if (isPatient.patientName === undefined || isPatient.patientName === '') {
       handleAlert('error', '이름을 입력해주세요.');
       return;
@@ -121,6 +137,7 @@ const PatientDrawer = ({
 
     try {
       const { data } = await registerPatientInfo(isPatient);
+      console.log(data.data);
       handleAlert('success', '환자가 등록되었습니다.');
       setDisplay(true);
       setPatient({});
@@ -134,6 +151,7 @@ const PatientDrawer = ({
     }
   };
 
+  // 환자의 입력정보를 담아내는 onChange 함수
   const handleChange = (event) => {
     setPatient({
       ...isPatient,
@@ -141,10 +159,11 @@ const PatientDrawer = ({
     });
   };
 
+  // 클릭시 주소 모달창이 나타난다
   const findAddressHandle = () => {
     setModalOpened(true);
   };
-
+  // 주소모달창에 넘겨줄 props, 이 함수를 통해 주소값을 가져온다
   const addressClick = ({ fullAddress, postalcode }) => {
     setPatient({
       ...isPatient,
@@ -370,6 +389,7 @@ const PatientDrawer = ({
           </Grid>
         </ResponsiveContainer>
       </SwipeableDrawer>
+      {/* 주소 API 모달창 */}
       <PatientModal
         isModalOpened={isModalOpened}
         addressClick={addressClick}

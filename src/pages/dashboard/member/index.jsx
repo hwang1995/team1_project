@@ -16,7 +16,6 @@ import {
   Avatar,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import MemberSpinner from 'components/common/spinner/MemberSpinner';
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import SearchBox from 'components/common/search/SearchBox';
@@ -33,14 +32,17 @@ import {
   showMembersListByHospitalCode,
   showMembersListByNameAndCode,
 } from 'apis/memberAPI';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import PacmanSpinner from 'components/common/spinner/PacmanSpinner';
+
 /**
  * 이 페이지 컴포넌트는 임직원 관리 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
  * * Sider
  * * Header
- * * 환자 관리 ( Table, ColoredButton)
+ * * 임직원 관리 ( MemberDrawer, MemberUpdateDrawer, DeleteModal, Table, ColoredButton)
  * @returns {JSX.Element}
+ * @author Jong Hyun Hong
  */
 const MemberPage = () => {
   const [isOpened, setOpened] = useState(false);
@@ -169,7 +171,7 @@ const MemberPage = () => {
             alignItems: 'center',
           }}
         >
-          <MemberSpinner />
+          <PacmanSpinner />
         </div>
       )}
       {!isLoading && (
@@ -365,12 +367,10 @@ const MemberPage = () => {
                                             'ROLE_NURSE' && '간호사'}
                                         </TableCell>
                                         <TableCell component="th">
-                                          {data.memberImage !== null ? (
+                                          {data.memberImage !== null &&
+                                          data.memberImage.trim() !== '' ? (
                                             <Avatar
-                                              src={
-                                                'http://localhost:8080/image?path=' +
-                                                data.memberImage
-                                              }
+                                              src={`${process.env.REACT_APP_SERVER_PATH}/image?path=${data.memberImage}`}
                                             />
                                           ) : (
                                             <Avatar

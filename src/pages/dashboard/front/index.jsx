@@ -33,7 +33,7 @@ import { setActiveStep } from 'redux/features/notice/noticeSlice';
  * - Sider
  * - Header
  * - 공지사항
- * - CORONA 
+ * - CORONA
  * - Calendar
  * - TodoItem
  * - InputBox
@@ -65,10 +65,11 @@ const FrontPage = () => {
   // Spinner의 Loading 여부를 설정하기 위한 State
   const [isLoading, setLoading] = useState(true);
 
-
   // 리덕스에 저장되어 있는 값들 불러오기
   const dispatch = useDispatch();
-  const hospitalCode = useSelector((state) => state.common.loginInfo.hospitalCode);
+  const hospitalCode = useSelector(
+    (state) => state.common.loginInfo.hospitalCode,
+  );
   const memberName = useSelector((state) => state.common.loginInfo.memberName);
   const memberId = useSelector((state) => state.common.loginInfo.memberId);
 
@@ -94,7 +95,7 @@ const FrontPage = () => {
         console.log('to :', to);
         const coronaContent = await getCoronaData(from, to);
         setCorona(coronaContent);
-        console.log("coronaContent : ", coronaContent)
+        console.log('coronaContent : ', coronaContent);
 
         // 2. 공지사항 가져오기
         const noticeContent = await getNoticesList(hospitalCode);
@@ -134,7 +135,6 @@ const FrontPage = () => {
     }
   };
 
-
   const TodosListByHospitalCode = async () => {
     try {
       const response = await getTodosListByHospitalCode(hospitalCode);
@@ -156,7 +156,6 @@ const FrontPage = () => {
     setOpened(true);
     dispatch(setActiveStep('MAIN'));
   };
- 
 
   return (
     <Fragment>
@@ -306,7 +305,12 @@ const FrontPage = () => {
                                 <span>코로나바이러스감염증-19</span>
                               </TitleHeaderDashBoard>
                               <div style={{ display: 'flex' }}>
-                                { corona.data[corona.data.length - 1].Date.split('T00:00:00Z')[0] } 기준
+                                {
+                                  corona.data[
+                                    corona.data.length - 1
+                                  ].Date.split('T00:00:00Z')[0]
+                                }{' '}
+                                기준
                               </div>
                             </h4>
 
@@ -354,14 +358,16 @@ const FrontPage = () => {
                                         marginLeft: '0.3rem',
                                       }}
                                     >
-                                      {(corona.data[corona.data.length - 1]
+                                      {corona.data[corona.data.length - 1]
                                         .Confirmed -
                                         corona.data[corona.data.length - 2]
-                                          .Confirmed).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                                          .Confirmed}
                                     </span>
                                   </div>
                                   <div>
-                                    { corona.data[corona.data.length - 1].Confirmed.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") }
+                                    {corona.data[
+                                      corona.data.length - 1
+                                    ].Confirmed.toString()}
                                   </div>
                                 </div>
                                 <div
@@ -391,11 +397,18 @@ const FrontPage = () => {
                                         marginLeft: '0.3rem',
                                       }}
                                     >
-                                      { (corona.data[corona.data.length - 1].Recovered - corona.data[corona.data.length - 2].Recovered).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                                      {(
+                                        corona.data[corona.data.length - 1]
+                                          .Recovered -
+                                        corona.data[corona.data.length - 2]
+                                          .Recovered
+                                      ).toString()}
                                     </span>
                                   </div>
                                   <div>
-                                    { corona.data[corona.data.length - 1].Recovered.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") }
+                                    {corona.data[
+                                      corona.data.length - 1
+                                    ].Recovered.toString()}
                                   </div>
                                 </div>
                                 <div
@@ -431,7 +444,9 @@ const FrontPage = () => {
                                     </span>
                                   </div>
                                   <div>
-                                    {corona.data[corona.data.length - 1].Deaths.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                                    {corona.data[
+                                      corona.data.length - 1
+                                    ].Deaths.toString()}
                                   </div>
                                 </div>
                                 <div
@@ -461,14 +476,18 @@ const FrontPage = () => {
                                         // marginBottom: '0.5rem',
                                       }}
                                     >
-                                      {(corona.data[corona.data.length - 1]
-                                        .Active -
+                                      {(
+                                        corona.data[corona.data.length - 1]
+                                          .Active -
                                         corona.data[corona.data.length - 2]
-                                          .Active).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                                          .Active
+                                      ).toString()}
                                     </span>
                                   </div>
                                   <div>
-                                    {corona.data[corona.data.length - 1].Active.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                                    {corona.data[
+                                      corona.data.length - 1
+                                    ].Active.toString()}
                                   </div>
                                 </div>
                               </div>

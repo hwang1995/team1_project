@@ -116,6 +116,7 @@ const SidebarContainer = styled.div`
 /**
  * * 목표 : 반응형 웹 헤더를 제공
  * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
  */
 const ResponsivePageHeader = () => {
   const { breakpoint } = useWindowSize();
@@ -385,7 +386,7 @@ const ResponsivePageHeader = () => {
               <span>임직원</span>
             </Grid>
             <Grid
-              item
+              
               sm={2}
               md={6}
               className="common-grid"
@@ -475,7 +476,7 @@ const ResponsivePageHeader = () => {
                 })}
                 onClick={() => goPage('/dashboard/diagnostic')}
               >
-                진료 검사 보기
+                진단 검사 보기
               </span>
               <span
                 className={clsx('small-text', {

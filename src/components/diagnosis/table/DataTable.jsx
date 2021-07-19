@@ -15,6 +15,12 @@ const columns = [
   { field: 'startDate', headerName: '예약 시간', width: 200 },
   { field: 'visitPurpose', headerName: '내원 사유', width: 700 },
 ];
+
+/**
+ * * 해당 의사에게 맞겨진 환자 리스트를 보여주기 위한 Template
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DataTable = () => {
   const [isLoading, setLoading] = useState(true);
   const authInfo = useSelector((state) => state.common.loginInfo);
@@ -45,6 +51,7 @@ const DataTable = () => {
     setTimeout(() => {
       getDiagnosis();
     }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClick = (event) => {

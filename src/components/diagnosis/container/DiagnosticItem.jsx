@@ -13,8 +13,6 @@ import { searchDiagnosticListByCode } from 'apis/searchAPI';
 const DiagnosticContainer = styled(Container)`
   width: 100%;
   padding: 0.5rem;
-
-  // 임시
   display: flex;
   flex-direction: row;
 
@@ -103,6 +101,13 @@ const DiagnosticContainer = styled(Container)`
   }
 `;
 
+/**
+ * * 목표 : 진단 검사의 항목을 나타내기 위한 컴포넌트
+ * @param {object} data
+ * @param {function} isRemove
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticItem = ({ data, isRemove }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -113,14 +118,17 @@ const DiagnosticItem = ({ data, isRemove }) => {
     });
   };
 
+  // 추가 버튼을 이벤트 함수
   const handleAddButton = (data) => {
     dispatch(addDiagnosticInfo(data));
   };
 
+  // 제거 버튼을 이벤트 함수
   const handleRemoveButton = (data) => {
     dispatch(removeDiagnosticInfo(data));
   };
 
+  // 그룹 추가의 이벤트 함수
   const handleGroupButton = async (data) => {
     const { bundleCode } = data;
     try {
@@ -130,8 +138,6 @@ const DiagnosticItem = ({ data, isRemove }) => {
       const { message } = error.response.data;
       handleAlert('error', message);
     }
-
-    // dispatch(addDiagnosticGroupItem({ bundleCode }));
   };
   return (
     <DiagnosticContainer>

@@ -44,6 +44,7 @@ import {
   diagnosticChangeStatus,
   showDiagnosticTestListByDiagTestId,
 } from 'apis/diagnosisInsepctionAPI';
+import { sendMqttMessage } from 'apis/pushAPI';
 
 const SuccessPage = styled.div`
   display: flex;
@@ -59,18 +60,27 @@ const SuccessPage = styled.div`
   }
 `;
 
+/**
+ * * 진단 검사의 기록 및 바코드 출력, 취소, 채혈 완료와 같은 기능을 수행하기 위한 컴포넌트 (Template)
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [isLoading, setLoading] = useState(true);
+
+  // 진단 검사의 정보를 저장하기 위한 상태
   const [diagnosticInfo, setDiagnosticInfo] = useState([]);
   const dispatch = useDispatch();
+
+  // 페이지 컴포넌트에서 저장한 diagTestId를 Redux store에 가져온다.
   const diagTestId = useSelector((state) => state.diagnostic.currentDiagTestId);
   const diagDataInput = useSelector(
     (state) => state.diagnostic.diagnosticDataInput,
   );
   const isOpened = useSelector((state) => state.diagnostic.drawerStatus.status);
-  const modalStatus = useSelector((state) => state.diagnostic.modalStatus);
-  const { memberAuthority, memberId } = useSelector(
+  // const modalStatus = useSelector((state) => state.diagnostic.modalStatus);
+  const { memberAuthority, memberId, hospitalCode } = useSelector(
     (state) => state.common.loginInfo,
   );
 
@@ -136,6 +146,12 @@ const DiagnosticDrawer = () => {
     }
   };
 
+  /**
+   * Drawer가 열렸거나, 페이지의 상태가 'INPUT_COMPLETED'로 바뀌는 effect 발생시
+   * 진단 검사의 결과를 다시 가지고 오라는 side-effect를 일으키고
+   * Drawer가 닫힌 경우 진단 검사의 정보를 초기화 하라는 Redux action을 dispatch하는 side-effect를 일으킨다.
+   *
+   */
   useEffect(() => {
     if (isOpened || pageStatus === 'INPUT_COMPLETED') {
       setLoading(true);
@@ -146,6 +162,7 @@ const DiagnosticDrawer = () => {
     if (!isOpened) {
       dispatch(resetDiagnosticData());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened, pageStatus]);
 
   const togglePage = (page) => {
@@ -172,6 +189,23 @@ const DiagnosticDrawer = () => {
 
       // 3. 진단 검사의 값을 완료로 바꾼다.
       await diagnosticChangeStatus(statusInfo);
+
+      // 4. 진단 검사의 결과를 의사와 간호사에게 푸시를 날린다.
+      const sendDoctorMessageInfo = {
+        topic: `/${hospitalCode}/doctor`,
+        priority: 'success',
+        message: `${diagTestId}번의 진단 검사가 완료되었습니다.`,
+      };
+
+      const sendNurseMessageInfo = {
+        topic: `/${hospitalCode}/nurse`,
+        priority: 'success',
+        message: `${diagTestId}번의 진단 검사가 완료되었습니다.`,
+      };
+
+      await sendMqttMessage(sendDoctorMessageInfo);
+
+      await sendMqttMessage(sendNurseMessageInfo);
 
       togglePage('INPUT_COMPLETED');
     } catch (error) {

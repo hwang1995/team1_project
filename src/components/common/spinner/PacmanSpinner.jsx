@@ -8,7 +8,7 @@ const override = css`
   border-color: lightblue;
 `;
 
-const MemberSpinner = ({ isLoading }) => (
+const PacmanSpinner = ({ isLoading }) => (
   <div style={{ width: '100%', display: 'flex' }}>
     <PacmanLoader
       color="lightblue"
@@ -19,4 +19,4 @@ const MemberSpinner = ({ isLoading }) => (
   </div>
 );
 
-export default MemberSpinner;
+export default PacmanSpinner;

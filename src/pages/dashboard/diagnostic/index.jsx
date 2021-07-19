@@ -37,13 +37,22 @@ import StyledTypography from 'components/common/typography/StyledTypography';
  * * Sider
  * * Header
  * @returns {JSX.Element}
+ * @author SUNG WOOK HWANG
  */
 const DiagnosticPage = () => {
   const dispatch = useDispatch();
+
+  // 로딩 중 상태
   const [isLoading, setLoading] = useState(true);
   const [calInfo, sendCalInfo, getPrevWeek, getNextWeek, reset] = useCalendar();
+
+  // 진단 정보
   const [diagnosticInfo, setDiagnosticInfo] = useState([]);
+
+  // Redux store에 있는 병원 코드
   const { hospitalCode } = useSelector((state) => state.common.loginInfo);
+
+  // Redux store에 있는 진단 검사 ID
   const currentDiagTestId = useSelector(
     (state) => state.diagnostic.currentDiagTestId,
   );
@@ -54,12 +63,18 @@ const DiagnosticPage = () => {
       variant,
     });
   };
+
   const buttonSetting = {
     rest: { scale: 1 },
     hover: { scale: 1.2 },
     pressed: { scale: 0.95 },
   };
 
+  /**
+   * * 목표 : 진단 검사를 가져오기 위한 함수
+   * @param {object} sendInfo
+   * @return {object} result
+   */
   async function getDiagnosticInfos(sendInfo) {
     try {
       const result = await showWeeklyDiagnosticTestListByHospitalCode(sendInfo);
@@ -74,7 +89,7 @@ const DiagnosticPage = () => {
   }
 
   /**
-   * * 처음에 들어올 때에 현재 주간과 병원 코드로 데이터를 가지고 오기 위한 side-effect
+   * * 목표 : 처음에 들어올 때에 현재 주간과 병원 코드로 데이터를 가지고 오기 위한 side-effect
    * @author SUNG WOOK HWANG
    */
   useEffect(() => {
@@ -89,12 +104,11 @@ const DiagnosticPage = () => {
     setTimeout(() => {
       getDiagnosticInfos(sendInfo);
     }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendCalInfo]);
 
   return (
     <div>
-      {/* DiagnosticPage를 작성합니다. 들어가야할 컴포넌트는 위의 주석에 설명되어
-      있으니 참조하시면 됩니다. */}
       <header
         style={{
           position: 'sticky',

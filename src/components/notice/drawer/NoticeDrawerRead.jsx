@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
  * @author HYEONG YUN KIM
  */
 const NoticeDrawerRead = () => {
-
   const classes = useStyles();
   // 해당 공지사항의 삭제 Modal의 Open 여부를 설정하기 위한 State
   const [isOpenModal, setOpenModal] = useState(false);

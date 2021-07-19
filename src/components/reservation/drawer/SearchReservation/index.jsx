@@ -19,13 +19,13 @@ const SearchReservation = ({
   setSearchOpened,
   setAddDisplay,
 }) => {
-  /*
-    리덕스에서 설정한 예약환자 데이터
-  */
+ 
+  // 로그인한 유저의 정보
   const loginInfo = useSelector((state) => state.common.loginInfo);
   // 검색어(SearchBox)를 보여주냐 안보여주냐를 세팅하는 상태 데이터
   const [visible, setVisible] = useState(false);
 
+  //clockSpinner에 시팅할 것
   const [isLoading, setLoading] = useState(false);
   /*
      검색결과에 대한 환자 데이터를 담는 부분
@@ -76,7 +76,6 @@ const SearchReservation = ({
     2) restul를 setResult 함수에 담는다 (searchResults)
   */
   const setSearchVal = async (inputVal) => {
-    console.log('1) 검색시작');
     try {
       setLoading(true);
       const { data } = await getSearchReservationPatient({
@@ -86,14 +85,17 @@ const SearchReservation = ({
       setResult(data.data);
       console.log(data.data);
       setReadOpened(false);
-      setPageResult(true);
+     
     } catch (error) {
-      const { message } = error.response.data;
       setResult([]);
+       setPageResult(true);
       setLoading(false);
     }
   };
 
+  /*
+    검색결과에 대한 데이터의값이 있을 경우, spinner를 off 한다
+  */
   useEffect(() => {
     if (searchResults.length > 0) {
       setLoading(false);

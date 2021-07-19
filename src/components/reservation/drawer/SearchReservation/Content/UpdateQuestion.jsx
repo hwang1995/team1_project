@@ -1,6 +1,6 @@
 import StyledButton from "components/common/button/StyledButton";
 
-
+// 수정이 완료되었을 때 나타나는 컴포넌트
 const UpdateQuestion = ({
   setCheckPage,
   setVisible,

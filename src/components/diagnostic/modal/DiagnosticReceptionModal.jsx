@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진단 검사에서 접수 취소를 클릭시에 나오는 Modal 컴포넌트 (Template)
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticReceptionModal = () => {
   const classes = useStyles();
 

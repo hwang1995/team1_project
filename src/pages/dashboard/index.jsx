@@ -44,7 +44,7 @@ const Dashboard = () => {
       history.push('/');
     }
     // 나중에 권한 별로 들어가지 말라고 할 떄에 사용
-    const parseJSON = JSON.parse(sessionStorage.getItem('userInfo'));
+    // const parseJSON = JSON.parse(sessionStorage.getItem('userInfo'));
     // console.log(parseJSON);
   }, [handleAlert, history]);
 
@@ -101,6 +101,7 @@ const Dashboard = () => {
     return () => {
       disconnectMqttBroker();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

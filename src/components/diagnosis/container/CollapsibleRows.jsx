@@ -12,8 +12,17 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import CollapsibleMedicineRows from './CollapsibleMedicineRows';
 import CollapsibleDiagnosticsRows from './CollapsibleDiagnosticsRows';
 
+/**
+ * * 목표 : 진단 검사 테이블 행을 나타내기 위한 컴포넌트
+ * @param {object} data
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const CollapsibleRows = ({ data }) => {
+  // 약품 정보, 주사 정보, 진단 검사 정보
   const { medicines, injectors, diagnostics } = data;
+
+  // 진단 검사가 열였는지 확인하기 위한 상태
   const [isOpened, setOpened] = useState(false);
 
   return (
