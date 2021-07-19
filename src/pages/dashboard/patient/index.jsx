@@ -7,12 +7,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  IconButton,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { getPatientsList, getSearchPatientList } from 'apis/patientAPI';
 import PatientDrawer from '../../../components/patient/drawer/PatientDrawer';
 import PatientUpdateDrawer from '../../../components/patient/drawer/PatientUpdateDrawer';
-
+import { GrPowerReset } from 'react-icons/gr';
 import ContentContainer from 'components/common/container/ContentContainer';
 import TitleHeader from 'components/common/header/TitleHeader';
 import StyledButton from 'components/common/button/StyledButton';
@@ -94,6 +95,17 @@ const PatientPage = () => {
     }
   }, [addDisplay, loginInfo])
 
+  const resetOnClick = async () => {
+      setLoading(true);
+      try {
+          const { data } = await getPatientsList(loginInfo.hospitalCode);
+          setPatients(data.data);
+        } catch (error) {
+          console.log(error);
+          setPatients([]);
+          setLoading(false);
+        }
+  }
 
 
   // 환자 이름 검색을 통해 가져온 환자 리스트
@@ -151,17 +163,32 @@ const PatientPage = () => {
                   <span>환자 관리</span>
                 </TitleHeader>
                 <br />
-                <Grid container justify="center">
-                  <Grid item xs={9} lg={6}>
+                <Grid container justify="center" >
+                  <Grid item xs={8} lg={6}>
                     <SearchBox
                       setSearchVal={setSearchVal}
                       placeholder="환자 이름을 입력해주세요."
                     />
                   </Grid>
+                  <Grid item xs={2} lg={2} >
+                    <IconButton
+                      type="button"
+                      size="medium"
+                      style={{
+                        border: '1px solid rgba(0,0,0,0.12)',
+                        marginLeft: '0.5rem',
+                        marginRight: '0.5rem',
+                        marginTop : '0.5rem'
+                      }}
+                      onClick={resetOnClick}
+                    >
+                      <GrPowerReset />
+                    </IconButton>
+                  </Grid>
                   <Grid
                     item
-                    xs={3}
-                    lg={6}
+                    xs={2}
+                    lg={4}
                     style={{
                       display: 'flex',
                       alignItems: 'center',

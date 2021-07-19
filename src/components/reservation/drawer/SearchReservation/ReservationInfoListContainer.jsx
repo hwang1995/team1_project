@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import Content from './Content';
-import UpdateQuestion from './Content/UpdateQuestion';
-import DeleteQuestion from './Content/DeleteQuestion';
+import Content from './content';
+import UpdateQuestion from './content/UpdateQuestion';
+import DeleteQuestion from './content/DeleteQuestion';
 
 import {
   modifyReservationInfo,

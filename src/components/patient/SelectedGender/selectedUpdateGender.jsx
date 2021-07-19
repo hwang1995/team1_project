@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {setGenderStatus} from "redux/features/member/memberSlice";
 import { Grid } from '@material-ui/core';
 import { IoManOutline, IoWomanOutline } from 'react-icons/io5';
@@ -21,40 +21,20 @@ const SelectedMan = (genderValue) => {
   // 리덕스에서 성별 데이터를 가져온다
   const gender = genderValue.genderValue; 
 
-  // 성별을 세팅하기 위한 상태 데이터
-  const [selectedGender, setSelectedGender] = useState({
-    male: false,
-    female: false,
-  });
+  const genderStatus= useSelector((state) => state.member.gender);
+ 
 
   // 성별을 세팅하는 onChange
   const handleChange = (name) => {
-    let balance = '';
-    if (name === 'male') {
-      balance = 'female';
-    } else {
-      balance = 'male';
-    }
-    const value = selectedGender[name];
-    let balanceValue = selectedGender[balance];
-    if (!value === balanceValue) {
-      balanceValue = !balanceValue;
-    }
-    setSelectedGender({
-      ...selectedGender,
-      [name]: !value,
-      [balance]: balanceValue,
-    });
-    dispatch(setGenderStatus(name));
+   
+   dispatch(setGenderStatus(name));
   };
-
-  // 렌더링시 redux를 통해 성별데이터를 세팅한다
+  
   useEffect(() => {
-    dispatch(setGenderStatus(genderValue.genderValue));
-    setSelectedGender({
-      [gender]: true,
-    });
-  }, [gender, genderValue, dispatch]);
+   dispatch(setGenderStatus(gender));
+  }, [gender, dispatch])
+
+
 
   return (
     <Fragment>
@@ -73,7 +53,7 @@ const SelectedMan = (genderValue) => {
                   }}
                   onClick={() => handleChange('male')}
                 >
-                  {!selectedGender.male && (
+                  {genderStatus === 'female' && (
                     <Fragment>
                       <IoManOutline color="rgb(217,217,217)" size={64} />
                       <div
@@ -93,7 +73,7 @@ const SelectedMan = (genderValue) => {
                       </div>
                     </Fragment>
                   )}
-                  {selectedGender.male && (
+                  {genderStatus === 'male' && (
                     <Fragment>
                       <IoManOutline color="rgb(244,213,51)" size={64} />
                       <div
@@ -125,7 +105,7 @@ const SelectedMan = (genderValue) => {
                   }}
                   onClick={() => handleChange('female')}
                 >
-                  {!selectedGender.female && (
+                  {genderStatus === 'male' && (
                     <Fragment>
                       <IoWomanOutline color="rgb(217,217,217)" size={64} />
                       <div
@@ -145,7 +125,7 @@ const SelectedMan = (genderValue) => {
                       </div>
                     </Fragment>
                   )}
-                  {selectedGender.female && (
+                  {genderStatus === 'female'&& (
                     <Fragment>
                       <IoWomanOutline color="rgb(244,213,51)" size={64} />
                       <div
