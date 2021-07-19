@@ -10,6 +10,13 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import { deleteMember } from 'apis/memberAPI';
 
+/**
+ * 이 모달 컴포넌트는 삭제할때의 여부를 재확인해주기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * 모달 (Modal)
+ * @returns {JSX.Element}
+ * @author Jong Hyun Hong
+ */
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',

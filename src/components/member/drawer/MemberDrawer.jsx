@@ -31,21 +31,42 @@ import { useSnackbar } from 'notistack';
 import { addMember, memberImageUpload, isExistedEmail } from 'apis/memberAPI';
 import { CirclePicker } from 'react-color';
 
+/**
+ * 이 DRAWER 컴포넌트는 추가할 임직원 정보를 입력하기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * DRAWER (SwipeableDrawer)
+ * * * 주소 검색 (PostalCodeModal)
+ * * * 성별 선택 (IoManOutline, IoWomanOutline)
+ * * * 생년월일 입력 (KeyboardDatePicker)
+ * * * 이미지 업로드 (ImageUploader)
+ * * * 색상 선택 (CirclePicker)
+ * @returns {JSX.Element}
+ * @author Jong Hyun Hong
+ */
 const MemberDrawer = ({ isOpened, setOpened, currentUser, showMember }) => {
   const { breakpoint } = useWindowSize();
+
+  // 임직원의 권한을 설정할때 저장하는 상태
   const [selectVal, setSelectVal] = useState('의사');
+
+  // 임직원의 이메일 중복체크의 확인여부를 저장하는 상태
   const [isEmailChecked, setIsEmailChecked] = useState(false);
+
+  // 임직원의 이메일 값을 입력받는 상태
   const [memberEmail, setMemberEmail] = useState('');
 
-  //생년월일 상태, 날짜 에러메세지(최대 및 최소 값 값 제대로 입력)
+  // 임직원의  생년월일 상태, 날짜 에러메세지(최대 및 최소 값 값 제대로 입력)
   const [keyboardDate, handleKeyDateChange] = useState(new Date());
   const [dateErrorMessage, setDateErrorMessage] = useState('');
 
+  // 임직원의 색상을 저장하기 위한 상태
   const [currentColor, setCurrentColor] = useState('');
+
+  // 임직원의 이미지VO 값을 저장하는 상태
   const [pictures, setPictures] = useState('');
   const { enqueueSnackbar } = useSnackbar();
 
-  //Drawer창 on/off시 데이터 초기화
+  //Drawer창 on/off시 동작(데이터 초기화)
   useEffect(() => {
     setPictures('');
     setMemberEmail('');
@@ -62,6 +83,7 @@ const MemberDrawer = ({ isOpened, setOpened, currentUser, showMember }) => {
     });
   };
 
+  // 색상 변경시 동작
   const colorChange = (color, event) => {
     if (color) {
       setCurrentColor(color.hex);
@@ -69,6 +91,7 @@ const MemberDrawer = ({ isOpened, setOpened, currentUser, showMember }) => {
     }
   };
 
+  // 이미지를 업로드하거나 취소할때의 동작
   const onDrop = async (event, picture) => {
     if (event.length === 1) {
       let imageName = '';
@@ -102,6 +125,7 @@ const MemberDrawer = ({ isOpened, setOpened, currentUser, showMember }) => {
     female: false,
   });
 
+  // 성별을 선택할때의 동작
   const handleChangeGender = (name) => {
     console.log(name);
     if (name === 'male') {
