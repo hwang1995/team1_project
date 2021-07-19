@@ -367,12 +367,10 @@ const MemberPage = () => {
                                             'ROLE_NURSE' && '간호사'}
                                         </TableCell>
                                         <TableCell component="th">
-                                          {data.memberImage !== null ? (
+                                          {data.memberImage !== null &&
+                                          data.memberImage.trim() !== '' ? (
                                             <Avatar
-                                              src={
-                                                'http://localhost:8080/image?path=' +
-                                                data.memberImage
-                                              }
+                                              src={`${process.env.REACT_APP_SERVER_PATH}/image?path=${data.memberImage}`}
                                             />
                                           ) : (
                                             <Avatar

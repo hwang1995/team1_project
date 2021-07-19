@@ -386,7 +386,7 @@ const ResponsivePageHeader = () => {
               <span>임직원</span>
             </Grid>
             <Grid
-              item
+              
               sm={2}
               md={6}
               className="common-grid"
@@ -476,7 +476,7 @@ const ResponsivePageHeader = () => {
                 })}
                 onClick={() => goPage('/dashboard/diagnostic')}
               >
-                진료 검사 보기
+                진단 검사 보기
               </span>
               <span
                 className={clsx('small-text', {

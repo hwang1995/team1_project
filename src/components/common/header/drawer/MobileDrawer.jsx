@@ -197,7 +197,7 @@ const MobileDrawer = () => {
                       })}
                       onClick={() => goPage('/dashboard/diagnostic')}
                     >
-                      <span>진료 검사 보기</span>
+                      <span>진단 검사 보기</span>
                     </div>
                     <div
                       className={clsx('collapsed-item', {
@@ -275,6 +275,13 @@ const MobileDrawer = () => {
               }
             >
               알림 리스트
+            </div>
+
+            <div
+              className="content-area"
+              onClick={() => goPage('/dashboard/tutorial')}
+            >
+              튜토리얼
             </div>
           </PageTransition>
         </MobileContainer>
