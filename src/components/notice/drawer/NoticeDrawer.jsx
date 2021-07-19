@@ -14,6 +14,14 @@ import {
   setActiveStep,
 } from 'redux/features/notice/noticeSlice';
 
+/**
+ * 이 페이지 컴포넌트는 공지사항 Drawer의 헤드를 보여주기 위해 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - Header
+ * - default: NoticeDrawerMain
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeDrawer = ({ isOpened, setOpened }) => {
   const { breakpoint } = useWindowSize();
   const activeStep = useSelector((state) => state.notice.activeStep);

@@ -12,8 +12,19 @@ import { useSnackbar } from 'notistack';
 import { createNotice, addNoticeImage } from 'apis/noticeAPI';
 import { v4 as uuid } from 'uuid';
 import { toBase64 } from 'components/common/utils';
+/**
+ * 이 페이지 컴포넌트는 공지사항 수정하기 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - Header
+ * - NoticeDrawerSuccess
+ * - NoticeDrawerMain
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeDrawerWrite = () => {
+  // 해당 공지사항의 제목을 설정하기 위한 State
   const [noticeTitle, setNoticeTitle] = useState();
+  // Img 리스트를 설정하기 위한 State
   const [imgList, setImgList] = useState([]);
   const editorRef = useRef(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -48,9 +59,6 @@ const NoticeDrawerWrite = () => {
         handleAlert('error', '내용을 입력해야합니다.');
         return;
       }
-
-      // const imgRegEx = /img src="|(.*?)"/gm;
-      // const imgRegExResult = editorContent.match(imgRegEx);
       let noticeHeadImage = '';
       const noticeHeadText = editorContent
         .replace(/<(?:.|\n)*?>/gm, '')

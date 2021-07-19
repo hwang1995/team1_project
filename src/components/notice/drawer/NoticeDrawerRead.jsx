@@ -19,10 +19,10 @@ import DeleteCommentModal from '../modal/DeleteCommentModal';
 import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import SyncSpinner from 'components/common/spinner/SyncSpinner';
 import StyledButton from 'components/common/button/StyledButton';
-import DeleteModal from 'components/notice/modal/DeleteModal';
+import DeleteModal from 'components/notice/modal/DeleteNoticeModal';
 import { getNoticeList, getNoticeCommentsList } from 'apis/noticeAPI';
-import TitleHeaderComment from 'components/common/header/TitleHeaderComment';
-import InputCommentBox from 'components/common/input/InputCommentBox';
+import TitleHeaderComment from 'components/notice/drawer/TitleHeaderComment';
+import InputCommentBox from 'components/notice/drawer/InputCommentBox';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -34,20 +34,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * 이 페이지 컴포넌트는 공지사항의 세부사항을 보여주는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - Header
+ * - NoticeDrawerModify
+ * - NoticeDrawerMain
+ * - DeleteModal
+ * - DeleteCommentModal
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeDrawerRead = () => {
+
   const classes = useStyles();
-  const dispatch = useDispatch();
+  // 해당 공지사항의 삭제 Modal의 Open 여부를 설정하기 위한 State
   const [isOpenModal, setOpenModal] = useState(false);
+  // 댓글 삭제 Modal의 Open 여부를 설정하기 위한 State
   const [isOpenCommentModal, setOpenCommentModal] = useState(false);
+  // 해당 공지사항의 정보를 저장하기 위한 State
   const [notice, setNotice] = React.useState({});
+  // 해당 공지사항의 댓글을 저장하기 위한 State
   const [comment, setComment] = React.useState([]);
+  // 해당 공지사항의 댓글의 입력값을 설정하기 위한 State
   const [inputComment, setInputComment] = useState('');
+  // 댓글의 삭제/생성 여부를 판별을 설정하기 위한 State
   const [changed, setChanged] = useState(false);
+  // Spinner의 Loading 여부를 설정하기 위한 State
   const [isLoading, setLoading] = useState(true);
+  // 리덕스에서 값을 불러오기 위한 셋팅
+  const dispatch = useDispatch();
   const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
   const memberName = useSelector((state) => state.common.loginInfo.memberName);
   const memberId = useSelector((state) => state.common.loginInfo.memberId);
 
+  // 해당 공지사항의 정보 / 댓글을 불러오기 위한 useEffect
   useEffect(() => {
     setLoading(true);
     const getContentWithComment = async () => {
@@ -56,19 +77,14 @@ const NoticeDrawerRead = () => {
         const noticeContent = await getNoticeList(currentIndex);
         setNotice(noticeContent);
 
-        // return `${year}/${month}/${day} ${hour}시 ${minute}분`;
         // 2. 덧글 가져오기
         const commentContent = await getNoticeCommentsList(currentIndex);
-        // console.log("commentContent : ", commentContent);
-        // if (commentContent === undefined) {
-        //   setComment([]);
-        // }
+
         setComment(commentContent);
         // 3. 로딩 상태 바꾸기
         setLoading(false);
         setChanged(false);
       } catch (error) {
-        // console.log(error.response.data.content);
         if (error.response.data.content === 'uri=/api/v1/notice/comments') {
           setComment([]);
         }
@@ -79,27 +95,10 @@ const NoticeDrawerRead = () => {
     getContentWithComment();
   }, [changed]);
 
-  // useEffect(() => {
-  //   const work = async () => {
-  //     try {
-  //       const responseComment = await getNoticeCommentsList(currentIndex);
-  //       setComment(responseComment);
-  //       setChanged(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   work();
-  // }, [changed]);
-
+  // 댓글의 값이 변할 경우 이를 inputComment에 셋팅한다.
   const handleChange = (e) => {
     setInputComment(e.target.value);
-    // console.log(e.target.value);
   };
-
-  // console.log("notice.noticeContent :", notice.noticeContent)
-  // const noticeText = notice.noticeContent.replace(/<(?:.|\n)*?>/gm, '');
-
   return (
     <Fragment>
       {isLoading && (
@@ -163,9 +162,6 @@ const NoticeDrawerRead = () => {
               style={{
                 fontWeight: '600',
                 fontSize: '2rem',
-                // textDecoration: 'underline',
-                // textDecorationColor: '#ced4da',
-                // textUnderlineOffset: '10px',
               }}
             >
               {notice.noticeTitle}
@@ -183,7 +179,6 @@ const NoticeDrawerRead = () => {
                 alignItems: 'center',
               }}
             >
-              {/* {notice.noticeContent} */}
               {parse(notice.noticeContent.toString())}
             </h2>
           </div>
