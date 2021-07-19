@@ -12,13 +12,23 @@ import SearchBox from 'components/common/search/SearchBox';
 import NoticeDrawerItem from 'components/dashboard/NoticeDrawerItem';
 import StyledButton from 'components/common/button/StyledButton';
 import { getNoticesList } from 'apis/noticeAPI';
-import { AiOutlineSearch } from 'react-icons/ai';
 import { GrPowerReset } from 'react-icons/gr';
-
+/**
+ * 이 페이지 컴포넌트는 공지사항 메인을 보여주기 위해 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - Header
+ * - NoticeDrawerRead
+ * - NoticeDrawerWrite
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeDrawerMain = () => {
+  // 공지사항의 제목 검색을 입력하기 위한 State
   const [searchVal, setSearchVal] = useState('');
+  // 페이지를 설정하기 위한 State
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  // 공지사항 리스트를 저장하기 위한 State
   const [notice, setNotice] = React.useState([]);
 
   const hospitalCode = useSelector(
@@ -56,7 +66,6 @@ const NoticeDrawerMain = () => {
   };
 
   const handleClick = (data) => {
-    // console.log(data);
     dispatch(setNoticeCurrentIndex(data.noticeId));
     dispatch(setActiveStep('READ'));
   };
@@ -77,7 +86,6 @@ const NoticeDrawerMain = () => {
   return (
     <Fragment>
       <div style={{ marginTop: '3rem', display: 'flex' }}>
-        {/* <button onClick={() => setActiveStep('what')}>hello world</button> */}
         <div style={{ flex: 1, alignSelf: 'center', marginRight: '20px' }}>
           <StyledButton
             bgColor="rgb(226,153,51)"
@@ -163,7 +171,7 @@ const NoticeDrawerMain = () => {
                 </div>
                 {data.noticeHeadImage ? (
                   <div className="right-side" style={{ flex: 1 }}>
-                    <img src={data.noticeHeadImage} alt="Logo" width="80%" />
+                    <img src={data.noticeHeadImage} alt="Logo" width="70%" maxWidth="150px" maxHeight="75px"/>
                   </div>
                 ) : (
                   <div className="right-side" style={{ flex: 1 }}></div>

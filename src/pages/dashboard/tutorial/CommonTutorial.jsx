@@ -5,12 +5,18 @@ import 'swiper/swiper.scss';
 import 'swiper/components/navigation/navigation.scss';
 
 SwiperCore.use([Navigation]);
+/**
+ * 이 페이지 컴포넌트는 공통부분의 튜토리얼을 보여주기 위해 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - CommonTutorial
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const CommonTutorial = () => {
   return (
     <Fragment>
       <Swiper
         spaceBetween={50}
-        // slidesPerView={1}
         navigation={true}
       >
         <SwiperSlide
@@ -137,6 +143,22 @@ const CommonTutorial = () => {
         >
           <img
             src="/assets/image/tutorial/common/slide/슬라이드8.png"
+            alt="Logo"
+            width="90%"
+          />
+        </SwiperSlide>
+        <SwiperSlide
+          style={{
+            width: '100%',
+            height: '100vh',
+            backgroundColor: ' aliceblue',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <img
+            src="/assets/image/tutorial/common/slide/슬라이드9.png"
             alt="Logo"
             width="90%"
           />

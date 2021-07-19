@@ -6,10 +6,9 @@ import {
 } from 'react-icons/md';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-// import Divider from '@material-ui/core/Divider';
 import { ListItem, IconButton } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
-import DeleteTodoModal from 'pages/dashboard/front/modal/DeleteTodoModal';
+import DeleteTodoModal from 'components/todo/modal/DeleteTodoModal';
 import { modifyCheckedOut, modifyCheckedIn } from 'apis/todoAPI';
 
 const NoticeContainer = styled.div`
@@ -31,23 +30,35 @@ const NoticeContainer = styled.div`
   }
 `;
 
+/**
+ * 이 페이지 컴포넌트는 할 일(TODO)의 리스트를 보여주는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - TodoItem
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const TodoItem = ({ data, setChanged, loginMemberId }) => {
-  // console.log(data);
+  // 부모 컴포넌트에서 받은 TODO의 data  
   const { todoContent, createdDate, todoId, memberId, memberName } = data;
+  // DeleteTodoDrawer의 Open 여부를 설정하기 위한 State
   const [isOpenModal, setOpenModal] = useState(false);
+  // Checked 여부를 설정하기 위한 State
   const [isChecked, setChecked] = useState(data.checked);
+
+  // Checked의 상태를 수정하기 위한 함수
   const handleModify = async () => {
     try {
-      console.log(data.todoId);
+      // Checked의 상태값이 True일 경우
       if (isChecked) {
         await modifyCheckedOut(todoId);
+        // 이전의 상태값(boolean)으로 변경
         setChecked((prevState) => !prevState);
         return;
       }
       await modifyCheckedIn(data.todoId);
+      // 이전의 상태값(boolean)으로 변경
       setChecked((prevState) => !prevState);
       return;
-      // await modifyCheckedOut(todoId);
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +77,8 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
             {isChecked ? (
               <div
                 className="text"
-                style={{ flex: 9, textDecoration: 'line-through' }}
+                style={{ flex: 9, textDecoration: 'line-through', textDecorationColor: 'rgb(255, 107, 107)'
+              }}
               >
                 {todoContent}
               </div>
@@ -75,7 +87,6 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
                 {todoContent}
               </div>
             )}
-            {/* <MdCheckBox /> */}
             {memberId === loginMemberId ? (
               <div
                 style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}
@@ -94,13 +105,8 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
             ) : (
               <div style={{ flex: 1 }}></div>
             )}
-
-            {/* <MdCheckBox style={{marginRight: "11px"}}/> */}
-            {/* {todoContent} */}
           </div>
         </StyledTypography>
-
-        {/* <Divider className="divider" /> */}
         <div
           className="description"
           style={{ display: 'flex', alignItems: 'center' }}
@@ -126,8 +132,6 @@ const TodoItem = ({ data, setChanged, loginMemberId }) => {
             >
               |
             </StyledTypography>
-
-            {/* <span className="text-margin">|</span> */}
             <StyledTypography
               variant="subtitle1"
               component="span"

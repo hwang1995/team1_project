@@ -30,24 +30,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeleteCommentModal = ({ isOpenCommentModal, setOpenCommentModal, noticeCommentId, setChanged}) => {
+/**
+ * 목적 : 공지사항의 게시글의 댓글을 삭제하기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * @returns
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+const DeleteCommentModal = ({
+  isOpenCommentModal,
+  setOpenCommentModal,
+  noticeCommentId,
+  setChanged,
+}) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
+
+  // 알람 셋팅
   const { enqueueSnackbar } = useSnackbar();
-
-  const handleClose = () => {
-    setOpenCommentModal(false);
-  };
-
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
       variant,
     });
   };
 
+  // 취소 버튼 클릭시 Modal의 상태값을 false로 바꿔준다.
+  const handleClose = () => {
+    setOpenCommentModal(false);
+  };
+
+
+  // 삭제 버튼 클릭시 해당 댓글을 삭제한다.
   const handleRemoveComment = async (event) => {
     try {
-      console.log(noticeCommentId)
+      console.log(noticeCommentId);
       await removeComment(noticeCommentId);
       handleAlert('success', '삭제가 완료되었습니다.');
 
@@ -56,10 +72,6 @@ const DeleteCommentModal = ({ isOpenCommentModal, setOpenCommentModal, noticeCom
       console.log(error);
     }
   };
-
-  // const handleDeleteBtn = () => {
-  //   dispatch(setActiveStep('DELETE'));
-  // };
 
   return (
     <Fragment>
@@ -83,9 +95,6 @@ const DeleteCommentModal = ({ isOpenCommentModal, setOpenCommentModal, noticeCom
           >
             <ResponsiveContainer breakpoint={breakpoint} style={{ flex: 1 }}>
               <DrawerHeader breakpoint={breakpoint}>
-                {/* <StyledTypography variant="h5" component="h5" weight={7}>
-                  임직원 삭제 {member_id}번 회원
-                </StyledTypography> */}
                 <div>
                   <IconButton>
                     <AiOutlineClose size={24} onClose={handleClose} />
@@ -95,10 +104,7 @@ const DeleteCommentModal = ({ isOpenCommentModal, setOpenCommentModal, noticeCom
               <div>
                 <h2
                   style={{
-                    // display: 'flex',
-                    // alignItems: 'center',
-                    // justifyContent: 'center',
-                    textAlign: 'center'
+                    textAlign: 'center',
                   }}
                 >
                   <StyledTypography
@@ -109,15 +115,22 @@ const DeleteCommentModal = ({ isOpenCommentModal, setOpenCommentModal, noticeCom
                   >
                     정말로 삭제하겠습니까?
                   </StyledTypography>
-                  <img style={{border: "5px solid", borderColor: "rgba(0,0,0,0.1)"}}
-                  src="/assets/image/notFound.png" alt="Logo" width="50%" />
+                  <img
+                    style={{
+                      border: '5px solid',
+                      borderColor: 'rgba(0,0,0,0.1)',
+                    }}
+                    src="/assets/image/notFound.png"
+                    alt="Logo"
+                    width="50%"
+                  />
                 </h2>
               </div>
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  marginTop: '1rem'
+                  marginTop: '1rem',
                 }}
               >
                 <StyledButton

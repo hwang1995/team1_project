@@ -10,30 +10,40 @@ import { getNoticeList, modifyNotice, addNoticeImage } from 'apis/noticeAPI';
 import SyncSpinner from 'components/common/spinner/SyncSpinner';
 import { v4 as uuid } from 'uuid';
 import { toBase64 } from 'components/common/utils';
-
+/**
+ * 이 페이지 컴포넌트는 공지사항 수정하기 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - Header
+ * - NoticeDrawerSuccess
+ * - NoticeDrawerMain
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeDrawerModify = () => {
-  const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
+  // Spinner의 Loading 여부를 설정하기 위한 State
   const [isLoading, setLoading] = useState(true);
-  const { enqueueSnackbar } = useSnackbar();
+  // 해당 공지사항을 저장하기 위한 State
+  const [notice, setNotice] = React.useState({});
+  // 해당 공지사항의 제목을 수정하기 위한 State
+  const [noticeTitle, setNoticeTitle] = useState();
+  // Img 리스트를 설정하기 위한 State
   const [imgList, setImgList] = useState([]);
   const editorRef = useRef(null);
-  const [notice, setNotice] = React.useState({});
-
-  const [noticeTitle, setNoticeTitle] = useState();
-  // const [inputContent, setInputContent] = useState('');
+  // 리덕스에 저장되어 있는 현재 공지사항의 noticeId 가져오기
+  const currentIndex = useSelector((state) => state.notice.noticeCurrentIndex);
+  // 리덕스에 저장되어 있는 hospitalCode 가져오기
+  const hospitalCode = useSelector(
+    (state) => state.common.loginInfo.hospitalCode,
+  );
+  const dispatch = useDispatch();
+  // 알람 설정 세팅
+  const { enqueueSnackbar } = useSnackbar();
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
       variant,
     });
   };
 
-  const hospitalCode = useSelector(
-    (state) => state.common.loginInfo.hospitalCode,
-  );
-
-  const dispatch = useDispatch();
-
-  // console.log(inputContent);
   const handleChange = (e) => {
     setNoticeTitle(e.target.value);
   };
@@ -46,7 +56,6 @@ const NoticeDrawerModify = () => {
         setNotice(noticeContent);
         setNoticeTitle(noticeContent.noticeTitle);
         setLoading(false);
-        // console.log('noticeContent : ', noticeContent);
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -54,15 +63,6 @@ const NoticeDrawerModify = () => {
     };
     work();
   }, []); //***** [] 없으면 무한실행합니다.
-
-  // useEffect(() => {
-  //   setInputVal();
-  //   setInputContent();
-  // }, [notice]);
-
-  // const handleEditorChange = (e, editor) => {
-  //   setInputContent(e.target.value);
-  // };
 
   const handleModify = async () => {
     try {
@@ -77,40 +77,28 @@ const NoticeDrawerModify = () => {
         handleAlert('error', '내용을 입력해야합니다.');
         return;
       }
-      // let noticeHeadImage = '';
-      // console.log(inputVal);
+      // editorContent에서 html 코드를 떼어낸 다음 50자 까지만 noticeHeadText 변수에 저장
       const noticeHeadText = editorContent
         .replace(/<(?:.|\n)*?>/gm, '')
         .substring(0, 50);
 
-      //   if (imgList.length > 0) {
-      //     noticeHeadImage = imgList[0];
-      //   }
-      //   if (imgList.length === 0) {
-      //     noticeHeadImage = '';
-      // }
+    
       const sendInfo = {
         noticeId: currentIndex,
         noticeTitle: noticeTitle,
-        // createDate: new Date().toJSON().split('.')[0],
         noticeContent: editorContent,
         noticeHeadText,
-        // noticeHeadImage,
       };
 
+      // noticeAPI의 modifyNotice에 요청 데이터로 sendInfo 넣어주기 
       await modifyNotice(sendInfo);
 
+      // 수정 완료 후 MODIFYSUCCESS 컴포넌트로 이동
       dispatch(setActiveStep('MODIFYSUCCESS'));
     } catch (error) {
       console.log(error);
     }
   };
-
-  // useEffect(() => {
-  //   setInputVal(notice.noticeTitle);
-  //   setInputContent(notice.noticeContent);
-  // }, [notice]);
-
   return (
     <Fragment>
       {isLoading && (
@@ -135,7 +123,6 @@ const NoticeDrawerModify = () => {
             <div style={{ flex: 6 }}>
               <StyledInputBase
                 name="noticeTitle"
-                // value={notice.noticeTitle}
                 value={noticeTitle}
                 onChange={handleChange}
               />
@@ -148,7 +135,6 @@ const NoticeDrawerModify = () => {
                 height="500px"
                 initialEditType="wysiwyg"
                 name="noticeContent"
-                // value={notice.noticeContent}
                 initialValue={notice.noticeContent}
                 language="ko"
                 hooks={{

@@ -1,15 +1,18 @@
 import React, { Fragment } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+/**
+ * 이 페이지 컴포넌트는 의사의 사용자가이드를 보여주기 위해 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - DoctorTutorial
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const DoctorTutorial = () => {
-
-
-
   return (
     <Fragment>
       <Swiper
         spaceBetween={50}
-        // slidesPerView={1}
         navigation={true}
       >
         <SwiperSlide

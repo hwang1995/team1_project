@@ -10,8 +10,8 @@ import {
   getTodosListByHospitalCode,
   getTodosListByMemberId,
 } from 'apis/todoAPI';
-import parse from 'html-react-parser';
 import { getHospitalInfo } from 'apis/hospitalAPI';
+import parse from 'html-react-parser';
 import 'react-calendar/dist/Calendar.css';
 import NoticeItem from 'components/dashboard/NoticeItem';
 import ContentContainer from 'components/common/container/ContentContainer';
@@ -21,58 +21,69 @@ import StyledButton from 'components/common/button/StyledButton';
 import NoticeDrawer from 'components/notice/drawer/NoticeDrawer';
 import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader';
 import PageTransition from 'components/common/transition/PageTransition';
-import InputBox from 'components/common/input/InputBox';
-import TitleHeaderDashBoard from 'components/common/header/TitleHeaderDashBoard';
+import InputBox from 'components/todo/InputTodoBox';
+import TitleHeaderDashBoard from 'pages/dashboard/front/TitleHeaderDashBoard';
 import TodoItem from 'components/dashboard/TodoItem';
 import moment from 'moment';
-import DashBoardSpinner from 'components/common/spinner/DashBoardSpinner';
+import DashBoardSpinner from 'components/common/spinner/BeatSpinner';
 import { setActiveStep } from 'redux/features/notice/noticeSlice';
-// import noticeData from 'components/notice/notice'
 /**
  * 이 페이지 컴포넌트는 대쉬보드의 메인을 보여주기 위해 작성하는 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
  * - Sider
  * - Header
  * - 공지사항
+ * - CORONA 
  * - Calendar
+ * - TodoItem
+ * - InputBox
  * - ColoredContainer
  * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
  */
 
 const FrontPage = () => {
+  // NoticeDrawer의 Open 여부를 설정하기 위한 State
   const [isOpened, setOpened] = useState(false);
+  // Data Picker 클릭 시 변경된 date를 설정하기 위한 State
   const [date, changeDate] = useState(new Date());
-  const [input, setInput] = useState('');
+  // 할 일의 입력값을 받기위한 State
+  const [todoinput, setTodoInput] = useState('');
+  // 공지사항 리스트를 저장하기 위한 State
   const [notice, setNotice] = React.useState([]);
-  // const [todoByCode, setTodoByCode] = React.useState([]);
-  const [todoById, setTodoById] = React.useState([]);
+  // 할 일 리스트를 저장하기 위한 State
+  const [todo, setTodo] = React.useState([]);
+  // 자식 컴포넌트의 값이 변경될 경우 useEffect가 이를 감지하여 렌더링하기 위한 State
   const [changed, setChanged] = useState(false);
+  // 병원 정보를 저장하기 위한 State
   const [hospital, setHospital] = useState('');
+  // 코로나 정보를 저장하기 위한 State
+  const [corona, setCorona] = useState('');
+  // 할 일, 전체의 할 일의 텍스트 Weight를 설정하기 위한 State
   const [mineText, setMineText] = useState(700);
   const [allText, setAllText] = useState(300);
+  // Spinner의 Loading 여부를 설정하기 위한 State
   const [isLoading, setLoading] = useState(true);
-  const [corona, setCorona] = useState('');
 
+
+  // 리덕스에 저장되어 있는 값들 불러오기
   const dispatch = useDispatch();
-
-  const hospitalCode = useSelector(
-    (state) => state.common.loginInfo.hospitalCode,
-  );
-
+  const hospitalCode = useSelector((state) => state.common.loginInfo.hospitalCode);
   const memberName = useSelector((state) => state.common.loginInfo.memberName);
-
   const memberId = useSelector((state) => state.common.loginInfo.memberId);
-  // const emergencyItem = useSelector((state) => state.emergency.emergencyItem);
 
+  // NoticeDrawer가 open될 시 변화를 감지
   useEffect(() => {
     console.log('변화가 일어났어요.', isOpened);
   }, [isOpened]);
 
+  // 코로나, 공지사항, 병원, TODO의 데이터를 불러올 때까지
+  // Spinner가 실행되도록 한다. changed의 상태값이 변할 경우 렌더링하도록 한다.
   useEffect(() => {
     setLoading(true);
     const getNoticeAndTodoAndCorona = async () => {
       try {
-        // 3. 코로나 데이터 가져오기
+        // 1. 코로나 데이터 가져오기
         const from = moment()
           .subtract(3, 'days')
           .startOf('day')
@@ -83,19 +94,20 @@ const FrontPage = () => {
         console.log('to :', to);
         const coronaContent = await getCoronaData(from, to);
         setCorona(coronaContent);
+        console.log("coronaContent : ", coronaContent)
 
-        // 1. 공지사항 가져오기
+        // 2. 공지사항 가져오기
         const noticeContent = await getNoticesList(hospitalCode);
         setNotice(noticeContent.data.data);
 
-        // 1.5 병원정보 가져오기
+        // 3 병원정보 가져오기
         const hospitalContent = await getHospitalInfo(hospitalCode);
         setHospital(hospitalContent.data.data);
         console.log(hospitalContent.data);
 
-        // 2. 투두 가져오기
+        // 4 투두 가져오기
         const todoContent = await getTodosListByMemberId(memberId);
-        setTodoById(todoContent.data.data);
+        setTodo(todoContent.data.data);
         setChanged(false);
 
         // 4. 로딩 상태 바꾸기
@@ -112,7 +124,7 @@ const FrontPage = () => {
     try {
       const response = await getTodosListByMemberId(memberId);
 
-      setTodoById(response.data.data);
+      setTodo(response.data.data);
 
       setMineText(700);
       setAllText(300);
@@ -122,11 +134,12 @@ const FrontPage = () => {
     }
   };
 
+
   const TodosListByHospitalCode = async () => {
     try {
       const response = await getTodosListByHospitalCode(hospitalCode);
 
-      setTodoById(response.data.data);
+      setTodo(response.data.data);
       setMineText(300);
       setAllText(700);
       setChanged(false);
@@ -143,6 +156,7 @@ const FrontPage = () => {
     setOpened(true);
     dispatch(setActiveStep('MAIN'));
   };
+ 
 
   return (
     <Fragment>
@@ -276,13 +290,7 @@ const FrontPage = () => {
                                 <span>코로나바이러스감염증-19</span>
                               </TitleHeaderDashBoard>
                               <div style={{ display: 'flex' }}>
-                                {/* {console.log("corona.data : ", corona.data)} */}
-                                {
-                                  corona.data[
-                                    corona.data.length - 1
-                                  ].Date.split('T00:00:00Z')[0]
-                                }{' '}
-                                기준
+                                { corona.data[corona.data.length - 1].Date.split('T00:00:00Z')[0] } 기준
                               </div>
                             </h4>
 
@@ -330,17 +338,14 @@ const FrontPage = () => {
                                         marginLeft: '0.3rem',
                                       }}
                                     >
-                                      {corona.data[corona.data.length - 1]
+                                      {(corona.data[corona.data.length - 1]
                                         .Confirmed -
                                         corona.data[corona.data.length - 2]
-                                          .Confirmed}
+                                          .Confirmed).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                                     </span>
                                   </div>
-                                  <div style={{}}>
-                                    {
-                                      corona.data[corona.data.length - 1]
-                                        .Confirmed
-                                    }
+                                  <div>
+                                    { corona.data[corona.data.length - 1].Confirmed.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") }
                                   </div>
                                 </div>
                                 <div
@@ -370,17 +375,11 @@ const FrontPage = () => {
                                         marginLeft: '0.3rem',
                                       }}
                                     >
-                                      {corona.data[corona.data.length - 1]
-                                        .Recovered -
-                                        corona.data[corona.data.length - 2]
-                                          .Recovered}
+                                      { (corona.data[corona.data.length - 1].Recovered - corona.data[corona.data.length - 2].Recovered).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                                     </span>
                                   </div>
                                   <div>
-                                    {
-                                      corona.data[corona.data.length - 1]
-                                        .Recovered
-                                    }
+                                    { corona.data[corona.data.length - 1].Recovered.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") }
                                   </div>
                                 </div>
                                 <div
@@ -416,7 +415,7 @@ const FrontPage = () => {
                                     </span>
                                   </div>
                                   <div>
-                                    {corona.data[corona.data.length - 1].Deaths}
+                                    {corona.data[corona.data.length - 1].Deaths.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                                   </div>
                                 </div>
                                 <div
@@ -446,14 +445,14 @@ const FrontPage = () => {
                                         // marginBottom: '0.5rem',
                                       }}
                                     >
-                                      {corona.data[corona.data.length - 1]
+                                      {(corona.data[corona.data.length - 1]
                                         .Active -
                                         corona.data[corona.data.length - 2]
-                                          .Active}
+                                          .Active).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                                     </span>
                                   </div>
                                   <div>
-                                    {corona.data[corona.data.length - 1].Active}
+                                    {corona.data[corona.data.length - 1].Active.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                                   </div>
                                 </div>
                               </div>
@@ -520,8 +519,7 @@ const FrontPage = () => {
                             >
                               <div style={{ flex: 9 }}>
                                 <InputBox
-                                  // onChange={handleChange}
-                                  setInput={setInput}
+                                  setTodoInput={setTodoInput}
                                   memberId={memberId}
                                   hospitalCode={hospitalCode}
                                   setChanged={setChanged}
@@ -531,7 +529,7 @@ const FrontPage = () => {
                               </div>
                             </div>
                             <List component="nav">
-                              {todoById.map((data) => {
+                              {todo.map((data) => {
                                 return (
                                   <TodoItem
                                     loginMemberId={memberId}

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Divider from '@material-ui/core/Divider';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import { ListItem } from '@material-ui/core';
+
+
 const NoticeContainer = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.12);
   padding: 1rem;
@@ -23,7 +25,15 @@ const NoticeContainer = styled.div`
   }
 `;
 
+/**
+ * 이 페이지 컴포넌트는 공지사항의 리스트를 보여주는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - NoticeItem
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeItem = ({ data }) => {
+  // 부모 컴포넌트에서 받은 NOTICE의 data  
   const { noticeTitle, createDate, noticeAuthor } = data;
   return (
     <ListItem>
@@ -58,8 +68,6 @@ const NoticeItem = ({ data }) => {
           >
             |
           </StyledTypography>
-
-          {/* <span className="text-margin">|</span> */}
           <StyledTypography
             variant="subtitle1"
             component="span"

@@ -6,6 +6,13 @@ import 'swiper/components/navigation/navigation.scss';
 
 
 SwiperCore.use([Navigation]);
+/**
+ * 이 페이지 컴포넌트는 간호사의 사용자가이드를 보여주기 위해 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - NurseTutorial
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NurseTutorial = () => {
 
   return (
@@ -13,7 +20,6 @@ const NurseTutorial = () => {
       
       <Swiper
         spaceBetween={50}
-        // slidesPerView={1}
         navigation={true}
       >
         <SwiperSlide

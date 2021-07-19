@@ -6,6 +6,13 @@ import 'swiper/components/navigation/navigation.scss';
 
 
 SwiperCore.use([Navigation]);
+/**
+ * 이 페이지 컴포넌트는 병원장의 사용자가이드를 보여주기 위해 작성하는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - OwnerTutorial
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const OwnerTutorial = () => {
 
   return (
@@ -13,7 +20,6 @@ const OwnerTutorial = () => {
       
       <Swiper
         spaceBetween={50}
-        // slidesPerView={1}
         navigation={true}
       >
         <SwiperSlide
@@ -27,7 +33,7 @@ const OwnerTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/owner/슬라이드1.jpg"
+            src="/assets/image/tutorial/owner/슬라이드1.png"
             alt="Logo"
             width="90%"
           />
@@ -43,7 +49,7 @@ const OwnerTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/owner/슬라이드3.jpg"
+            src="/assets/image/tutorial/owner/슬라이드2.png"
             alt="Logo"
             width="90%"
           />
@@ -59,7 +65,7 @@ const OwnerTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/owner/슬라이드2.jpg"
+            src="/assets/image/tutorial/owner/슬라이드3.png"
             alt="Logo"
             width="90%"
           />
