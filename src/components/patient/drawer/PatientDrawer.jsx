@@ -7,7 +7,7 @@ import { registerPatientInfo } from 'apis/patientAPI';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import SelectedMan from '../selectedGender/SelectedGender';
+import SelectedMan from '../selectedGender/selectedGender';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';

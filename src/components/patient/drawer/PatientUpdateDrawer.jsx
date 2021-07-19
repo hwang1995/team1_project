@@ -14,7 +14,7 @@ import StyledInputBase from 'components/common/input/StyledInputBase';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
 import AddressModal from '../modal/Modal';
-import SelectedUpdateGender from '../selectedGender/SelectedUpdateGender';
+import SelectedUpdateGender from '../selectedGender/selectedUpdateGender';
 import { modifyPatient } from 'apis/patientAPI';
 
 /**
