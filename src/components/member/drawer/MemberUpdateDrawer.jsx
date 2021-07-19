@@ -29,6 +29,16 @@ import { v4 as uuid } from 'uuid';
 import { CirclePicker } from 'react-color';
 import ImageUploader from 'react-images-upload';
 
+/**
+ * 이 DRAWER 컴포넌트는 임직원 수정사항을 작성하기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * DRAWER (SwipeableDrawer)
+ * * * 주소 검색 (PostalCodeModal)
+ * * * 이미지 업로드 (ImageUploader)
+ * * * 색상 선택 (CirclePicker)
+ * @returns {JSX.Element}
+ * @author Jong Hyun Hong
+ */
 const MemberUpdateDrawer = ({
   isUpdateOpened,
   setUpdateOpened,
@@ -38,21 +48,18 @@ const MemberUpdateDrawer = ({
 }) => {
   const { breakpoint } = useWindowSize();
 
-  // 권한데이터
+  // 임직원의 권한을 설정할때 저장하는 상태
   const [selectVal, setSelectVal] = useState('');
 
-  // 이메일 중복체크 확인 상태
+  // 임직원의 이메일 중복체크의 확인여부를 저장하는 상태
   const [isEmailChecked, setIsEmailChecked] = useState(false);
 
-  // 멤버 정보 데이터
+  // 임직원 정보에 대한 데이터를 저장하는 상태
   const [memberInfo, setMemberInfo] = useState({});
 
   const { enqueueSnackbar } = useSnackbar();
 
-  // 이미지 상태
-  const [pictures, setPictures] = useState('');
-
-  // 색상 상태
+  // 임직원의 색상을 저장하기 위한 상태
   const [currentColor, setCurrentColor] = useState('');
 
   const handleAlert = (variant, message) => {
@@ -61,13 +68,18 @@ const MemberUpdateDrawer = ({
     });
   };
 
-  // 데이터 변경시 이벤트
+  // 데이터 변경시에 동작
   const handleChange = (event) => {
+    // 이메일 변경시 중복체크 여부 재설정
+    if (event.target.name === 'memberEmail') {
+      setIsEmailChecked(false);
+    }
     setMemberInfo({ ...memberInfo, [event.target.name]: event.target.value });
     console.log(event.target.name);
     console.log('값 변경: ', event.target.value);
   };
 
+  // 이미지를 업로드하거나 취소할때의 동작
   const onDrop = async (event, picture) => {
     if (event.length === 0 || picture.length === 0) {
       return;
@@ -122,7 +134,6 @@ const MemberUpdateDrawer = ({
         memberAddr2: memberData.memberAddr2,
         memberColor: memberData.memberColor,
         memberEmail: memberData.memberEmail,
-        memberPw: memberData.memberPw,
         memberImage: memberData.memberImage,
         memberIntroduction: memberData.memberIntroduction,
       });
@@ -137,6 +148,7 @@ const MemberUpdateDrawer = ({
     (state) => state.member.addressInfo,
   );
 
+  // 색상 변경시 데이터 저장
   useEffect(() => {
     console.log('currentCOlor', currentColor);
     setMemberInfo({
@@ -163,100 +175,7 @@ const MemberUpdateDrawer = ({
     });
   }, [member_postal, member_addr1]);
 
-  // 수정버튼
-  const handlePrevSubmit = async (event) => {
-    event.preventDefault();
-    console.log('submit동작: ', memberInfo);
-
-    // 이메일 정규 표현식
-    const regExpEmail =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
-    // 비밀번호 정규 표현식
-    // 숫자, 특수문자 각 1회 이상, 영문은 2개 이상 사용하여 8자리 이상 입력
-    const regExpPw =
-      /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
-
-    // 전화번호 정규표현식
-    const regExpTel =
-      /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
-
-    const isValidEmail = regExpEmail.test(memberInfo.memberEmail);
-    const isValidPW = regExpPw.test(memberInfo.memberPw);
-    const isValidTel = regExpTel.test(memberInfo.memberTel);
-
-    //같은 이메일일때
-    if (memberInfo.memberEmail === memberData.memberEmail) {
-      setIsEmailChecked(true);
-    }
-
-    if (!isEmailChecked) {
-      handleAlert('error', '이메일 중복 체크를 해주세요.');
-      return;
-    } else if (!isValidEmail) {
-      handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
-      return;
-    } else if (!isValidPW) {
-      handleAlert(
-        'error',
-        '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
-      );
-      return;
-    } else if (memberInfo.memberName === '') {
-      handleAlert('error', '이름이 공백입니다.');
-      return;
-    } else if (!isValidTel) {
-      handleAlert(
-        'error',
-        '전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)',
-      );
-      return;
-    } else if (
-      memberInfo.memberPostal === '' ||
-      memberInfo.memberAddr1 === ''
-    ) {
-      handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
-      return;
-    } else if (memberInfo.memberAddr2 === '') {
-      handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
-      return;
-    } else if (memberInfo.memberColor === '') {
-      handleAlert('error', '색상이 없습니다. 색을 골라주세요.');
-      return;
-    }
-
-    //pictures 데이터가 존재
-    if (pictures !== '') {
-      try {
-        const { data, status } = await memberImageUpload(pictures);
-        console.log('이미지가 등록됨: ', data);
-        setMemberInfo({
-          ...memberInfo,
-          memberImage: data,
-        });
-        //함수내부말고 새로운 (ex. settingPictures() addImage() 등) 객체나 함수를 만들어서 거기서 setState를 해줌
-        console.log(memberInfo);
-      } catch (error) {
-        handleAlert('error', '이미지 등록과정중 에러발생');
-        return;
-      }
-    }
-    console.log('정보 두번', memberInfo);
-    //수정
-    try {
-      const { data, status } = await modifyMemberInfo(memberInfo);
-      console.log('수정결과: ', data);
-    } catch (error) {
-      console.log(error.response.data);
-      handleAlert('error', '수정 과정중 오류가 발생하였습니다.');
-      return;
-    }
-
-    handleAlert('success', '임직원 정보가 변경 되었습니다.');
-    showMember();
-    setUpdateOpened(false);
-  };
-
+  // '변경' 버튼을 클릭시 동작
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -264,30 +183,28 @@ const MemberUpdateDrawer = ({
       const regExpEmail =
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-      // 비밀번호 정규 표현식
-      // 숫자, 특수문자 각 1회 이상, 영문은 2개 이상 사용하여 8자리 이상 입력
-      const regExpPw =
-        /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
-
       // 전화번호 정규표현식
       const regExpTel =
         /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
 
       const isValidEmail = regExpEmail.test(memberInfo.memberEmail);
-      const isValidPW = regExpPw.test(memberInfo.memberPw);
       const isValidTel = regExpTel.test(memberInfo.memberTel);
 
-      if (!isEmailChecked) {
-        handleAlert('error', '이메일 중복 체크를 해주세요.');
-        return;
+      // 동일한 이메일주소
+      let sameEmail = false;
+      // 같은 이메일일때
+      if (memberInfo.memberEmail === memberData.memberEmail) {
+        sameEmail = true;
+      }
+      console.log('이메일 체크 상태: ', isEmailChecked);
+
+      if (!sameEmail) {
+        if (!isEmailChecked) {
+          handleAlert('error', '이메일 중복 체크를 해주세요.');
+          return;
+        }
       } else if (!isValidEmail) {
         handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
-        return;
-      } else if (!isValidPW) {
-        handleAlert(
-          'error',
-          '비밀번호를 숫자, 특수문자 각 1회 이상, 영문은 2글자 이상 입력하고 총 8자 이상이 되어야 합니다.',
-        );
         return;
       } else if (memberInfo.memberName === '') {
         handleAlert('error', '이름이 공백입니다.');
@@ -352,7 +269,7 @@ const MemberUpdateDrawer = ({
 
     try {
       if (memberInfo.memberEmail !== memberData.memberEmail) {
-        const { data, status } = await isExistedEmail(memberInfo.memberEmail);
+        const { data } = await isExistedEmail(memberInfo.memberEmail);
         console.log('이메일검사 결과: ', data);
         handleAlert('success', '이메일을 사용해도 좋습니다.');
       }
@@ -363,6 +280,7 @@ const MemberUpdateDrawer = ({
     }
   };
 
+  // 색상 변경시 동작
   const colorChange = (color, event) => {
     if (color) {
       setCurrentColor(color.hex);
@@ -479,26 +397,6 @@ const MemberUpdateDrawer = ({
                 >
                   중복 체크
                 </StyledButton>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <StyledTypography variant="h6" component="h5" weight={5}>
-                  비밀번호
-                </StyledTypography>
-              </Grid>
-              <Grid item xs={9}>
-                <StyledInputBase
-                  name="memberPw"
-                  type="password"
-                  value={memberInfo.memberPw || ''}
-                  onChange={handleChange}
-                />
               </Grid>
               <Grid
                 item
