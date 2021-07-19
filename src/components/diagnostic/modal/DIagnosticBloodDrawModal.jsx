@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진단 검사에서 채혈 완료 버튼을 클릭시에 나오는 컴포넌트 (Template)
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticBloodDrawModal = () => {
   const classes = useStyles();
 

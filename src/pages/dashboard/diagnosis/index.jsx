@@ -43,6 +43,11 @@ const getSteps = () => [
   '진료 완료',
 ];
 
+/**
+ * * 목표 : 진료 페이지를 보여주기 위한 페이지 컴포넌트ㅌㅌ
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisPage = () => {
   // 페이지 상태를 가져오기 위한 함수
   const steps = getSteps();
@@ -54,6 +59,8 @@ const DiagnosisPage = () => {
 
   // Redux store에 저장된 진료 정보
   const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
+
+  // 현재 활성화 스텝을 나타내기 위한 변수
   const activeStep = useSelector((state) => state.diagnosis.activeStep);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -68,11 +75,9 @@ const DiagnosisPage = () => {
   const handleNext = () => {
     if (patientInfo.patientId === 0) {
       handleAlert('error', '환자를 선택해주세요.');
-      // alert('환자를 선택해주세요.');
       return;
     } else if (activeStep === 1 && diagnosisInfo.drOpinion === '') {
       handleAlert('error', '의사 의견을 입력해주세요.');
-      // alert('의사 의견을 입력해주세요.');
       return;
     } else if (activeStep === 1 && diagnosisInfo.drOpinion !== '') {
       dispatch(setDiagnosisModal(true));
@@ -83,9 +88,11 @@ const DiagnosisPage = () => {
       dispatch(setActiveStep(0));
       return;
     }
+
     dispatch(setActiveStep(activeStep + 1));
   };
 
+  // 이전 버튼을 눌렀을 시에 반응하는 이벤트 함수
   const handleBack = () => {
     if (activeStep < 1) {
       return;
@@ -93,12 +100,23 @@ const DiagnosisPage = () => {
     dispatch(setActiveStep(activeStep - 1));
   };
 
+  /**
+   * 처음 렌더링 시에 side-effect를 정의 (렌더링 취소시)
+   * * step을 0으로 만든다.
+   * * medicineInfo, injectorInfo, diagnosticInfo, vitalInfo의 내용을 초기화 해준다.
+   */
   useEffect(() => {
     return () => {
       dispatch(setActiveStep(0));
       dispatch(resetDiagnosisInfos());
     };
-  }, []);
+  }, [dispatch]);
+
+  /**
+   * * 목표 : Step에 따른 View 컨텐트를 Return
+   * @param {string} step
+   * @returns {JSX.Element} View
+   */
   const getStepContent = (step) => {
     switch (step) {
       case 0:

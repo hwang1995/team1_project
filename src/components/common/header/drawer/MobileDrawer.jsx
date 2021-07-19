@@ -82,6 +82,11 @@ const MobileContainer = styled(Container)`
   }
 `;
 
+/**
+ * * 모바일로 접속하였을 떄에 보여줄 Drawer
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const MobileDrawer = () => {
   const dispatch = useDispatch();
   const location = useLocation();

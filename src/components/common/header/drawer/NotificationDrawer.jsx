@@ -81,6 +81,11 @@ const NotificationContainer = styled.div`
   }
 `;
 
+/**
+ * * 각 병원의 각 포지션에 맞는 알림 리스트를 보여주기 위한 컴포넌트
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const NotificationDrawer = () => {
   const { breakpoint } = useWindowSize();
   const dispatch = useDispatch();
@@ -165,15 +170,17 @@ const NotificationDrawer = () => {
 
           <NotificationContainer>
             {isLoading &&
+              pushList.length > 0 &&
               pushList.map((data) => {
                 const { priority } = data;
+                console.log(data, 'hello');
                 if (priority === 'success') {
                   return <SuccessItem data={data} />;
                 } else if (priority === 'information') {
                   return <InformationItem data={data} />;
                 } else if (priority === 'warning') {
                   return <WarningItem data={data} />;
-                } else if (priority === 'danger') {
+                } else if (priority === 'danger' || priority === 'error') {
                   return <DangerItem data={data} />;
                 }
                 return <></>;

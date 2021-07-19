@@ -67,6 +67,7 @@ const MedicineDrawer = () => {
     // 임시로 딜레이 부여
 
     console.log('검색 창에서 searchVal이 변경되었습니다', searchVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal]);
 
   const addMedicine = useCallback(
