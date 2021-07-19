@@ -176,7 +176,7 @@ const NotificationDrawer = () => {
                 console.log(data, 'hello');
                 if (priority === 'success') {
                   return <SuccessItem data={data} />;
-                } else if (priority === 'information') {
+                } else if (priority === 'information' || priority === 'info') {
                   return <InformationItem data={data} />;
                 } else if (priority === 'warning') {
                   return <WarningItem data={data} />;

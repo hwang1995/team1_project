@@ -30,9 +30,6 @@ import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader'
 import PageTransition from 'components/common/transition/PageTransition';
 import ClockSpinner from 'components/common/spinner/ClockSpinner';
 
-
-
-
 /**
  * 이 페이지 컴포넌트는 진료 에약(접수) 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -50,9 +47,6 @@ const ReservationPage = () => {
    6) reservationData (예약데이터 추가, 리덕스)
    7) readReservationData (예약데이터 읽기)
   */
-
-  
-
 
   /*
   리덕스에 있는 로그인 정보를 가져오는 부분
@@ -133,9 +127,6 @@ const ReservationPage = () => {
   */
   const [readPatient, setReadPatient] = useState({});
 
- 
- 
-
   // 캘린더 헤더 부분에 위클리 데이트세팅, 초기값 세팅부분
   const now = new Date();
   const weekNum = moment(now, 'MM-DD-YYYY').week();
@@ -158,16 +149,11 @@ const ReservationPage = () => {
     endDate: initEndDate,
   });
 
-  
-
- // toast ui calendar dom을 가져오기 위한 useEffect
+  // toast ui calendar dom을 가져오기 위한 useEffect
   useEffect(() => {
     setCalInstance(calendarRef.current.getInstance());
-  }, [calendarRef])
+  }, [calendarRef]);
 
- 
-
- 
   /*
   의사에 대한 정보를 불러오기 위해 useEffect 사용
   의사데이터 가져온 후 -> 의사 정보 세팅(setDoctorListInfo) -> select에 의사 default 값 세팅(selectOnChange)
@@ -206,22 +192,17 @@ const ReservationPage = () => {
       } catch (error) {
         console.log(error);
         setLoading(false);
-      } 
+      }
     };
- 
-      doctorData();
-     
-    
-  }, [loginInfo.hospitalCode, weekNum]);
-  
 
+    doctorData();
+  }, [loginInfo.hospitalCode, weekNum]);
 
   /*
     추가, 수정, 삭제를 완료했을때, 수정된 값을 다시 받아오기 위한 useEffect 
   */
   useEffect(() => {
-  
-      const reservationListData = async () => {
+    const reservationListData = async () => {
       try {
         const { data } = await getReservationInfo({
           weekNo: titleDate.weekNo,
@@ -230,34 +211,32 @@ const ReservationPage = () => {
         });
         setReservationData(data.data);
       } catch (error) {
-         console.log(error);
-         setLoading(false)
+        console.log(error);
+        calInstance.clear();
+        setReservationData([]);
+        setLoading(false);
       }
     };
 
-    if(addDisplay){
+    if (addDisplay) {
       setLoading(true);
       setAddDisplay(false);
       reservationListData();
     }
-  }, [addDisplay,titleDate,doctorInfo, loginInfo]);
-
+  }, [addDisplay, titleDate, doctorInfo, loginInfo]);
 
   /*
     예약데이터를 가져왔을때, 1개이상의 데이터가 존재하면 실행되는 useEffect이다.
     여기에서 calendar에 데이터가 세팅이 된다.
   */
   useEffect(() => {
-    if(reservationDataList.length >0 ){
+    if (reservationDataList.length > 0) {
       calInstance.clear();
       calInstance.createSchedules(reservationDataList);
       calInstance.render();
       setLoading(false);
     }
   }, [reservationDataList, calInstance]);
-
-
- 
 
   /*
   select 부분이다.
@@ -278,9 +257,8 @@ const ReservationPage = () => {
           hospitalCode: loginInfo.hospitalCode,
         });
         setReservationData(data.data);
-        
       } catch (error) {
-         console.log(error);
+        console.log(error);
         setReservationData([]);
         calInstance.clear();
         setLoading(false);
@@ -311,7 +289,7 @@ const ReservationPage = () => {
     const endDate = moment(calInstance.getDateRangeEnd().toDate()).format(
       'YYYY년 MM월 DD일',
     );
-   
+
     const reservationInfo = async (mId) => {
       try {
         setTitleDate({ weekNo, startDate, endDate });
@@ -320,20 +298,19 @@ const ReservationPage = () => {
           memberId: mId,
           hospitalCode: loginInfo.hospitalCode,
         });
-         setReservationData(data.data);
+        setReservationData(data.data);
       } catch (error) {
-         console.log(error);
-         setReservationData([]);
+        console.log(error);
+        setReservationData([]);
         calInstance.clear();
         setLoading(false);
       }
     };
     reservationInfo(doctorInfo.memberId);
-
   };
 
   // 캘린더 주단위를 넘기기 위한 부분 (+)
-  const handleNextClick = async() => {
+  const handleNextClick = async () => {
     setLoading(true);
     calInstance.next();
     const weekNo = moment(
@@ -347,20 +324,19 @@ const ReservationPage = () => {
     const endDate = moment(calInstance.getDateRangeEnd().toDate()).format(
       'YYYY년 MM월 DD일',
     );
-  
 
     const reservationInfo = async (mId) => {
       try {
-         setTitleDate({ weekNo, startDate, endDate });
+        setTitleDate({ weekNo, startDate, endDate });
         const { data } = await getReservationInfo({
           weekNo,
           memberId: mId,
           hospitalCode: loginInfo.hospitalCode,
         });
-         setReservationData(data.data);
+        setReservationData(data.data);
       } catch (error) {
-         console.log(error);
-         setReservationData([]);
+        console.log(error);
+        setReservationData([]);
         calInstance.clear();
         setLoading(false);
       }
@@ -384,7 +360,7 @@ const ReservationPage = () => {
       '년 ' +
       moment(start).format('M') +
       '월 ' +
-      moment(start).format('D')+
+      moment(start).format('D') +
       '일';
     const startTime = moment(start.toDate()).format('LT');
     const endTime = moment(end.toDate()).format('LT');
@@ -423,7 +399,7 @@ const ReservationPage = () => {
     const result = reservationDataList.filter(
       (schedule) => schedule.id === event.schedule.id,
     );
-   
+
     /*
     2)
     검색: readReservationData
@@ -588,8 +564,6 @@ const ReservationPage = () => {
     );
   };
 
- 
-
   const errorPage = () => {
     return (
       <div
@@ -621,7 +595,6 @@ const ReservationPage = () => {
       <main>
         {calendar()}
         {errorText && errorPage()}
-        
       </main>
     </div>
   );
