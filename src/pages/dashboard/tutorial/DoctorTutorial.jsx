@@ -9,12 +9,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
  * @author HYEONG YUN KIM
  */
 const DoctorTutorial = () => {
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/tutorial/common/프레젠테이션1/';
   return (
     <Fragment>
-      <Swiper
-        spaceBetween={50}
-        navigation={true}
-      >
+      <Swiper spaceBetween={50} navigation={true}>
         <SwiperSlide
           style={{
             width: '100%',
@@ -26,7 +25,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드1.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드1.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -42,7 +41,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드2.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드2.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -58,7 +57,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드3.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드3.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -74,7 +73,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드4.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드4.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -90,7 +89,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드5.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드5.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -106,7 +105,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드6.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드6.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -122,7 +121,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드7.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드7.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -138,7 +137,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드8.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드8.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -154,7 +153,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드9.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드9.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -170,7 +169,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드20.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드20.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -186,7 +185,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드21.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드21.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -202,7 +201,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드22.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드22.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -218,7 +217,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드23.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드23.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -234,7 +233,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드24.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드24.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -250,7 +249,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드25.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드25.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -266,7 +265,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드26.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드26.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -282,7 +281,7 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드27.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드27.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -298,14 +297,11 @@ const DoctorTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/프레젠테이션1/슬라이드28.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드28.PNG'}
             alt="Logo"
             width="100%"
           />
         </SwiperSlide>
-        
-        
-        
       </Swiper>
     </Fragment>
   );

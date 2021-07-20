@@ -83,7 +83,8 @@ const MedicineDrawer = () => {
     },
     [dispatch],
   );
-
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/';
   return (
     <Fragment>
       <SwipeableDrawer
@@ -126,7 +127,9 @@ const MedicineDrawer = () => {
                     }}
                   >
                     <img
-                      src="/assets/image/searchinfo.png"
+                      src={
+                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchinfo.png'
+                      }
                       width="100%"
                       alt="search"
                     />

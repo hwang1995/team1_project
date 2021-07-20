@@ -86,7 +86,8 @@ const DiagnosisHistoryDrawer = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
-
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/404/';
   return (
     <Fragment>
       <SwipeableDrawer
@@ -168,7 +169,7 @@ const DiagnosisHistoryDrawer = () => {
             >
               <div style={{ maxWidth: '500px', width: '100%' }}>
                 <img
-                  src="/assets/image/404/5.png"
+                  src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '5.png'}
                   alt="not found"
                   width="100%"
                 />
