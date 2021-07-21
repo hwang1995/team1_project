@@ -146,7 +146,7 @@ const InjectorDrawer = () => {
                   >
                     <img
                       src={
-                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchinfo.png'
+                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchInfo.png'
                       }
                       width="100%"
                       alt="search"
