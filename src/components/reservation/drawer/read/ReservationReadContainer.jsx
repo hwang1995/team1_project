@@ -90,7 +90,7 @@ const ReservationReadContainer = ({
         };
         //3)
         const { data } = modifyReservationInfo(updateInfo);
-        console.log(data.data);
+
         handleAlert('success', '내용이 변경되었습니다.');
 
         setCheckPage('UPDATE');
@@ -109,7 +109,6 @@ const ReservationReadContainer = ({
     //1)
     try {
       const { data } = await removeReservationInfo(id);
-      console.log(data.data);
       handleAlert('success', '예약이 취소되었습니다.');
 
       const sendPushMessage = {
