@@ -235,24 +235,6 @@ const DiagnosisModal = () => {
                     {diagnosticInfo.length > 0 ? 'O' : 'X'}
                   </StyledTypography>
                 </Grid>
-                <Grid item xs={3}>
-                  <StyledTypography
-                    variant="subtitle1"
-                    component="h5"
-                    weight={7}
-                  >
-                    바이탈 체크 여부
-                  </StyledTypography>
-                </Grid>
-                <Grid item xs={9}>
-                  <StyledTypography
-                    variant="subtitle1"
-                    component="h5"
-                    weight={3}
-                  >
-                    {vitalInfo ? 'O' : 'X'}
-                  </StyledTypography>
-                </Grid>
               </Grid>
             </ResponsiveContainer>
             <div>

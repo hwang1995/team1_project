@@ -13,12 +13,12 @@ SwiperCore.use([Navigation]);
  * @author HYEONG YUN KIM
  */
 const CommonTutorial = () => {
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/tutorial/common/slide/';
+
   return (
     <Fragment>
-      <Swiper
-        spaceBetween={50}
-        navigation={true}
-      >
+      <Swiper spaceBetween={50} navigation={true}>
         <SwiperSlide
           style={{
             width: '100%',
@@ -30,7 +30,8 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드1.png"
+            // src="/assets/image/tutorial/common/slide/슬라이드1.PNG"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드1.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -46,7 +47,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드2.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드2.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -62,7 +63,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드3.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드3.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -78,7 +79,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드4.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드4.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -94,7 +95,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드5.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드5.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -110,7 +111,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드6.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드6.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -126,7 +127,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드7.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드7.PNG'}
             alt="Logo"
             width="100%"
           />
@@ -142,7 +143,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드8.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드8.PNG'}
             alt="Logo"
             width="90%"
           />
@@ -158,7 +159,7 @@ const CommonTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/common/slide/슬라이드9.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드9.PNG'}
             alt="Logo"
             width="90%"
           />

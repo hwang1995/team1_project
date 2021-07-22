@@ -1,9 +1,8 @@
-import React, { Fragment} from 'react';
+import React, { Fragment } from 'react';
 import SwiperCore, { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.scss';
 import 'swiper/components/navigation/navigation.scss';
-
 
 SwiperCore.use([Navigation]);
 /**
@@ -14,14 +13,11 @@ SwiperCore.use([Navigation]);
  * @author HYEONG YUN KIM
  */
 const OwnerTutorial = () => {
-
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/tutorial/owner/';
   return (
     <Fragment>
-      
-      <Swiper
-        spaceBetween={50}
-        navigation={true}
-      >
+      <Swiper spaceBetween={50} navigation={true}>
         <SwiperSlide
           style={{
             width: '100%',
@@ -33,7 +29,7 @@ const OwnerTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/owner/슬라이드1.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드1.PNG'}
             alt="Logo"
             width="90%"
           />
@@ -49,7 +45,7 @@ const OwnerTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/owner/슬라이드2.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드2.PNG'}
             alt="Logo"
             width="90%"
           />
@@ -65,7 +61,7 @@ const OwnerTutorial = () => {
           }}
         >
           <img
-            src="/assets/image/tutorial/owner/슬라이드3.png"
+            src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '슬라이드3.PNG'}
             alt="Logo"
             width="90%"
           />

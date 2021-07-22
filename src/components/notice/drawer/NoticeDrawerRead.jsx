@@ -98,6 +98,9 @@ const NoticeDrawerRead = () => {
   const handleChange = (e) => {
     setInputComment(e.target.value);
   };
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/';
+
   return (
     <Fragment>
       {isLoading && (
@@ -117,7 +120,11 @@ const NoticeDrawerRead = () => {
         <Fragment>
           <div style={{ display: 'flex', marginTop: '10px' }}>
             <div className="left-side" style={{ display: 'flex', flex: 1 }}>
-              <img src="/assets/image/doctorface.png" alt="Logo" width="70%" />
+              <img
+                src={REACT_APP_BUCKET_PATH + IMAGE_PATH + 'doctorface.png'}
+                alt="Logo"
+                width="70%"
+              />
             </div>
             <div
               className="left-side"

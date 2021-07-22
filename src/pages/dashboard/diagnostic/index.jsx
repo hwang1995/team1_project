@@ -107,6 +107,9 @@ const DiagnosticPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendCalInfo]);
 
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/404/';
+
   return (
     <div>
       <header
@@ -280,7 +283,7 @@ const DiagnosticPage = () => {
                   >
                     <div style={{ width: '100%', maxWidth: '500px' }}>
                       <img
-                        src="/assets/image/404/3.png"
+                        src={REACT_APP_BUCKET_PATH + IMAGE_PATH + '3.png'}
                         alt="not found"
                         width="100%"
                       />

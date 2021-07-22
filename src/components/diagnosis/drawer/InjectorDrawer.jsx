@@ -98,6 +98,9 @@ const InjectorDrawer = () => {
     [dispatch],
   );
 
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/';
+
   return (
     <Fragment>
       <SwipeableDrawer
@@ -142,7 +145,9 @@ const InjectorDrawer = () => {
                     }}
                   >
                     <img
-                      src="/assets/image/searchinfo.png"
+                      src={
+                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchInfo.png'
+                      }
                       width="100%"
                       alt="search"
                     />
