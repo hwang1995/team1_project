@@ -13,14 +13,8 @@ import axios from 'axios';
  * * * !int todo_id
  * @author HYEONG YUN KIM
  */
-export const getCoronaData = async (from, to) => {
+export const getCoronaData = async () => {
   return await axios.get(
-    'https://api.covid19api.com/total/country/kr',
-    {
-      params: {
-        from,
-        to,
-      },
-    },
+    'https://api.covid19api.com/live/country/kr/status/confirmed/date/2021-07-15',
   );
 };
