@@ -212,7 +212,7 @@ const MemberUpdateDrawer = ({
       } else if (!isValidTel) {
         handleAlert(
           'error',
-          '전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)',
+          `전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)`,
         );
         return;
       } else if (
