@@ -33,13 +33,32 @@ const CollapsibleRows = ({ data }) => {
             {isOpened ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell
+          component="th"
+          scope="row"
+          style={{
+            fontSize: '1.1rem',
+            fontWeight: 700,
+          }}
+        >
           {data.startDate}
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell
+          component="th"
+          scope="row"
+          style={{
+            fontSize: '1.1rem',
+          }}
+        >
           {data.visitPurpose}
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell
+          component="th"
+          scope="row"
+          style={{
+            fontSize: '1.1rem',
+          }}
+        >
           {data.drOpinion}
         </TableCell>
       </TableRow>

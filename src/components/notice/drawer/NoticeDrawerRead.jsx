@@ -16,7 +16,10 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 import DeleteCommentModal from '../modal/DeleteCommentModal';
-import { setActiveStep } from 'redux/features/notice/noticeSlice';
+import {
+  setActiveStep,
+  setNoticeCommentIndex,
+} from 'redux/features/notice/noticeSlice';
 import SyncSpinner from 'components/common/spinner/SyncSpinner';
 import StyledButton from 'components/common/button/StyledButton';
 import DeleteModal from 'components/notice/modal/DeleteNoticeModal';
@@ -209,7 +212,10 @@ const NoticeDrawerRead = () => {
             <List className={classes.root} key={'commentNum' + index}>
               <ListItem alignItems="flex-start">
                 <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Avatar
+                    alt={data.memberName}
+                    src="/static/images/avatar/1.jpg"
+                  />
                 </ListItemAvatar>
                 <ListItemText
                   primary={data.comment}
@@ -230,12 +236,12 @@ const NoticeDrawerRead = () => {
                   <IconButton
                     onClick={() => {
                       setOpenCommentModal((prevState) => !prevState);
+                      dispatch(setNoticeCommentIndex(data.noticeCommentId));
                     }}
                   >
                     <DeleteCommentModal
                       isOpenCommentModal={isOpenCommentModal}
                       setOpenCommentModal={setOpenCommentModal}
-                      noticeCommentId={data.noticeCommentId}
                       setChanged={setChanged}
                     />
                     <MdRemoveCircleOutline

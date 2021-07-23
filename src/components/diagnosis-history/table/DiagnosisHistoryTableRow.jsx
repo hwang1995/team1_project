@@ -32,7 +32,14 @@ const DiagnosisHistoryTableRow = ({ data }) => {
   return (
     <TableRow hover>
       <TableCell size="small">{data.patientId}</TableCell>
-      <TableCell size="small">{data.patientName}</TableCell>
+      <TableCell
+        size="small"
+        style={{
+          fontWeight: 700,
+        }}
+      >
+        {data.patientName}
+      </TableCell>
       <TableCell size="small">{data.patientBirth}</TableCell>
       <TableCell size="small">
         {data.patientGender === 'male' ? '남자' : '여자'}

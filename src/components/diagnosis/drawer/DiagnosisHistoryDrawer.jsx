@@ -118,30 +118,18 @@ const DiagnosisHistoryDrawer = () => {
                   <TableRow>
                     <TableCell size="small" />
                     <TableCell>
-                      <StyledTypography
-                        variant="subtitle1"
-                        component="h5"
-                        weight={7}
-                      >
+                      <StyledTypography variant="h6" component="h5" weight={7}>
                         진료일자
                       </StyledTypography>
                     </TableCell>
                     <TableCell>
-                      <StyledTypography
-                        variant="subtitle1"
-                        component="h5"
-                        weight={7}
-                      >
+                      <StyledTypography variant="h6" component="h5" weight={7}>
                         방문이유
                       </StyledTypography>
                     </TableCell>
                     <TableCell>
                       {' '}
-                      <StyledTypography
-                        variant="subtitle1"
-                        component="h5"
-                        weight={7}
-                      >
+                      <StyledTypography variant="h6" component="h5" weight={7}>
                         의사의견
                       </StyledTypography>
                     </TableCell>

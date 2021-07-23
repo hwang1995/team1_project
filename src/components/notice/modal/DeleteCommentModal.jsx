@@ -10,6 +10,7 @@ import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
 import { removeComment } from 'apis/noticeAPI';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -40,12 +41,13 @@ const useStyles = makeStyles((theme) => ({
 const DeleteCommentModal = ({
   isOpenCommentModal,
   setOpenCommentModal,
-  noticeCommentId,
   setChanged,
 }) => {
   const classes = useStyles();
   const { breakpoint } = useWindowSize();
-
+  const noticeCommentId = useSelector(
+    (state) => state.notice.noticeCommentIndex,
+  );
   // 알람 셋팅
   const { enqueueSnackbar } = useSnackbar();
   const handleAlert = (variant, message) => {
@@ -59,11 +61,9 @@ const DeleteCommentModal = ({
     setOpenCommentModal(false);
   };
 
-
   // 삭제 버튼 클릭시 해당 댓글을 삭제한다.
   const handleRemoveComment = async (event) => {
     try {
-      console.log(noticeCommentId);
       await removeComment(noticeCommentId);
       handleAlert('success', '삭제가 완료되었습니다.');
 

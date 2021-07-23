@@ -255,34 +255,33 @@ const FrontPage = () => {
                             </div>
                           </div>
                           <List component="nav">
-                            {console.log("notice.length", notice.length)}
+                            {console.log('notice.length', notice.length)}
                             {notice.length !== 0 ? (
                               notice
-                              .filter((data, index) => {
-                              if (index < 4) {
-                              return true;
-                              }
-                              return false;
-                              })
-                              .map((data) => {
-                              return (
-                              <NoticeItem key={data.noticeId} data={data} />
-                              );
-                              })
-                            ) 
-                            :
-                            (
+                                .filter((data, index) => {
+                                  if (index < 4) {
+                                    return true;
+                                  }
+                                  return false;
+                                })
+                                .map((data) => {
+                                  return (
+                                    <NoticeItem
+                                      key={data.noticeId}
+                                      data={data}
+                                    />
+                                  );
+                                })
+                            ) : (
                               <TitleHeaderDashBoard>
-                              <span>등록된 공지사항이 없습니다.</span>
-                              <img
-                    
-                    src="/assets/image/notFound.png"
-                    alt="Logo"
-                    width="50%"
-                  />
-                            </TitleHeaderDashBoard>
+                                <span>등록된 공지사항이 없습니다.</span>
+                                <img
+                                  src="/assets/image/notFound.png"
+                                  alt="Logo"
+                                  width="50%"
+                                />
+                              </TitleHeaderDashBoard>
                             )}
-                            
                           </List>
                         </Grid>
                         <Grid item xs={12} sm={4} lg={4}>

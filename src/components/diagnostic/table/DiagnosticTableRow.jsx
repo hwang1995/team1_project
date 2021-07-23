@@ -21,7 +21,14 @@ const DiagnosticTableRow = ({ data }) => {
   return (
     <TableRow hover>
       <TableCell size="small">{data.diagTestId}</TableCell>
-      <TableCell size="small">{data.patientName}</TableCell>
+      <TableCell
+        size="small"
+        style={{
+          fontWeight: 700,
+        }}
+      >
+        {data.patientName}
+      </TableCell>
       <TableCell size="small">{data.patientBirth}</TableCell>
       <TableCell size="small">
         {data.patientGender === 'male' ? '남자' : '여자'}
@@ -30,13 +37,13 @@ const DiagnosticTableRow = ({ data }) => {
       <TableCell size="small">{data.doctorRoom}</TableCell>
       <TableCell size="small">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ColorCircleContainer size={10} color={data.inspectionStatus} />
+          <ColorCircleContainer size={12} color={data.inspectionStatus} />
           {data.inspectionStatus === 'DIAGNOSTIC_PENDING' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
               weight={9}
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '0.75rem', color: '#F1BF4D' }}
             >
               대기
             </StyledTypography>
@@ -46,7 +53,7 @@ const DiagnosticTableRow = ({ data }) => {
               variant="subtitle2"
               component="h5"
               weight={7}
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '0.75rem', color: '#E35E5C' }}
             >
               접수
             </StyledTypography>
@@ -56,7 +63,7 @@ const DiagnosticTableRow = ({ data }) => {
               variant="subtitle2"
               component="h5"
               weight={7}
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '0.75rem', color: '#488EF3' }}
             >
               완료
             </StyledTypography>

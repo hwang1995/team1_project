@@ -230,6 +230,9 @@ const MemberPage = () => {
                             bgColor="rgb(30, 51, 71)"
                             color="white"
                             onClick={() => setOpened((prevState) => !prevState)}
+                            style={{
+                              fontSize: '1.2rem',
+                            }}
                           >
                             추가
                           </StyledButton>
@@ -250,6 +253,7 @@ const MemberPage = () => {
                                     style={{
                                       minWidth: '40px',
                                       overflowX: 'scroll',
+                                      fontSize: '1.15rem',
                                     }}
                                   >
                                     직책
@@ -259,6 +263,7 @@ const MemberPage = () => {
                                     style={{
                                       minWidth: '50px',
                                       overflowX: 'scroll',
+                                      fontSize: '1.15rem',
                                     }}
                                   ></TableCell>
                                   <TableCell
@@ -266,9 +271,10 @@ const MemberPage = () => {
                                     style={{
                                       minWidth: '100px',
                                       overflowX: 'scroll',
+                                      fontSize: '1.15rem',
                                     }}
                                   >
-                                    이름{'&'}생년월일
+                                    이름{' & '}생년월일
                                   </TableCell>
                                   {currentUser.memberAuthority ===
                                     'ROLE_DEVELOP' ||
@@ -279,9 +285,10 @@ const MemberPage = () => {
                                       style={{
                                         minWidth: '100px',
                                         overflowX: 'scroll',
+                                        fontSize: '1.15rem',
                                       }}
                                     >
-                                      이메일{'&'}연락처
+                                      이메일{' & '}연락처
                                     </TableCell>
                                   ) : (
                                     <Fragment>
@@ -290,6 +297,7 @@ const MemberPage = () => {
                                         style={{
                                           minWidth: '100px',
                                           overflowX: 'scroll',
+                                          fontSize: '1.15rem',
                                         }}
                                       >
                                         이메일
@@ -299,6 +307,7 @@ const MemberPage = () => {
                                         style={{
                                           minWidth: '100px',
                                           overflowX: 'scroll',
+                                          fontSize: '1.15rem',
                                         }}
                                       >
                                         연락처
@@ -310,6 +319,7 @@ const MemberPage = () => {
                                     style={{
                                       minWidth: '200px',
                                       overflowX: 'scroll',
+                                      fontSize: '1.15rem',
                                     }}
                                   >
                                     주소
@@ -359,8 +369,9 @@ const MemberPage = () => {
                                             'ROLE_DEVELOP' && (
                                             <p
                                               style={{
-                                                color: '#ff6b6b',
-                                                fontWeight: 'bold',
+                                                color: '#4A47A3',
+                                                fontWeight: 900,
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               개발자
@@ -370,8 +381,9 @@ const MemberPage = () => {
                                             'ROLE_DIRECTOR' && (
                                             <p
                                               style={{
-                                                color: 'gold',
-                                                fontWeight: 'bold',
+                                                color: '#413C69',
+                                                fontWeight: 900,
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               병원장
@@ -381,8 +393,9 @@ const MemberPage = () => {
                                             'ROLE_DOCTOR' && (
                                             <p
                                               style={{
-                                                color: '#228be6',
-                                                fontWeight: 'bold',
+                                                color: '#293B5F',
+                                                fontWeight: 900,
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               의사
@@ -392,8 +405,9 @@ const MemberPage = () => {
                                             'ROLE_INSPECTOR' && (
                                             <p
                                               style={{
-                                                color: '#12b886',
-                                                fontWeight: 'bold',
+                                                color: '#003638',
+                                                fontWeight: 900,
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               검사자
@@ -403,8 +417,9 @@ const MemberPage = () => {
                                             'ROLE_NURSE' && (
                                             <p
                                               style={{
-                                                color: '#fd7e14',
-                                                fontWeight: 'bold',
+                                                color: '#003638',
+                                                fontWeight: 900,
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               간호사
@@ -430,6 +445,8 @@ const MemberPage = () => {
                                           <p
                                             style={{
                                               marginBottom: '0.325rem',
+                                              fontWeight: 700,
+                                              fontSize: '1.15rem',
                                             }}
                                           >
                                             {data.memberName}
@@ -438,6 +455,8 @@ const MemberPage = () => {
                                           <p
                                             style={{
                                               marginTop: '0.325rem',
+                                              fontWeight: 700,
+                                              fontSize: '1.15rem',
                                             }}
                                           >
                                             {' '}
@@ -452,6 +471,7 @@ const MemberPage = () => {
                                             <p
                                               style={{
                                                 marginBottom: '0.325rem',
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               {data.memberEmail}
@@ -460,6 +480,7 @@ const MemberPage = () => {
                                             <p
                                               style={{
                                                 marginTop: '0.325rem',
+                                                fontSize: '1.15rem',
                                               }}
                                             >
                                               {' '}
@@ -476,7 +497,12 @@ const MemberPage = () => {
                                             </TableCell>
                                           </Fragment>
                                         )}
-                                        <TableCell component="th">
+                                        <TableCell
+                                          component="th"
+                                          style={{
+                                            fontSize: '1.15rem',
+                                          }}
+                                        >
                                           {data.memberAddr1} -{' '}
                                           {data.memberAddr2}
                                         </TableCell>
@@ -494,6 +520,9 @@ const MemberPage = () => {
                                                     (prevState) => !prevState,
                                                   );
                                                   setSelectedData(data);
+                                                }}
+                                                style={{
+                                                  fontSize: '1.2rem',
                                                 }}
                                               >
                                                 변경
@@ -516,12 +545,15 @@ const MemberPage = () => {
                                             <TableCell component="th">
                                               <Button
                                                 size="small"
-                                                bgColor="rgba(11, 131, 31, 0.795)"
+                                                bgColor="rgba(118, 219, 135, 0.795)"
                                                 color="white"
                                                 onClick={() => {
                                                   handleInitPassword(data);
                                                 }}
                                                 endIcon={<BiRefresh />}
+                                                style={{
+                                                  fontSize: '1.2rem',
+                                                }}
                                               >
                                                 비밀번호 초기화
                                               </Button>
