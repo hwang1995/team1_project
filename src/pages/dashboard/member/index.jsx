@@ -356,15 +356,60 @@ const MemberPage = () => {
                                       <TableRow hover="true">
                                         <TableCell component="th">
                                           {data.memberAuthority ===
-                                            'ROLE_DEVELOP' && '개발자'}
+                                            'ROLE_DEVELOP' && (
+                                            <p
+                                              style={{
+                                                color: '#ff6b6b',
+                                                fontWeight: 'bold',
+                                              }}
+                                            >
+                                              개발자
+                                            </p>
+                                          )}
                                           {data.memberAuthority ===
-                                            'ROLE_DIRECTOR' && '병원장'}
+                                            'ROLE_DIRECTOR' && (
+                                            <p
+                                              style={{
+                                                color: 'gold',
+                                                fontWeight: 'bold',
+                                              }}
+                                            >
+                                              병원장
+                                            </p>
+                                          )}
                                           {data.memberAuthority ===
-                                            'ROLE_DOCTOR' && '의사'}
+                                            'ROLE_DOCTOR' && (
+                                            <p
+                                              style={{
+                                                color: '#228be6',
+                                                fontWeight: 'bold',
+                                              }}
+                                            >
+                                              의사
+                                            </p>
+                                          )}
                                           {data.memberAuthority ===
-                                            'ROLE_INSPECTOR' && '검사자'}
+                                            'ROLE_INSPECTOR' && (
+                                            <p
+                                              style={{
+                                                color: '#12b886',
+                                                fontWeight: 'bold',
+                                              }}
+                                            >
+                                              검사자
+                                            </p>
+                                          )}
                                           {data.memberAuthority ===
-                                            'ROLE_NURSE' && '간호사'}
+                                            'ROLE_NURSE' && (
+                                            <p
+                                              style={{
+                                                color: '#fd7e14',
+                                                fontWeight: 'bold',
+                                              }}
+                                            >
+                                              간호사
+                                            </p>
+                                          )}
                                         </TableCell>
                                         <TableCell component="th">
                                           {data.memberImage !== null &&
