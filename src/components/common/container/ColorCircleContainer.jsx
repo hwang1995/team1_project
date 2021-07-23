@@ -20,6 +20,10 @@ const ColorCircleContainer = styled.div`
       return '#488EF3';
     } else if (color === 'DIAGNOSTIC_PROCESSING' || color === 'EDTA') {
       return '#9761F6';
+    } else if (color === 'Lithium Heparin') {
+      return '#69db7c';
+    } else if (color === 'Conical') {
+      return '#ff922b';
     }
     return color;
   }};

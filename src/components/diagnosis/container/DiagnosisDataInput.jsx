@@ -6,7 +6,7 @@ import { setDiagnosisInfo } from 'redux/features/diagnosis/diagnosisSlice';
 
 const SearchBase = styled(InputBase)`
   flex: 1;
-  width: 90%;
+  width: 100%;
   border-radius: 0.5rem;
   padding-left: 1rem;
   font-weight: 500;
@@ -19,6 +19,7 @@ const DiagnosisLabel = styled.div`
   align-items: center;
   height: 100%;
   font-weight: 700;
+  margin-left: 1rem;
 `;
 
 const DiagnosisTextarea = styled.textarea`
@@ -62,35 +63,37 @@ const DiagnosisDataPage = () => {
   return (
     <Fragment>
       <Grid container style={{ padding: '1rem' }}>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>이름</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
           <SearchBase readOnly value={patientInfo.patientName} />
         </Grid>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>생년월일</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
           <SearchBase readOnly value={patientInfo.patientBirth} />
         </Grid>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>성별</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
           <SearchBase readOnly value={patientInfo.patientGender} />
         </Grid>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>내원사유</DiagnosisLabel>
         </Grid>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={11}>
           <SearchBase readOnly value={patientInfo.visitPurpose} />
         </Grid>
-        <Grid item xs={12} md={3} style={{ marginBottom: '1rem' }}>
+      </Grid>
+
+      <Grid container style={{ padding: '0 1rem 1rem 1rem' }}>
+        <Grid item xs={12} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>의사소견</DiagnosisLabel>
         </Grid>
-        <Grid item xs={12} md={9} style={{ marginBottom: '1rem' }}>
-          {/* <DiagnosisTextarea onChange={handleChange} /> */}
+        <Grid item xs={12} md={11} style={{ marginBottom: '1rem' }}>
           <DiagnosisTextarea onBlur={handleBlurOut} />
         </Grid>
       </Grid>
