@@ -2,6 +2,42 @@ import React from 'react';
 import { TableRow, TableCell } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import ColorCircleContainer from 'components/common/container/ColorCircleContainer';
+const getDiagTestValueEl = (diagTestValue, presUpperLimit, presLowerLimit) => {
+  if (diagTestValue === 0) {
+    return (
+      <TableCell size="small" style={{ color: '#3b5bdb', fontWeight: 700 }}>
+        X
+      </TableCell>
+    );
+  }
+  // #1. diagTestValue < presLowerLimit || diagTestValue > presUpperLimit
+  // #f03e3e
+  if (diagTestValue > presUpperLimit) {
+    return (
+      <TableCell size="small" style={{ color: '#f03e3e', fontWeight: 900 }}>
+        {diagTestValue}
+      </TableCell>
+    );
+  }
+
+  if (presLowerLimit > diagTestValue) {
+    return (
+      <TableCell size="small" style={{ color: '#3b5bdb', fontWeight: 700 }}>
+        {diagTestValue}
+      </TableCell>
+    );
+  }
+
+  // #2. presLowerLimit <= diagTestValue <= presUpperLimit
+  if (presLowerLimit <= diagTestValue && diagTestValue <= presUpperLimit) {
+    return (
+      <TableCell size="small" style={{ fontWeight: 700 }}>
+        {diagTestValue}
+      </TableCell>
+    );
+  }
+  // #3. diagTestValue === 0
+};
 
 const DiagnosticDetailTableRows = ({ data }) => {
   return (

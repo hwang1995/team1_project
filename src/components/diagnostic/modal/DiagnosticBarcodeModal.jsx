@@ -133,10 +133,10 @@ const DiagnosticBarcodeModal = () => {
       setCompleted(false);
 
       // eslint-disable-next-line array-callback-return
-      diagnosticList.map(({ presCode }, index) => {
+      diagnosticList.map(({ presCode, presVessel }, index) => {
         const canvas = document.createElement('canvas');
         const today = moment(new Date()).format('YYMMDD');
-        const barcodeText = `TEAM1-${diagTestId}-${presCode}-${today}`;
+        const barcodeText = `${presCode}-${diagTestId}-${presVessel.toUpperCase()}-${today}`;
         bwipjs.toCanvas(canvas, {
           bcid: 'hibccode128',
           text: barcodeText,
