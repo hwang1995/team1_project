@@ -51,10 +51,8 @@ const DiagnosisHistoryPage = () => {
     (state) => state.diagnosisHistory.currentPatientId,
   );
 
-  const [pager, setPager] = useState({
-    page: 0,
-    rowsPerPage: 10,
-  });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -85,6 +83,7 @@ const DiagnosisHistoryPage = () => {
     try {
       const result = await getPatientsList(hospitalCode);
       setPatientList(result.data.data);
+      console.log(result.data.data.length);
       setLoading(false);
     } catch (error) {
       const { message } = error.response.data;
@@ -110,20 +109,14 @@ const DiagnosisHistoryPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const handleChangePage = (e, newPage) => {
-  //   setPager({
-  //     page: newPage,
-  //     ...pager,
-  //   });
-  // };
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
 
-  // const handleChangeRowsPerPage = (e) => {
-  //   console.log('hello', e.target.value);
-  //   setPager({
-  //     ...pager,
-  //     rowsPerPage: parseInt(e.target.value, 10),
-  //   });
-  // };
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(e.target.value);
+    setPage(0);
+  };
 
   /**
    * 초기화 버튼을 클릭시에 초기화가 되면서 값도 다시 불러온다.
@@ -131,7 +124,8 @@ const DiagnosisHistoryPage = () => {
   const handleReset = () => {
     setLoading(true);
     setPatientList([]);
-    setPager({ page: 0, rowsPerPage: 10 });
+    setPage(0);
+    setRowsPerPage(5);
     setTimeout(() => {
       getPatientInfo(hospitalCode);
     }, 1000);
@@ -240,9 +234,8 @@ const DiagnosisHistoryPage = () => {
                         <TableBody>
                           {patientList
                             .slice(
-                              pager.page * pager.rowsPerPage,
-                              pager.page * pager.rowsPerPage +
-                                pager.rowsPerPage,
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage,
                             )
                             .map((data, index) => (
                               <Fragment key={data.patientId + 'Patients'}>
@@ -253,11 +246,13 @@ const DiagnosisHistoryPage = () => {
                       </Table>
                     </TableContainer>
                     <TablePagination
-                      // rowsPerPage={[10, 30, 50]}
+                      rowsPerPageOptions={[10, 30, 50]}
                       component="div"
                       count={patientList.length}
-                      rowsPerPage={pager.rowsPerPage}
-                      page={pager.page}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onChangePage={handleChangePage}
+                      onChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                   </Fragment>
                 )}
