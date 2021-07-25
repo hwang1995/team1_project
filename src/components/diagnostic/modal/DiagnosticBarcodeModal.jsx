@@ -136,7 +136,7 @@ const DiagnosticBarcodeModal = () => {
       diagnosticList.map(({ presCode, presVessel }, index) => {
         const canvas = document.createElement('canvas');
         const today = moment(new Date()).format('YYMMDD');
-        const barcodeText = `${presCode}-${diagTestId}-${presVessel.toUpperCase()}-${today}`;
+        const barcodeText = `${diagTestId}-${presCode}-${presVessel.toUpperCase()}-${today}`;
         bwipjs.toCanvas(canvas, {
           bcid: 'hibccode128',
           text: barcodeText,

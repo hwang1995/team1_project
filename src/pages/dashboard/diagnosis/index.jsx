@@ -86,6 +86,7 @@ const DiagnosisPage = () => {
 
     if (activeStep === 2) {
       dispatch(setActiveStep(0));
+      dispatch(resetDiagnosisInfos());
       return;
     }
 
