@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import Content from './Content';
-import UpdateQuestion from './Content/UpdateQuestion';
-import DeleteQuestion from './Content/DeleteQuestion';
+import Content from './content';
+import UpdateQuestion from './content/UpdateQuestion';
+import DeleteQuestion from './content/DeleteQuestion';
+
 import {
-  upateReservationTime,
-  removeReservationTime,
-} from 'redux/features/reservation/reservationSlice';
+  modifyReservationInfo,
+  removeReservationInfo,
+} from 'apis/reservationAPI';
 import moment from 'moment';
 
 /*
@@ -27,9 +28,11 @@ const ReservationInfoListContainer = ({
   readPatient,
   setVisible,
   setPageResult,
+  setAddDisplay
 }) => {
-  const dispatch = useDispatch();
+  
   const { enqueueSnackbar } = useSnackbar();
+  const loginInfo = useSelector((state) => state.common.loginInfo);
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -44,7 +47,7 @@ const ReservationInfoListContainer = ({
   const [checkPage, setCheckPage] = useState('');
 
   // 의사 소견
-  const [visitReason, setReason] = useState(readPatient.drOpinion);
+  const [visitReason, setReason] = useState(readPatient.visitPurpose);
 
   // 예약시간 데이터
   const [reservationTime, setReservationTime] = useState({
@@ -63,7 +66,6 @@ const ReservationInfoListContainer = ({
     props를 통해 갖고온 readPatient 데이터를 reservationTime에 세팅 해준다
   */
   useEffect(() => {
-    console.log('detail 컴포넌트');
     setReservationTime({
       day: moment(readPatient.start).format('YYYY년 MM월 DD일'),
       startTime: moment(readPatient.start).format('LT'),
@@ -72,27 +74,44 @@ const ReservationInfoListContainer = ({
   }, [readPatient]);
 
   // 수정관련 클릭 이벤트
-  const updateReservationInfo = (id, changeVisitReason) => {
+  const updateReservationInfo = async (id, changeVisitReason) => {
     if (visitReason === readPatient.drOpinion) {
       handleAlert('error', '수정된 내용을 입력해주세요');
     } else {
       const updateInfo = {
-        id: id,
-        drOpinion: changeVisitReason,
+        diagId: id,
+        patientId: readPatient.patientId,
+        memberId: readPatient.memberId,
+        hospitalCode: loginInfo.hospitalCode,
+        visitPurpose: changeVisitReason,
       };
-      dispatch(upateReservationTime(updateInfo));
+      try{
+        const { data } = await modifyReservationInfo(updateInfo);
+        console.log(data.data);
+         handleAlert('success', '내용이 변경되었습니다');
+        setCheckPage('UPDATE');
+        setVisible(true);
+      }catch(error) {
+        const {message} = error.response.data;
+        handleAlert('error', message);
+      } 
 
-      setCheckPage('UPDATE');
-      setVisible(true);
     }
   };
 
   // 예약 취소 눌렀을 떄 일어나는 클릭 이벤트
-  const removeReservationInfo = (id) => {
-    dispatch(removeReservationTime(id));
+  const deleteReservationInfo = async(id) => {
+    try{
+      const { data } = await removeReservationInfo(id);
+      console.log(data.data);
+      handleAlert('success', '예약이 취소되었습니다.');
+      setCheckPage('REMOVE');
+      setVisible(true);
+    }catch(error) {
+      const{message} = error.response.data;
+      handleAlert('error', message);
+    }
 
-    setCheckPage('REMOVE');
-    setVisible(true);
   };
 
   return (
@@ -103,7 +122,7 @@ const ReservationInfoListContainer = ({
           reservationTime={reservationTime}
           updateReservationInfo={updateReservationInfo}
           visitReasonHandleChange={visitReasonHandleChange}
-          removeReservationInfo={removeReservationInfo}
+          removeReservationInfo={deleteReservationInfo}
           visitReason={visitReason}
         />
       )}
@@ -113,6 +132,7 @@ const ReservationInfoListContainer = ({
           setVisible={setVisible}
           setReadOpened={setReadOpened}
           setPageResult={setPageResult}
+          setAddDisplay={setAddDisplay}
         />
       )}
       {checkPage === 'REMOVE' && (
@@ -121,6 +141,7 @@ const ReservationInfoListContainer = ({
           setVisible={setVisible}
           setReadOpened={setReadOpened}
           setPageResult={setPageResult}
+          setAddDisplay={setAddDisplay}
         />
       )}
     </div>

@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import { SwipeableDrawer, Grid, Divider, IconButton } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import {
   addInjectorInfo,
   removeInjectorInfo,
@@ -12,16 +13,31 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import StyledTypography from 'components/common/typography/StyledTypography';
-import Spinner from 'components/common/spinner/Spinner';
 import SearchItem from '../container/SearchItem';
-import injectorData from 'pages/dashboard/diagnosis/injector.json';
 import MedicineItem from '../container/MedicineItem';
+import { searchInjectorList } from 'apis/searchAPI';
+import HashSpinner from 'components/common/spinner/HashSpinner';
 
+/**
+ * * 기능 : 진료 등록에서 의사가 진료를 진행시에 주사약을 추가할 때 보여줄 템플릿 컴포넌트
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const InjectorDrawer = () => {
+  // 해상도의 breakpoint를 알기 위한 Custom Hook
   const { breakpoint } = useWindowSize();
+
+  // 검색어의 상태 저장
   const [searchVal, setSearchVal] = useState('');
+
+  // 검색 결과를 저장하기 위한 상태
+  const [searchData, setSearchData] = useState([]);
+
+  // Ajax시 Spinner를 보여주기 위한 상태
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  // Redux store에 저장되어 있는 주사약 정보 (추가 시에 저장하여 진료를 서버에 보낼 시에 사용할 정보)
   const injectorInfo = useSelector((state) => state.diagnosis.injectorInfo);
   const isOpened = useSelector(
     (state) => state.diagnosis.drawerStatus.injector,
@@ -34,15 +50,38 @@ const InjectorDrawer = () => {
     dispatch(setInjectorDrawer(open));
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
+  // 검색어가 바뀌는 effect 발동 시에 약품의 정보를 가져오기 위한 side-effect
   useEffect(() => {
     if (searchVal === '') {
       return;
     }
     setLoading(false);
+    async function getMedicineList(searchVal) {
+      try {
+        const result = await searchInjectorList(searchVal);
+        setSearchData(result);
+        setLoading(true);
+      } catch (error) {
+        const { message } = error.response.data;
+        handleAlert('error', message);
+        setLoading(true);
+      }
+    }
+    getMedicineList(searchVal);
+
     setTimeout(() => {
       setLoading(true);
     }, 1000);
     console.log('검색 창에서 searchVal이 변경되었습니다', searchVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal]);
 
   const addInjector = useCallback(
@@ -58,6 +97,9 @@ const InjectorDrawer = () => {
     },
     [dispatch],
   );
+
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/';
 
   return (
     <Fragment>
@@ -103,7 +145,9 @@ const InjectorDrawer = () => {
                     }}
                   >
                     <img
-                      src="/assets/image/searchinfo.png"
+                      src={
+                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchInfo.png'
+                      }
                       width="100%"
                       alt="search"
                     />
@@ -123,7 +167,7 @@ const InjectorDrawer = () => {
                       height: '100vh',
                     }}
                   >
-                    <Spinner />
+                    <HashSpinner />
                   </div>
                 )}
 
@@ -139,16 +183,12 @@ const InjectorDrawer = () => {
                     }}
                   >
                     <Divider />
-                    {injectorData
-                      .filter(({ medicine_name }) =>
-                        medicine_name.includes(searchVal),
-                      )
-                      .map((data) => (
-                        <Fragment key={data.medicine_name}>
-                          <Divider />
-                          <SearchItem data={data} addMedicine={addInjector} />
-                        </Fragment>
-                      ))}
+                    {searchData.map((data) => (
+                      <Fragment key={data.medicineName}>
+                        <Divider />
+                        <SearchItem data={data} addMedicine={addInjector} />
+                      </Fragment>
+                    ))}
                   </div>
                 )}
               </div>

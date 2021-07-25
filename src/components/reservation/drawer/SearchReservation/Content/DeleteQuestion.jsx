@@ -1,10 +1,12 @@
 import StyledButton from "components/common/button/StyledButton";
 
+//삭제가 완료되었을때 나타내는 컴포넌트
 const DeleteQuestion = ({
   setCheckPage,
   setVisible,
   setReadOpened,
   setPageResult,
+  setAddDisplay,
 }) => {
   return (
     <div style={{ textAlign: 'center' }}>
@@ -22,10 +24,11 @@ const DeleteQuestion = ({
           bgColor="#DDB892"
           color="white"
           onClick={() => {
-            setVisible(false);
-            setCheckPage('');
-            setReadOpened(false);
-            setPageResult(false);
+           setCheckPage('');
+           setVisible(false);
+           setAddDisplay(true);
+           setPageResult(false);
+           setReadOpened(false);
           }}
         >
           이전 화면으로 돌아가기

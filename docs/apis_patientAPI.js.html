@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apis/patientAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apis/patientAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+
+/**
+ * * 목적 : hospitalCode에 맞는 병원의 환자 목록을 가져오기 위한 API
+ * @param {String} hospitalCode
+ * @returns {List&lt;PatientsDTO>} patientList
+ * * [Patients Entity]
+ * * !int patientId
+ * * !String patientName
+ * * !String patientSsn;
+ * * !String patientGender
+ * * !String patientTel
+ * * !String patientPostal
+ * * !String patientAddr1
+ * * String patientAddr2
+ * * !int patientHeight
+ * * !int patientWeight
+ * * !LocalDateTime recentDate
+ * * !LocalDate patientBirth
+ * * !String hospitalCode
+ * @author SI HYUN PARK
+ */
+export const getPatientsList = async (hospitalCode) => {
+  return await axios.get(`/patient/search/${hospitalCode}`);
+};
+
+/**
+ * * 목적 : 환자 정보를 검색 할때 보여지는 환자의 리스트를 가져오기 위한 API
+ * @param {PatientSearchVO} searchInfo
+ * * !String hospitalCode
+ * * !String patientName
+ * @returns {List&lt;PatientsDTO>} patientSearchList
+ * * [Patients Entity]
+ * * !int patientId
+ * * !String patientName
+ * * !String patientSsn;
+ * * !String patientGender
+ * * !String patientTel
+ * * !String patientPostal
+ * * !String patientAddr1
+ * * String patientAddr2
+ * * !int patientHeight
+ * * !int patientWeight
+ * * !LocalDateTime recentDate
+ * * !LocalDate patientBirth
+ * * !String hospitalCode
+ * @author SI HYUN PARK
+ */
+export const getSearchPatientList = async (searchInfo) => {
+  return await axios.get('/patient', searchInfo);
+};
+
+/**
+ * * 목적 : 환자에 대한 정보를 해당 병원에 추가시키기 위한 API
+ * @param {PatientsDTO} patientInfo
+ * * [Patients Entity]
+ * * !String patientName
+ * * !String patientSsn;
+ * * !String patientGender
+ * * !String patientTel
+ * * !String patientPostal
+ * * !String patientAddr1
+ * * String patientAddr2
+ * * !int patientHeight
+ * * !int patientWeight
+ * * !LocalDateTime recentDate
+ * * !LocalDate patientBirth
+ * * !String hospitalCode
+ * @returns {boolean} result (등록 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const registerPatientInfo = async (patientInfo) => {
+  return await axios.post('/patient', patientInfo);
+};
+
+/**
+ * * 목적 : 환자에 대한 정보 수정을 위한 API
+ * @param {PatientsDTO} updatePatientInfo
+ * * [Patients Entity]
+ * * !String patientName
+ * * !String patientSsn;
+ * * !String patientGender
+ * * !String patientTel
+ * * !String patientPostal
+ * * !String patientAddr1
+ * * String patientAddr2
+ * * !int patientHeight
+ * * !int patientWeight
+ * * !LocalDateTime recentDate
+ * * !LocalDate patientBirth
+ * * !String hospitalCode
+ * @returns {boolean} result (수정 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const modifyPatient = async (updatePatientInfo) => {
+  return await axios.put('/patient', updatePatientInfo);
+};
+
+/**
+ * * 목적 : 환자에 대한 정보 삭제를 위한 API
+ * @param {int} patientId
+ * @returns {boolean} result (삭제 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const deletePatient = async (patientId) => {
+  return await axios.delete(`/patient/${patientId}`);
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addMember">addMember</a></li><li><a href="global.html#addNoticeImage">addNoticeImage</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#createNotice">createNotice</a></li><li><a href="global.html#createTodo">createTodo</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#deleteMember">deleteMember</a></li><li><a href="global.html#deletePatient">deletePatient</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#getDoctorInfo">getDoctorInfo</a></li><li><a href="global.html#getHospitalInfo">getHospitalInfo</a></li><li><a href="global.html#getHospitalListInfo">getHospitalListInfo</a></li><li><a href="global.html#getNoticeCommentsList">getNoticeCommentsList</a></li><li><a href="global.html#getNoticeList">getNoticeList</a></li><li><a href="global.html#getNoticesList">getNoticesList</a></li><li><a href="global.html#getNoticesListByTitle">getNoticesListByTitle</a></li><li><a href="global.html#getPatientInfo">getPatientInfo</a></li><li><a href="global.html#getPatientsList">getPatientsList</a></li><li><a href="global.html#getReservationInfo">getReservationInfo</a></li><li><a href="global.html#getSearchPatientList">getSearchPatientList</a></li><li><a href="global.html#getSearchReservationPatient">getSearchReservationPatient</a></li><li><a href="global.html#getTodosListByHospitalCode">getTodosListByHospitalCode</a></li><li><a href="global.html#getTodosListByMemberId">getTodosListByMemberId</a></li><li><a href="global.html#intializeMemberPw">intializeMemberPw</a></li><li><a href="global.html#isExistedEmail">isExistedEmail</a></li><li><a href="global.html#memberImageUpload">memberImageUpload</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#modifyComment">modifyComment</a></li><li><a href="global.html#modifyHospitalsInfo">modifyHospitalsInfo</a></li><li><a href="global.html#modifyMemberInfo">modifyMemberInfo</a></li><li><a href="global.html#modifyNotice">modifyNotice</a></li><li><a href="global.html#modifyPatient">modifyPatient</a></li><li><a href="global.html#modifyReservationInfo">modifyReservationInfo</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#registerHospitalInfo">registerHospitalInfo</a></li><li><a href="global.html#registerPatientInfo">registerPatientInfo</a></li><li><a href="global.html#registerReservationInfo">registerReservationInfo</a></li><li><a href="global.html#removeComment">removeComment</a></li><li><a href="global.html#removeHospitalInfo">removeHospitalInfo</a></li><li><a href="global.html#removeNotice">removeNotice</a></li><li><a href="global.html#removeReservationInfo">removeReservationInfo</a></li><li><a href="global.html#removeTodo">removeTodo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#ReservationReadContainer">ReservationReadContainer</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showMembersListByHospitalCode">showMembersListByHospitalCode</a></li><li><a href="global.html#showMembersListByNameAndCode">showMembersListByNameAndCode</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 19:45:00 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

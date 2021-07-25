@@ -14,7 +14,7 @@ const DiagnosticTableHead = () => {
           이름
         </StyledTypography>
       </TableCell>
-      <TableCell size="small" style={{ minWidth: '80px' }}>
+      <TableCell size="small" style={{ minWidth: '120px' }}>
         <StyledTypography variant="subtitle1" component="h5" weight={7}>
           생년월일
         </StyledTypography>
@@ -29,7 +29,7 @@ const DiagnosticTableHead = () => {
           진료 날짜
         </StyledTypography>
       </TableCell>
-      <TableCell size="small" style={{ minWidth: '70px' }}>
+      <TableCell size="small" style={{ minWidth: '100px' }}>
         <StyledTypography variant="subtitle1" component="h5" weight={7}>
           진료실
         </StyledTypography>

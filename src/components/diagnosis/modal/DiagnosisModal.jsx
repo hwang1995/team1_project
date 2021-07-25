@@ -18,7 +18,9 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import StyledButton from 'components/common/button/StyledButton';
-
+import { registDiagnosisInfo } from 'apis/diagnosisAPI';
+import { useSnackbar } from 'notistack';
+import { sendMqttMessage } from 'apis/pushAPI';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -38,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진료를 실시하고 결과를 추가하기 전에 띄우는 모달이며, 여기에서 진행 버튼을 클릭한다면 서버에 결과를 넘어가게 하는 것이 목표
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisModal = () => {
   const classes = useStyles();
 
@@ -46,15 +53,79 @@ const DiagnosisModal = () => {
 
   // Redux 정보 가져오기
   const isOpened = useSelector((state) => state.diagnosis.modalStatus);
+  const loginInfo = useSelector((state) => state.common.loginInfo);
   const activeStep = useSelector((state) => state.diagnosis.activeStep);
   const diagnosisInfo = useSelector((state) => state.diagnosis.diagnosisInfo);
   const medicineInfo = useSelector((state) => state.diagnosis.medicineInfo);
   const injectorInfo = useSelector((state) => state.diagnosis.injectorInfo);
   const diagnosticInfo = useSelector((state) => state.diagnosis.diagnosticInfo);
+  const vitalInfo = useSelector(
+    (state) => state.diagnosis.diagnosisInfo.vitalInfo,
+  );
+  const { patientName } = useSelector((state) => state.diagnosis.patient);
 
-  const handleNextStep = () => {
-    dispatch(setActiveStep(activeStep + 1));
-    dispatch(setDiagnosisModal(false));
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
+  const handleNextStep = async () => {
+    try {
+      const { hospitalCode } = loginInfo;
+      const diagnostics = diagnosticInfo.map(
+        ({ diagInspectionId }) => diagInspectionId,
+      );
+
+      const medicines = medicineInfo.map(
+        ({ medicineId, count, medicineType }) => ({
+          medicineId,
+          medicineDose: count,
+          medicineType,
+        }),
+      );
+
+      const injectors = injectorInfo.map(
+        ({ medicineId, count, medicineType }) => ({
+          medicineId,
+          medicineDose: count,
+          medicineType,
+        }),
+      );
+
+      const { diagId, memberId, patientId, drOpinion } = diagnosisInfo;
+      const vital = !vitalInfo ? {} : vitalInfo;
+      const sendInfo = {
+        diagId,
+        memberId,
+        patientId,
+        drOpinion,
+        hospitalCode,
+        medicines,
+        injectors,
+        diagnostics,
+        vital,
+      };
+      await registDiagnosisInfo(sendInfo);
+
+      if (diagnostics.length > 0) {
+        // push 메시지를 날려준다.
+        const sendMessageInfo = {
+          topic: `/${hospitalCode}/inspector`,
+          priority: 'success',
+          message: `${patientName}님이 진단 검사를 요청하셨습니다.`,
+        };
+        await sendMqttMessage(sendMessageInfo);
+      }
+      handleAlert('success', '등록에 성공하였습니다.');
+      dispatch(setActiveStep(activeStep + 1));
+      dispatch(setDiagnosisModal(false));
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
   };
   const handleClose = () => dispatch(setDiagnosisModal(false));
 
@@ -107,7 +178,7 @@ const DiagnosisModal = () => {
                     component="h5"
                     weight={3}
                   >
-                    {diagnosisInfo.dr_opinion}
+                    {diagnosisInfo.drOpinion}
                   </StyledTypography>
                 </Grid>
                 <Grid item xs={3}>

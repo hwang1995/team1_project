@@ -8,6 +8,15 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
+/**
+ * 이 페이지 컴포넌트는 주소 데이터를 가져오기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * Sider
+ * * Header
+ * * 환자 관리 (PatientSearch, Table, ColoredButton)
+ * @returns {JSX.Element}
+ * @author SI HYUN PARK
+ */
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -32,7 +41,7 @@ const AddressModal = ({ isModalOpened, setModalOpened,addressClick }) => {
   const { breakpoint } = useWindowSize();
 
  
-
+  // 주소데이터를 세팅하는 부분
   const handleComplete = (data) => {
     
     let fullAddress = data.address;
@@ -50,7 +59,7 @@ const AddressModal = ({ isModalOpened, setModalOpened,addressClick }) => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
     const postalcode = data.zonecode;
- 
+    //주소데이터를 세팅해서 상위 컴포넌트에 주소데이터를 전달한다
     addressClick({ fullAddress, postalcode });
      
     setModalOpened(false);

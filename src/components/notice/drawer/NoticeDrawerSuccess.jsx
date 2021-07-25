@@ -2,7 +2,13 @@ import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActiveStep } from 'redux/features/notice/noticeSlice';
 import StyledButton from 'components/common/button/StyledButton';
-
+/**
+ * 이 페이지 컴포넌트는 공지사항 작성/수정/삭제가 완료된 후 넘어가게 되는 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * - NoticeDrawerMain
+ * @returns {JSX.Element}
+ * @author HYEONG YUN KIM
+ */
 const NoticeDrawerSuccess = () => {
   const dispatch = useDispatch();
 
@@ -40,18 +46,7 @@ const NoticeDrawerSuccess = () => {
         }}
       >
         <div style={{ flex: '2' }}></div>
-        {activeStep !== 'DELETE' && (
-          <div style={{ flex: '2', marginRight: '10px' }}>
-            <StyledButton
-              bgColor="rgb(8,78,127)"
-              color="white"
-              onClick={() => dispatch(setActiveStep('READ'))}
-            >
-              작성 게시물 보기
-            </StyledButton>
-          </div>
-        )}
-
+        
         <div style={{ flex: '2' }}>
           <StyledButton
             bgColor="rgb(8,78,127)"

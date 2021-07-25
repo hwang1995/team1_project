@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apis/searchAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apis/searchAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+
+/**
+ * * 목표 : 약품의 이름을 검색하면 약품의 대한 리스트를 출력하는 API
+ * @param {string} medicineName 
+ * @returns {List&lt;MedicinesDTO>} medicineResults
+ * * [Medicines Entity]
+ * * !int medicineId (약품의 ID)
+ * * !String medicineCode (약품 코드)
+ * * !String medicineName (약품 영문 명)
+ * * !String medicineType (약품 구분)
+ * * !String medicineUnit (약 혹은 주사의 단위)
+ * * !String medicineExplain (약 혹은 주사의 상세 설명)
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_medicine_name"
+ * * * message : "약품 이름이 입력되지 않았거나, 공백입니다."
+ * * HTTP Status 204 - No Content
+ * * * status : "no_medicines_content"
+ * * * message : "약품이 존재하지 않습니다."
+ * @author SUNG WOOK HWANG
+ */
+export const searchMedicineList = async (medicineName) => {
+    return await axios.get("/search/medicine", {
+        params: {
+            medicineName
+        }
+    });
+};
+
+/**
+ * * 목표 : 주사의 이름을 검색하면 주사의 대한 리스트를 출력하는 API
+ * @param {string} medicineName 
+ * @returns {List&lt;MedicinesDTO>} medicineResults
+ * * [Medicines Entity]
+ * * !int medicineId (약품의 ID)
+ * * !String medicineCode (약품 코드)
+ * * !String medicineName (약품 영문 명)
+ * * !String medicineType (약품 구분)
+ * * !String medicineUnit (약 혹은 주사의 단위)
+ * * !String medicineExplain (약 혹은 주사의 상세 설명)
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_medicine_name"
+ * * * message : "약품 이름이 입력되지 않았거나, 공백입니다."
+ * * HTTP Status 204 - No Content
+ * * * status : "no_medicines_content"
+ * * * message : "약품이 존재하지 않습니다."
+ * @author SUNG WOOK HWANG
+ */
+export const searchInjectorList = async (medicineName) => {
+    return await axios.get("/search/injector", {
+        params: {
+            medicineName
+        }
+    });
+};
+
+
+/**
+ * * 목표 : 진단 검사의 그룹 명 (bundleName)을 검색하면 진단 검사에 대한 리스트를 출력하기 위한 API
+ * @param {string} bundleName 
+ * @returns {List&lt;DiagnosticInspectionsDTO>} inspectionResults
+ * * [DiagnosticInspections Entity]
+ * * * !int diagInspectionId (진단 검사 리스트의 ID)
+ * * * !String bundleCode (그룹 코드 || 묶음 코드)
+ * * * !String bundleName (그룹 명 || 묶음 명)
+ * * * !String presCode (처방 코드)
+ * * * !String presName (처방 명)
+ * * * !String presUnit (단위)
+ * * * !double presLowerLimit (하한치)
+ * * * !double presUpperLimit (상한치)
+ * * * String presVessel (용기)
+ * * * String presSpecimenName (검체명)
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_bundle_name"
+ * * * message : "그룹 명이 입력되지 않았거나, 공백입니다."
+ * * HTTP Status 204 - No Content
+ * * * status : "no_diagnostic_inspection_content"
+ * * * message : "진단 검사가 존재하지 않습니다."
+ * @author SUNG WOOK HWANG
+ */
+export const searchDiagnosticList = async (bundleName) => {
+    return await axios.get("/search/diagnostic", {
+        params: {
+            bundleName
+        }
+    });
+};
+
+/**
+ * * 목표 : 진단 검사의 그룹 코드 (bundleCode)를 검색하면 진단 검사에 대한 리스트를 출력하기 위한 API
+ * @param {string} bundleCode 
+ * @returns {List&lt;DiagnosticInspectionsDTO>} inspectionResults
+ * * [DiagnosticInspections Entity]
+ * * * !int diagInspectionId (진단 검사 리스트의 ID)
+ * * * !String bundleCode (그룹 코드 || 묶음 코드)
+ * * * !String bundleName (그룹 명 || 묶음 명)
+ * * * !String presCode (처방 코드)
+ * * * !String presName (처방 명)
+ * * * !String presUnit (단위)
+ * * * !double presLowerLimit (하한치)
+ * * * !double presUpperLimit (상한치)
+ * * * String presVessel (용기)
+ * * * String presSpecimenName (검체명)
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_bundle_name"
+ * * * message : "그룹 명이 입력되지 않았거나, 공백입니다."
+ * * HTTP Status 204 - No Content
+ * * * status : "no_diagnostic_inspection_content"
+ * * * message : "진단 검사가 존재하지 않습니다."
+ * @author SUNG WOOK HWANG
+ */
+export const searchDiagnosticListByCode = async (bundleCode) => {
+    return await axios.get("/search/diagnostic-code", {
+        params: {
+            bundleCode
+        }
+    });
+};
+
+/**
+ * * 목표 : 병원 정보와 환자의 이름을 통해 환자의 리스트를 출력하기 위한 API
+ * @param {PatientSearchVO} patientInfo 
+ * * !String hospitalCode (병원 코드)
+ * * !String patientName (환자 이름)
+ * @returns {List&lt;PatientVO>} patientInfos
+ * * !int patientId (환자의 ID)
+ * * !String patientName (환자 이름)
+ * * !String patientGender (환자의 성별)
+ * * !String patientBirth (환자의 생일, LocalDateTime > String으로 변환함)
+ * * !String hospitalCode (병원 코드)
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_patient_search_info"
+ * * * message : "병원 코드 혹은 환자의 이름이 없습니다"
+ * * HTTP Status 204 - No Content
+ * * * status : "no_result"
+ * * * message : "검색 결과 존재하지 않습니다."
+ * @author SUNG WOOK HWANG
+ */
+export const searchPatientInfoByName = async (patientInfo) => {
+    return await axios.get("/search/patient", patientInfo);
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addMember">addMember</a></li><li><a href="global.html#addNoticeImage">addNoticeImage</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#createNotice">createNotice</a></li><li><a href="global.html#createTodo">createTodo</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#deleteMember">deleteMember</a></li><li><a href="global.html#deletePatient">deletePatient</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#getDoctorInfo">getDoctorInfo</a></li><li><a href="global.html#getHospitalInfo">getHospitalInfo</a></li><li><a href="global.html#getHospitalListInfo">getHospitalListInfo</a></li><li><a href="global.html#getNoticeCommentsList">getNoticeCommentsList</a></li><li><a href="global.html#getNoticeList">getNoticeList</a></li><li><a href="global.html#getNoticesList">getNoticesList</a></li><li><a href="global.html#getNoticesListByTitle">getNoticesListByTitle</a></li><li><a href="global.html#getPatientInfo">getPatientInfo</a></li><li><a href="global.html#getPatientsList">getPatientsList</a></li><li><a href="global.html#getReservationInfo">getReservationInfo</a></li><li><a href="global.html#getSearchPatientList">getSearchPatientList</a></li><li><a href="global.html#getSearchReservationPatient">getSearchReservationPatient</a></li><li><a href="global.html#getTodosListByHospitalCode">getTodosListByHospitalCode</a></li><li><a href="global.html#getTodosListByMemberId">getTodosListByMemberId</a></li><li><a href="global.html#intializeMemberPw">intializeMemberPw</a></li><li><a href="global.html#isExistedEmail">isExistedEmail</a></li><li><a href="global.html#memberImageUpload">memberImageUpload</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#modifyComment">modifyComment</a></li><li><a href="global.html#modifyHospitalsInfo">modifyHospitalsInfo</a></li><li><a href="global.html#modifyMemberInfo">modifyMemberInfo</a></li><li><a href="global.html#modifyNotice">modifyNotice</a></li><li><a href="global.html#modifyPatient">modifyPatient</a></li><li><a href="global.html#modifyReservationInfo">modifyReservationInfo</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#registerHospitalInfo">registerHospitalInfo</a></li><li><a href="global.html#registerPatientInfo">registerPatientInfo</a></li><li><a href="global.html#registerReservationInfo">registerReservationInfo</a></li><li><a href="global.html#removeComment">removeComment</a></li><li><a href="global.html#removeHospitalInfo">removeHospitalInfo</a></li><li><a href="global.html#removeNotice">removeNotice</a></li><li><a href="global.html#removeReservationInfo">removeReservationInfo</a></li><li><a href="global.html#removeTodo">removeTodo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#ReservationReadContainer">ReservationReadContainer</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showMembersListByHospitalCode">showMembersListByHospitalCode</a></li><li><a href="global.html#showMembersListByNameAndCode">showMembersListByNameAndCode</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 19:45:00 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -5,10 +5,18 @@ import { useSnackbar } from 'notistack';
 import ClrButton from './ClrButton';
 import SearchContainer from './SearchContainer';
 
+/**
+ * * 목표 : 검색 항목을 나타내기 위한 컴포넌트
+ * @param {object} data
+ * @param {function} addMedicine
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const SearchItem = ({ data, addMedicine }) => {
+  // 갯수를 설정하기 위한 상태
   const [count, setCount] = useState(1);
-  const { enqueueSnackbar } = useSnackbar();
 
+  const { enqueueSnackbar } = useSnackbar();
   const handleAlert = useCallback(
     (variant, message) => {
       enqueueSnackbar(message, {
@@ -17,6 +25,8 @@ const SearchItem = ({ data, addMedicine }) => {
     },
     [enqueueSnackbar],
   );
+
+  // 항목을 추가하기 위한 이벤트 함수
   const addItem = useCallback(
     (data, count) => {
       addMedicine({ ...data, count });
@@ -24,10 +34,12 @@ const SearchItem = ({ data, addMedicine }) => {
     [addMedicine],
   );
 
+  // 항목의 갯수를 추가하기 위한 이벤트 함수
   const handlePlusBtn = useCallback(() => {
     setCount((prevState) => prevState + 1);
   }, []);
 
+  // 항목의 갯수를 제거하기 위한 이벤트 함수
   const handleMinusBtn = useCallback(() => {
     setCount((prevState) => {
       if (prevState <= 1) {
@@ -39,11 +51,11 @@ const SearchItem = ({ data, addMedicine }) => {
   }, [handleAlert]);
 
   return (
-    <SearchContainer key={data.medicine_id}>
-      <h2>{data.medicine_name}</h2>
+    <SearchContainer key={data.medicineId}>
+      <h2>{data.medicineName}</h2>
       <p>
-        약품 코드: {data.medicine_code} | 약품 타입 : {data.medicine_type} |
-        캡슐 타입 : {data.medicine_unit}
+        약품 코드: {data.medicineCode} | 약품 타입 : {data.medicineType} | 캡슐
+        타입 : {data.medicineUnit}
       </p>
       <div className="button-area">
         <div className="count-container">

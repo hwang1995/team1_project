@@ -3,10 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setGenderStatus } from 'redux/features/member/memberSlice';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
+import { registerPatientInfo } from 'apis/patientAPI';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { SwipeableDrawer, Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import SelectedMan from '../SelectedGender/selectedGender';
+import SelectedMan from '../selectedGender/selectedGender';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -16,11 +17,32 @@ import ResponsiveContainer from 'components/common/container/ResponsiveContainer
 import StyledButton from 'components/common/button/StyledButton';
 import PatientModal from '../modal/Modal';
 
-const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
+/**
+ * 이 페이지 컴포넌트는 환자를 추가하기 위해 작성한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * Sider
+ * * Header
+ * * 환자 관리 (PatientSearch, Table, ColoredButton)
+ * @returns {JSX.Element}
+ * @author SI HYUN PARK
+ */
+const PatientDrawer = ({
+  isOpened,
+  setOpened,
+  setDisplay,
+}) => {
+  // redux에서 선택된 성별을 가져온다
   const gender = useSelector((state) => state.member.gender);
+
+  // 로그 유저에 대한 정보
+  const loginInfo = useSelector((state) => state.common.loginInfo);
   const dispatch = useDispatch();
   const { breakpoint } = useWindowSize();
+
+  // 주소 API를 나타내는 상태 데이터
   const [isModalOpened, setModalOpened] = useState(false);
+
+  // 생년월일 (데이터 피커)에 대한 상태 데이터
   const [keyboardDate, handleKeyDateChange] = useState(new Date());
   const { enqueueSnackbar } = useSnackbar();
 
@@ -29,17 +51,21 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       variant,
     });
   };
+
+  // 데이터 베이스에 추가하기 위한 객체 상태 데이터
   const [isPatient, setPatient] = useState({
-    patient_id: '',
-    patient_name: '',
-    patient_birth: '',
-    patient_addr1: '',
-    patient_addr2: '',
-    patient_postal: '',
-    patient_tel: '',
-    patient_height: '',
-    patient_weight: '',
-    patient_gender: '',
+    patientName: '',
+    patientSsn: '',
+    patientBirth: '',
+    patientAddr1: '',
+    patientAddr2: '',
+    patientPostal: '',
+    patientTel: '',
+    patientHeight: '',
+    patientWeight: '',
+    patientGender: '',
+    recentDate: '',
+    hospitalCode: '',
   });
 
   useEffect(() => {
@@ -55,12 +81,14 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     }
     setOpened(open);
   };
-
-  const addHandleClick = () => {
-    console.log(isPatient);
-    isPatient.patient_birth = moment(keyboardDate).format('YYYY/MM/DD');
-
-    if (isPatient.patient_name === undefined || isPatient.patient_name === '') {
+  // 추가버튼 클릭시 일어나는 이벤트
+  const addHandleClick = async () => {
+    // 생년월일, 환자의 ssn, 등록일을 세팅하는 부분
+    isPatient.patientBirth = moment(keyboardDate).format('YYYY-MM-DD');
+    isPatient.patientSsn = moment(keyboardDate).format('YYYY-MM-DD');
+    isPatient.recentDate = moment(new Date()).format('yyyy-MM-DDTHH:mm');
+    // 유효성 검사
+    if (isPatient.patientName === undefined || isPatient.patientName === '') {
       handleAlert('error', '이름을 입력해주세요.');
       return;
     }
@@ -69,52 +97,61 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
       handleAlert('error', '성별을 선택해주세요.');
       return;
     } else {
-      isPatient.patient_gender = gender;
+      isPatient.patientGender = gender;
     }
 
-    if (isPatient.patient_birth === '') {
+    if (isPatient.patientBirth === '') {
       handleAlert('error', '생년월일을 입력해주세요.');
       return;
     }
     const reg = /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/;
-    if (!reg.test(isPatient.patient_tel)) {
+    if (!reg.test(isPatient.patientTel)) {
       handleAlert('error', '전화번호 형식이 맞지 않습니다.');
 
       return;
     }
 
     if (
-      Number.parseInt(isPatient.patient_height) === isNaN ||
-      isPatient.patient_height === undefined
+      Number.parseInt(isPatient.patientHeight) === isNaN ||
+      isPatient.patientHeight === undefined
     ) {
-      console.log(Number.parseInt(isPatient.patient_height));
       handleAlert('error', '키는 숫자만 입력 가능합니다.');
       return;
     }
     if (
-      Number.parseInt(isPatient.patient_weight) === isNaN ||
-      isPatient.patient_weight === undefined
+      Number.parseInt(isPatient.patientWeight) === isNaN ||
+      isPatient.patientWeight === undefined
     ) {
-      console.log(typeof isPatient.patient_weight);
       handleAlert('error', '몸무게 숫자만 입력 가능합니다.');
       return;
     }
     if (
-      isPatient.patient_postal === undefined ||
-      isPatient.patient_addr1 === undefined
+      isPatient.patientPostal === undefined ||
+      isPatient.patientAddr1 === undefined
     ) {
       handleAlert('error', '주소를 입력해주세요.');
       return;
     }
-    isPatient.patient_id = patientData.length + 1;
-    const newPatient = patientData.concat(isPatient);
-    setPatients(newPatient);
-    setPatient({});
-    dispatch(setGenderStatus(''));
-    handleKeyDateChange(new Date());
-    setOpened(false);
+    isPatient.hospitalCode = loginInfo.hospitalCode;
+    console.log(isPatient);
+
+    try {
+      const { data } = await registerPatientInfo(isPatient);
+      console.log(data.data);
+      handleAlert('success', '환자가 등록되었습니다.');
+      setDisplay(true);
+      setPatient({});
+      dispatch(setGenderStatus(''));
+      handleKeyDateChange(new Date());
+      setOpened(false);
+    } catch (error) {
+      const { message } = error.response.data;
+      console.log(message);
+      handleAlert('error', message);
+    }
   };
 
+  // 환자의 입력정보를 담아내는 onChange 함수
   const handleChange = (event) => {
     setPatient({
       ...isPatient,
@@ -122,15 +159,16 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
     });
   };
 
+  // 클릭시 주소 모달창이 나타난다
   const findAddressHandle = () => {
     setModalOpened(true);
   };
-
+  // 주소모달창에 넘겨줄 props, 이 함수를 통해 주소값을 가져온다
   const addressClick = ({ fullAddress, postalcode }) => {
     setPatient({
       ...isPatient,
-      patient_postal: postalcode,
-      patient_addr1: fullAddress,
+      patientPostal: postalcode,
+      patientAddr1: fullAddress,
     });
   };
 
@@ -178,7 +216,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_name"
+                name="patientName"
                 onChange={handleChange}
                 style={{ width: '53%' }}
               />
@@ -242,7 +280,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_tel"
+                name="patientTel"
                 onChange={handleChange}
                 style={{ width: '80%' }}
               />
@@ -261,7 +299,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_height"
+                name="patientHeight"
                 style={{ width: '53%' }}
                 onChange={handleChange}
                 type="number"
@@ -281,7 +319,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={9}>
               <StyledInputBase
-                name="patient_weight"
+                name="patientWeight"
                 style={{ width: '53%' }}
                 onChange={handleChange}
                 type="number"
@@ -303,7 +341,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             <Grid item xs={9}>
               <StyledInputBase
                 placeholder="우편번호"
-                value={isPatient.patient_postal || ''}
+                value={isPatient.patientPostal || ''}
                 readOnly
               />
             </Grid>
@@ -324,14 +362,14 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
             </Grid>
             <Grid item xs={12}>
               <StyledInputBase
-                value={isPatient.patient_addr1 || ''}
+                value={isPatient.patientAddr1 || ''}
                 placeholder="주소를 입력해주세요"
                 readOnly
               />
             </Grid>
             <Grid item xs={12}>
               <StyledInputBase
-                name="patient_addr2"
+                name="patientAddr2"
                 onChange={handleChange}
                 placeholder="상세 주소를 입력하세요."
               />
@@ -351,6 +389,7 @@ const PatientDrawer = ({ isOpened, setOpened, setPatients, patientData }) => {
           </Grid>
         </ResponsiveContainer>
       </SwipeableDrawer>
+      {/* 주소 API 모달창 */}
       <PatientModal
         isModalOpened={isModalOpened}
         addressClick={addressClick}

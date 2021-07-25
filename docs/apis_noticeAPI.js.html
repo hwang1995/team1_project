@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apis/noticeAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apis/noticeAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+
+/**
+ * * 목적 : 해당 병원의 식별자 코드(hospitalCode)로 NOTICE 리스트를 출력하기 위한 API
+ *
+ * @param {String} hospitalCode
+ * @returns {List&lt;NoticesDTO>} noticeList
+ * * [notices Entity]
+ * * * !String noticeTitle
+ * * * !String noticeAuthor
+ * * * !String createDate
+ * * * !String noticeHeadText
+ * * * String noticeHeadImage
+ * * * !int noticeCount
+ * @author HYEONG YUN KIM
+ */
+export const getNoticesList = async (hospitalCode) => {
+  return await axios.get('https://localhost/api/v1/notice/', {
+    params: {
+      hospitalCode,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항의 댓글 리스트를 출력하기 위한 API
+ *
+ * @param {number} noticeId
+ * @returns {List&lt;NoticeCommentsDTO>} noticeList
+ * * [noticeComments Entity]
+ * * * !String memberName
+ * * * !String createdDate
+ * * * !String comment
+ * @author HYEONG YUN KIM
+ */
+export const getNoticeCommentsList = async (noticeId) => {
+  return await axios.get('https://localhost/api/v1/notice/comments', {
+    params: {
+      noticeId,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항의 상세정보 + 조회수 증가를 위한 API
+ *
+ * @param {number} noticeId
+ * @returns {List&lt;NoticeCommentsDTO>} noticeCommentList
+ * * [notices Entity]
+ * * * !String noticeTitle
+ * * * !String noticeContent
+ * * * !String noticeAuthor
+ * @author HYEONG YUN KIM
+ */
+export const getNoticeList = async (noticeId) => {
+  return await axios.get('https://localhost/api/v1/notice/detail', {
+    params: {
+      noticeId,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항의 검색(제목)을 포함한 게시물 위한 API
+ *
+ * @param {SearchNoticeByHospitalCodeAndTitleVO} searchNoticeByHospitalAndTitle
+ * * [SearchNoticeByHospitalCodeAndTitleVO Entity]
+ * * * !String noticeTitle
+ * * * !String hospitalCode
+ * @returns {List&lt;NoticesDTO>} searchList
+ * * [notices Entity]
+ * * * !String noticeTitle
+ * * * !String noticeAuthor
+ * * * !String createDate
+ * * * !String noticeHeadText
+ * * * String noticeHeadImage
+ * * * !int noticeCount
+ * @author HYEONG YUN KIM
+ */
+export const getNoticesListByTitle = async (searchNoticeByHospitalAndTitle) => {
+  return await axios.get('https://localhost/api/v1/notice/search', {
+    params: {
+      searchNoticeByHospitalAndTitle,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항을 등록하기 위한 API
+ *
+ * @param {NoticesDTO} noticeInfo
+ * * [notices Entity]
+ * * * !String noticeTitle
+ * * * !String noticeContent
+ * * * !String noticeAuthor
+ * * * !LocalDateTime createDate
+ * * * !String hospitalCode
+ * * * !int memberId
+ * * * !String noticeAuthor
+ * * * !String noticeHeadText
+ * * * String noticeHeadImage
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const createNotice = async (noticeInfo) => {
+  return await axios.post('https://localhost/api/v1/notice/', {
+    params: {
+      noticeInfo,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항의 댓글을 등록하기 위한 API
+ *
+ * @param {NoticeCommentsDTO} noiceCommentInfo
+ * * [noticeComments Entity]
+ * * * !int noticeCommentId
+ * * * !int memberId
+ * * * !int noticeId
+ * * * !String memberName
+ * * * !String comment
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const addComment = async (noiceCommentInfo) => {
+  return await axios.post('https://localhost/api/v1/notice/comment', {
+    params: {
+      noiceCommentInfo,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항의 이미지를 서버에 올리고 클라이언트에 URL을 전달하기 위한 API
+ *
+ * @param {AddNoticeImageVO} noticeImageInfo
+ * * [AddNoticeImageVO Entity]
+ * * * !String hospitalCode
+ * * * !String String
+ * * * !String base64Content
+ * @returns {String} filePath
+ * * filePath : 파일저장 경로
+ * 
+ */
+export const addNoticeImage = async (noticeImageInfo) => {
+  return await axios.post('https://localhost/api/v1/notice/images', {
+    params: {
+      noticeImageInfo,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항을 수정하기 위한 API
+ *
+ * @param {NoticesDTO} noticeInfo
+ * * [notices Entity]
+ * * * !String noticeTitle
+ * * * !String noticeContent
+ * * * !String noticeHeadText
+ * * * String noticeHeadImage
+ * * * !int noticeId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const modifyNotice = async (noticeInfo) => {
+  return await axios.put('https://localhost/api/v1/notice', {
+    params: {
+      noticeInfo,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 댓글을 수정하기 위한 API
+ *
+ * @param {UpdateNoticeCommentVO} updateCommentInfo
+ * * [UpdateNoticeCommentVO Entity]
+ * * * !int noticeCommentId
+ * * * !String comment
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const modifyComment = async (updateCommentInfo) => {
+  return await axios.put('https://localhost/api/v1/notice/comment', {
+    params: {
+      updateCommentInfo,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 공지사항을 삭제하기 위한 API
+ *
+ * @param {number} noticeId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const removeNotice = async (noticeId) => {
+  return await axios.delete('https://localhost/api/v1/notice', {
+    params: {
+      noticeId,
+    },
+  });
+};
+
+/**
+ * * 목적 : 해당 댓글을 삭제하기 위한 API
+ *
+ * @param {number} noticeCommentId
+ * @returns {boolean} result
+ * 성공: True, 실패: False
+ * @author HYEONG YUN KIM
+ */
+export const removeComment = async (noticeCommentId) => {
+  return await axios.delete('https://localhost/api/v1/notice/comment', {
+    params: {
+      noticeCommentId,
+    },
+  });
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addMember">addMember</a></li><li><a href="global.html#addNoticeImage">addNoticeImage</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#createNotice">createNotice</a></li><li><a href="global.html#createTodo">createTodo</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#deleteMember">deleteMember</a></li><li><a href="global.html#deletePatient">deletePatient</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#getDoctorInfo">getDoctorInfo</a></li><li><a href="global.html#getHospitalInfo">getHospitalInfo</a></li><li><a href="global.html#getHospitalListInfo">getHospitalListInfo</a></li><li><a href="global.html#getNoticeCommentsList">getNoticeCommentsList</a></li><li><a href="global.html#getNoticeList">getNoticeList</a></li><li><a href="global.html#getNoticesList">getNoticesList</a></li><li><a href="global.html#getNoticesListByTitle">getNoticesListByTitle</a></li><li><a href="global.html#getPatientInfo">getPatientInfo</a></li><li><a href="global.html#getPatientsList">getPatientsList</a></li><li><a href="global.html#getReservationInfo">getReservationInfo</a></li><li><a href="global.html#getSearchPatientList">getSearchPatientList</a></li><li><a href="global.html#getSearchReservationPatient">getSearchReservationPatient</a></li><li><a href="global.html#getTodosListByHospitalCode">getTodosListByHospitalCode</a></li><li><a href="global.html#getTodosListByMemberId">getTodosListByMemberId</a></li><li><a href="global.html#intializeMemberPw">intializeMemberPw</a></li><li><a href="global.html#isExistedEmail">isExistedEmail</a></li><li><a href="global.html#memberImageUpload">memberImageUpload</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#modifyComment">modifyComment</a></li><li><a href="global.html#modifyHospitalsInfo">modifyHospitalsInfo</a></li><li><a href="global.html#modifyMemberInfo">modifyMemberInfo</a></li><li><a href="global.html#modifyNotice">modifyNotice</a></li><li><a href="global.html#modifyPatient">modifyPatient</a></li><li><a href="global.html#modifyReservationInfo">modifyReservationInfo</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#registerHospitalInfo">registerHospitalInfo</a></li><li><a href="global.html#registerPatientInfo">registerPatientInfo</a></li><li><a href="global.html#registerReservationInfo">registerReservationInfo</a></li><li><a href="global.html#removeComment">removeComment</a></li><li><a href="global.html#removeHospitalInfo">removeHospitalInfo</a></li><li><a href="global.html#removeNotice">removeNotice</a></li><li><a href="global.html#removeReservationInfo">removeReservationInfo</a></li><li><a href="global.html#removeTodo">removeTodo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#ReservationReadContainer">ReservationReadContainer</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showMembersListByHospitalCode">showMembersListByHospitalCode</a></li><li><a href="global.html#showMembersListByNameAndCode">showMembersListByNameAndCode</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 19:45:00 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

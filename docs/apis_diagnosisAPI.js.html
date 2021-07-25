@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apis/diagnosisAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apis/diagnosisAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+
+/**
+ * * 목적 : 오늘 해당 병원의 해당 의사가 진료를 봐야하는 환자의 리스트를 가져오기 위한 API
+ * @param {UserInfoVO} userInfo 
+ * * !String authToken // JWT Token
+ * * !int memberId
+ * * !String memberEmail
+ * * !String memberAuthority
+ * * !String hospitalCode
+ * 
+ * @returns {List&lt;DiagnosisListVO>} diagnosisList
+ * * [Patients Entity]
+ * * !int patientId 
+ * * !String patientName
+ * * !String patientGender
+ * * !String patientBirth (LocalDateTime > String)
+ * * [Diagnosis Entity]
+ * * !int diagId
+ * * !String startDate (LocalDateTime > String)
+ * * !String visitPurpose (방문 목적)
+ * 
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status - "no_user_info"
+ * * * message - "UserInfoVO의 값이 정상적으로 들어오지 않았습니다."
+ * * HTTP Status 204 - No Content
+ * > 검색 결과가 존재하지 않을 경우 throw
+ * * HTTP Status 409 - Conflict Request
+ * * * status - "no_patient_info"
+ * * * message - "환자의 정보가 존재하지 않습니다."
+ */
+export const getDiagnosisList = async (userInfo) => {
+    return await axios.get("/diagnosis", userInfo);
+}
+
+/**
+ * * 목적 : 해당 병원의 해당 의사가 진료를 등록하기 위한 API
+ * @param {RegistDiagnosisVO} diagnosisInfo 
+ * * !int patientId (환자의 PK)
+ * * !int memberId (임직원 (의사)의 PK)
+ * * !int diagId (진료의 PK)
+ * * !String hospitalCode (병원 코드)
+ * * !String drOpinion (의사 의견)
+ * * List&lt;MedicineVO> medicines (약품 정보들)
+ * * * int medicineId (Medicines 엔티티의 PK)
+ * * * int medicineDose (약품 수량)
+ * * * String medicineType (약품 타입)
+ * * List&lt;MedicineVO> injectors (주사 정보들)
+ * * List&lt;Integer> diagnostics (진단 검사 정보들)
+ * * VitalVO vital (바이탈 검사 정보)
+ * * * !int bloodPressure (혈압)
+ * * * !int pulse (맥박)
+ * * * !int respirationRate (호흡 수)
+ * * * !int temperature (온도)
+ * @returns {boolean} result (등록 성공 여부)
+ * 
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_diagnosis_info"
+ * * * message : "진료 등록 정보가 올바르지 않습니다. 다시 시도해주세요."
+ * * HTTP Status 409 - Conflict Request
+ * * * status : "not_updated_diagnosis_info" || "not_updated_medicines_info" || "not_updated_injectors_info" || "not_updated_diagnostics_info" || "not_updated_vital_info"
+ * * * message : "알 수 없는 이유로 진료가 등록되지 않았습니다. 다시 시도해주세요."
+ */
+export const registDiagnosisInfo = async (diagnosisInfo) => {
+    return await axios.put("/diagnosis", diagnosisInfo);
+}
+
+/**
+ * * 목적 : 환자의 식별자 (patientId)를 통해 진료 기록 리스트를 가져오기 위한 API
+
+ * @param {number} patientId 
+ * @returns {List&lt;DiagnosisHistoryVO>} data
+ * * !String startDate // 진료를 시작한 날짜 (LocalDateTime > String)
+ * * !String visitPurpose // 병원에 내방한 이유
+ * * !String drOpinion // 의사 소견
+ * * List&lt;MedicineRecordVO> medicines // 약 처방 기록
+ * * * !String medicineCode // 약품 코드
+ * * * !String medicineType // 약품 타입
+ * * * !String medicineUnit // 내복약, 외용약, 주사약 등등..
+ * * * !String medicineExplain // 약과 관련된 상세 설명
+ * * * !int medicineDose // 처방 양
+ * * !List&lt;MedicineRecordVO> injectors // 주사 처방 기록
+ * * !List&lt;DiagnosticTestRecordVO> diagnostics // 진단 검사 기록
+ * * * [DiagnosisTestRecords Entity]
+ * * * * double diagTestValue // 진단 검사의 결과 값
+ * * * * !String diagTestStatus // 진단 검사의 상태
+ * * * [DiagnosticInspections Entity]
+ * * * * !String bundleCode // 그룹 코드
+ * * * * !String bundleName // 그룹 명
+ * * * * !String presCode // 처방 코드
+ * * * * !String presName // 처방 명
+ * * * * !String presUnit // 처방 규격
+ * * * * !double presLowerLimit // 하한 값
+ * * * * double presUpperLimit // 상한 값
+ * * VitalRecordsDTO vital // 바이탈 검사 기록
+ * 
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_patient_id"
+ * * * message : "회원의 식별자가 입력되지 않았습니다."
+ * * HTTP Status 204 - No Content
+ * > 환자가 진료를 안 받는 것이 이상한 것이 아니므로 No Content
+ * 
+ */
+export const showDiagnosisHistoryByPatientId = async (patientId) => {
+    return await axios.get("/diagnosis/history", {
+        params: {
+            patientId
+        }
+    })
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addMember">addMember</a></li><li><a href="global.html#addNoticeImage">addNoticeImage</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#createNotice">createNotice</a></li><li><a href="global.html#createTodo">createTodo</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#deleteMember">deleteMember</a></li><li><a href="global.html#deletePatient">deletePatient</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#getDoctorInfo">getDoctorInfo</a></li><li><a href="global.html#getHospitalInfo">getHospitalInfo</a></li><li><a href="global.html#getHospitalListInfo">getHospitalListInfo</a></li><li><a href="global.html#getNoticeCommentsList">getNoticeCommentsList</a></li><li><a href="global.html#getNoticeList">getNoticeList</a></li><li><a href="global.html#getNoticesList">getNoticesList</a></li><li><a href="global.html#getNoticesListByTitle">getNoticesListByTitle</a></li><li><a href="global.html#getPatientInfo">getPatientInfo</a></li><li><a href="global.html#getPatientsList">getPatientsList</a></li><li><a href="global.html#getReservationInfo">getReservationInfo</a></li><li><a href="global.html#getSearchPatientList">getSearchPatientList</a></li><li><a href="global.html#getSearchReservationPatient">getSearchReservationPatient</a></li><li><a href="global.html#getTodosListByHospitalCode">getTodosListByHospitalCode</a></li><li><a href="global.html#getTodosListByMemberId">getTodosListByMemberId</a></li><li><a href="global.html#intializeMemberPw">intializeMemberPw</a></li><li><a href="global.html#isExistedEmail">isExistedEmail</a></li><li><a href="global.html#memberImageUpload">memberImageUpload</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#modifyComment">modifyComment</a></li><li><a href="global.html#modifyHospitalsInfo">modifyHospitalsInfo</a></li><li><a href="global.html#modifyMemberInfo">modifyMemberInfo</a></li><li><a href="global.html#modifyNotice">modifyNotice</a></li><li><a href="global.html#modifyPatient">modifyPatient</a></li><li><a href="global.html#modifyReservationInfo">modifyReservationInfo</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#registerHospitalInfo">registerHospitalInfo</a></li><li><a href="global.html#registerPatientInfo">registerPatientInfo</a></li><li><a href="global.html#registerReservationInfo">registerReservationInfo</a></li><li><a href="global.html#removeComment">removeComment</a></li><li><a href="global.html#removeHospitalInfo">removeHospitalInfo</a></li><li><a href="global.html#removeNotice">removeNotice</a></li><li><a href="global.html#removeReservationInfo">removeReservationInfo</a></li><li><a href="global.html#removeTodo">removeTodo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#ReservationReadContainer">ReservationReadContainer</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showMembersListByHospitalCode">showMembersListByHospitalCode</a></li><li><a href="global.html#showMembersListByNameAndCode">showMembersListByNameAndCode</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 19:45:00 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

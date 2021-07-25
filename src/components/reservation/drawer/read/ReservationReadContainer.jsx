@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+
 import {
-  upateReservationTime,
-  removeReservationTime,
-} from 'redux/features/reservation/reservationSlice';
+  modifyReservationInfo,
+  removeReservationInfo,
+} from 'apis/reservationAPI';
 import moment from 'moment';
 import { Grid } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
+import { sendMqttMessage } from 'apis/pushAPI';
 
-/*
-  캘린더에 추가된 데이터를 클릭했을 때 나오는 ReservationDrawer에 세팅되는 컨텐트 부분이다.
-  readPatient: 예약된 환자 정보 객체 데이터이다.
-*/
-const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
-  const dispatch = useDispatch();
+/**
+ * * 목적 : 예약 상태를 보여주기 위한 컨테이너
+ * 캘린더에 추가된 데이터를 클릭했을 때 나오는 ReservationDrawer에 세팅되는 컨텐트 부분이다.
+ * readPatient: 예약된 환자 정보 객체 데이터이다.
+ * @param {object} state hello world
+ * @returns {JSX.Element} view
+ */
+
+const ReservationReadContainer = ({
+  setReadOpened,
+  readPatient,
+  setAddDisplay,
+}) => {
+  // 로그인한 유저의 정보를 가져오기 위한 데이터
+  const loginInfo = useSelector((state) => state.common.loginInfo);
+
   const { enqueueSnackbar } = useSnackbar();
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
@@ -25,7 +37,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
   };
 
   // 내원사유를 관리하는 상태 데이터, readPatient.drOpinion을 세팅하여 수정할 수 있도록 한다
-  const [visitReason, setReason] = useState(readPatient.drOpinion);
+  const [visitReason, setReason] = useState(readPatient.visitPurpose);
   // 수정, 삭제 완료되었을떄에 따라 컴포넌트를 세팅하기 위한 상태 데이터
   const [checkPage, setCheckPage] = useState('');
   // 예약시간 부분을 커스텀하여 세팅하는 상태 데이터
@@ -64,18 +76,28 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
   */
   const updateReservationInfo = (id, changeVisitReason) => {
     //1)
-    if (visitReason === readPatient.drOpinion) {
+    if (visitReason === readPatient.visitPurpose) {
       handleAlert('error', '수정된 내용을 입력해주세요');
     } else {
       //2)
-      const updateInfo = {
-        id: id,
-        drOpinion: changeVisitReason,
-      };
-      //2)
-      dispatch(upateReservationTime(updateInfo));
-      ///3)
-      setCheckPage('UPDATE');
+      try {
+        const updateInfo = {
+          diagId: id,
+          patientId: readPatient.patientId,
+          memberId: readPatient.memberId,
+          hospitalCode: loginInfo.hospitalCode,
+          visitPurpose: changeVisitReason,
+        };
+        //3)
+        const { data } = modifyReservationInfo(updateInfo);
+
+        handleAlert('success', '내용이 변경되었습니다.');
+
+        setCheckPage('UPDATE');
+      } catch (error) {
+        const { message } = error.response.data;
+        handleAlert('error', message);
+      }
     }
   };
   /*
@@ -83,13 +105,33 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
     1) 값을 삭제하기 위한 부분
     2) 컴포넌트 변화 (삭제 완료)
   */
-  const removeReservationInfo = (id) => {
+  const deleteReservationInfo = async (id) => {
     //1)
-    dispatch(removeReservationTime(id));
+    try {
+      const { data } = await removeReservationInfo(id);
+      handleAlert('success', '예약이 취소되었습니다.');
+
+      const sendPushMessage = {
+        topic: `/${loginInfo.hospitalCode}/doctor`,
+        priority: 'info',
+        message: `${readPatient.patientName} 환자가 진료가 취소되었습니다.`,
+      };
+
+      await sendMqttMessage(sendPushMessage);
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+      console.log('error', error);
+    }
     //2)
     setCheckPage('REMOVE');
   };
 
+  /*
+    예약 수정을 나타내는 컴포넌트
+    1) 값을 수정하기 위한 부분
+    2) 컴포넌트 변화 (수정 완료)
+  */
   const resultUpdate = () => {
     return (
       <div style={{ textAlign: 'center' }}>
@@ -107,6 +149,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             bgColor="#DDB892"
             color="white"
             onClick={() => {
+              setAddDisplay(true);
               setReadOpened(false);
               setCheckPage('');
             }}
@@ -117,7 +160,11 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
       </div>
     );
   };
-
+  /*
+    예약 취소를 나타내는 컴포넌트
+    1) 값을 삭제하기 위한 부분
+    2) 컴포넌트 변화 (삭제 완료)
+  */
   const resultDelete = () => {
     return (
       <div style={{ textAlign: 'center' }}>
@@ -135,6 +182,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             bgColor="#DDB892"
             color="white"
             onClick={() => {
+              setAddDisplay(true);
               setReadOpened(false);
               setCheckPage('');
             }}
@@ -145,6 +193,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
       </div>
     );
   };
+  // 예약된 정보를 보여주는 컴포넌트
   const mainContent = () => {
     return (
       <Grid
@@ -182,7 +231,10 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
           </StyledTypography>
         </Grid>
         <Grid item xs={9}>
-          <StyledInputBase readOnly value={readPatient.birth} />
+          <StyledInputBase
+            readOnly
+            value={moment(readPatient.patientBirth).format('yyyy년 MM월 DD일')}
+          />
         </Grid>
         <Grid
           item
@@ -242,7 +294,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
           </StyledTypography>
         </Grid>
         <Grid item xs={9}>
-          <StyledInputBase readOnly value={readPatient.drRoom} />
+          <StyledInputBase readOnly value={readPatient.doctorRoom} />
         </Grid>
         <Grid
           item
@@ -257,7 +309,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
           </StyledTypography>
         </Grid>
         <Grid item xs={9}>
-          <StyledInputBase readOnly value={readPatient.memberName} />
+          <StyledInputBase readOnly value={readPatient.doctorName} />
         </Grid>
         <Grid
           item
@@ -295,7 +347,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
             bgColor="#d90429"
             color="white"
             onClick={() => {
-              removeReservationInfo(readPatient.id);
+              deleteReservationInfo(readPatient.id);
             }}
           >
             예약취소
@@ -307,6 +359,7 @@ const ReservationReadContainer = ({ setReadOpened, readPatient }) => {
 
   return (
     <div>
+      {/* checkPage 값에 따라 예약된 정보를 나타내거나, 업데이트 컴포넌트, 삭제 컴포넌트를 보여준다 */}
       {checkPage === '' && mainContent()}
       {checkPage === 'UPDATE' && resultUpdate()}
       {checkPage === 'REMOVE' && resultDelete()}

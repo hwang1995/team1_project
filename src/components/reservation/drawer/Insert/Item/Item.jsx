@@ -19,10 +19,10 @@ const Item = ({ patient, patientClick }) => {
         onClick={() => patientClick(patient)}
       >
         <ListItemAvatar>
-          <Avatar alt={patient.patient_name} src="/assets/image/patient.png" />
+          <Avatar alt={patient.patientName} src="/assets/image/patient.png" />
         </ListItemAvatar>
         <ListItemText
-          primary={patient.patient_name + ' / ' + patient.patient_gender}
+          primary={patient.patientName + ' / ' + patient.patientGender}
           secondary={
             <Fragment>
               <StyledTypography
@@ -30,7 +30,7 @@ const Item = ({ patient, patientClick }) => {
                 variant="body2"
                 color="textPrimary"
               >
-                {' ' + patient.patient_birth}
+                {' ' + patient.patientBirth}
               </StyledTypography>
             </Fragment>
           }

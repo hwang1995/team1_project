@@ -8,15 +8,24 @@ import { IoLogIn, IoLogOut, IoNotificationsOutline } from 'react-icons/io5';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
+import { useSnackbar } from 'notistack';
 
 import useWindowSize from 'hooks/useWindowSize';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHeaderInfo, setLoginInfo } from 'redux/features/common/commonSlice';
+import {
+  setAuthToken,
+  setHeaderInfo,
+  setLoginInfo,
+} from 'redux/features/common/commonSlice';
 import MobileDrawer from './drawer/MobileDrawer';
 
 import NotificationDrawer from './drawer/NotificationDrawer';
 import AuthModal from 'components/auth/modal/AuthModal';
+import { removeAuthHeader } from 'apis/axiosConfig';
 
+/**
+ * * 목표 : 페이지 컨테이너
+ */
 const PageContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -45,6 +54,9 @@ const PageContainer = styled.div`
   }
 `;
 
+/**
+ * * 목표 : 사이드 바의 컨테이너
+ */
 const SidebarContainer = styled.div`
   display: flex;
   width: 100%;
@@ -101,6 +113,11 @@ const SidebarContainer = styled.div`
   }
 `;
 
+/**
+ * * 목표 : 반응형 웹 헤더를 제공
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const ResponsivePageHeader = () => {
   const { breakpoint } = useWindowSize();
   const location = useLocation();
@@ -108,10 +125,12 @@ const ResponsivePageHeader = () => {
   const dispatch = useDispatch();
 
   const authInfo = useSelector((state) => state.common.loginInfo);
+  const { memberAuthority } = authInfo;
   const [isLogined, setLogined] = useState(false);
 
+  // authInfo의 이메일이 공백이 아니라면 로그인 처리
   useEffect(() => {
-    if (authInfo.member_email !== '') {
+    if (authInfo.memberEmail !== '') {
       setLogined(true);
     }
   }, [authInfo]);
@@ -121,6 +140,7 @@ const ResponsivePageHeader = () => {
     .filter((data) => (data !== '' ? true : false));
   const specificPath = pathnames[pathnames.length - 1];
 
+  // 접근한 경로가 진료, 환자, 임직원, 대시보드, 튜토리얼, 메인인지 확인하기 위한 변수
   const isDiagnosis =
     specificPath === 'reservation' ||
     specificPath === 'diagnosis' ||
@@ -147,24 +167,27 @@ const ResponsivePageHeader = () => {
         status: true,
       }),
     );
-    // setLogined((prevState) => !prevState);
   };
 
+  /**
+   * * 목표 : 로그아웃을 하기 위함.
+   */
   const handleLogout = () => {
-    dispatch(
-      setLoginInfo({
-        member_id: 0,
-        member_email: '',
-        member_name: '',
-        member_authority: '',
-        hospital_code: '',
-        hospital_name: '',
-      }),
-    );
+    removeAuthHeader();
+
+    dispatch(setLoginInfo(''));
+    dispatch(setAuthToken(''));
+
+    sessionStorage.removeItem('userInfo');
+    sessionStorage.removeItem('authToken');
+
     setLogined(false);
-    history.push('/');
+    window.location.href = '/';
   };
 
+  /**
+   * * 목표: 모바일 Drawer를 열기 위함.
+   */
   const handleOpen = () => {
     dispatch(
       setHeaderInfo({
@@ -174,6 +197,21 @@ const ResponsivePageHeader = () => {
     );
   };
 
+  const handleDiagnosisClick = () => {
+    if (memberAuthority === 'ROLE_DOCTOR' || memberAuthority === 'ROLE_NURSE') {
+      history.push('/dashboard/reservation');
+      return;
+    } else if (memberAuthority === 'ROLE_INSPECTOR') {
+      history.push('/dashboard/diagnostic');
+      return;
+    }
+    history.push('/dashboard/diagnosis-history');
+  };
+
+  /**
+   * * 목표 : 모바일일 경우 ( < 600px ) 로그인 하지 않았을 떄에 나오는 헤더
+   * @returns {JSX.Element} view
+   */
   const getMobileNotLoginedHeader = () => {
     return (
       <Container>
@@ -183,7 +221,13 @@ const ResponsivePageHeader = () => {
             xs={2}
             className="common-grid"
             style={{ justifyContent: 'flex-start' }}
-            onClick={handleOpen}
+            onClick={() => {
+              if (authInfo.memberEmail !== '') {
+                handleOpen();
+              }
+              handleAlert('error', '로그인을 먼저 해야합니다.');
+              handleLogin();
+            }}
           >
             <motion.div whileHover={{ scale: 1.1 }}>
               <HiOutlineViewList size={24} color="white" />
@@ -210,6 +254,10 @@ const ResponsivePageHeader = () => {
     );
   };
 
+  /**
+   * * 목표 :모바일일 경우 ( < 600px ) 로그인 했을 때에 나오는 헤더
+   * @returns {JSX.Element} view
+   */
   const getMobileTopHeader = () => {
     return (
       <Container>
@@ -227,7 +275,14 @@ const ResponsivePageHeader = () => {
 
             {/* Full Screen Drawer를 보여줄 수 있는 Button을 넣는다. */}
           </Grid>
-          <Grid item xs={8} className="common-grid">
+          <Grid
+            item
+            xs={8}
+            className="common-grid"
+            onClick={() => {
+              history.push('/dashboard');
+            }}
+          >
             <MdLocalHospital size={24} color="white" />
           </Grid>
           <Grid
@@ -299,15 +354,18 @@ const ResponsivePageHeader = () => {
             >
               <MdLocalHospital size={24} color="white" />
             </Grid>
-            <Grid
-              item
-              sm={2}
-              md={1}
-              className="common-grid"
-              onClick={() => history.push('/dashboard/reservation')}
-            >
-              <span>진료</span>
-            </Grid>
+            {memberAuthority !== 'ROLE_DIRECTOR' && (
+              <Grid
+                item
+                sm={2}
+                md={1}
+                className="common-grid"
+                onClick={() => handleDiagnosisClick()}
+              >
+                <span>진료</span>
+              </Grid>
+            )}
+
             <Grid
               item
               sm={2}
@@ -328,7 +386,7 @@ const ResponsivePageHeader = () => {
               <span>임직원</span>
             </Grid>
             <Grid
-              item
+              
               sm={2}
               md={6}
               className="common-grid"
@@ -387,29 +445,38 @@ const ResponsivePageHeader = () => {
               <span className={clsx('big-text', 'bold')}>진료</span>
             </Grid>
             <Grid item xs={10} className={clsx('common-grid', 'right-align')}>
-              <span
-                className={clsx('small-text', {
-                  'selected-item': specificPath === 'reservation',
-                })}
-                onClick={() => goPage('/dashboard/reservation')}
-              >
-                진료 접수
-              </span>
-              <span
-                className={clsx('small-text', {
-                  'selected-item': specificPath === 'diagnosis',
-                })}
-                onClick={() => goPage('/dashboard/diagnosis')}
-              >
-                진료 등록
-              </span>
+              {memberAuthority !== 'ROLE_INSPECTOR' && (
+                <span
+                  className={clsx('small-text', {
+                    'selected-item': specificPath === 'reservation',
+                  })}
+                  onClick={() => goPage('/dashboard/reservation')}
+                >
+                  진료 접수
+                </span>
+              )}
+
+              {!(
+                memberAuthority === 'ROLE_NURSE' ||
+                memberAuthority === 'ROLE_INSPECTOR'
+              ) && (
+                <span
+                  className={clsx('small-text', {
+                    'selected-item': specificPath === 'diagnosis',
+                  })}
+                  onClick={() => goPage('/dashboard/diagnosis')}
+                >
+                  진료 등록
+                </span>
+              )}
+
               <span
                 className={clsx('small-text', {
                   'selected-item': specificPath === 'diagnostic',
                 })}
                 onClick={() => goPage('/dashboard/diagnostic')}
               >
-                진료 검사 보기
+                진단 검사 보기
               </span>
               <span
                 className={clsx('small-text', {
@@ -475,11 +542,23 @@ const ResponsivePageHeader = () => {
 
     return <Container></Container>;
   };
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
   return (
     <Fragment>
       {/* 상위 헤더  */}
 
-      <PageContainer>
+      <PageContainer
+        style={{
+          zIndex: 3,
+        }}
+      >
         {breakpoint === 'xs' && (
           <Hidden smUp>
             {!isLogined ? getMobileNotLoginedHeader() : getMobileTopHeader()}

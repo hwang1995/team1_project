@@ -5,9 +5,10 @@ import { useState, useCallback } from 'react';
  * const [{username, email}, onChange, reset] = useInputs({
  * username: '', email: ''})
  *
- * <input {...username}/> <input {...email}/>
+ * <input {...usernawme}/> <input {...email}/>
  * @param {*} initialForm
- * @returns
+ * @returns {object} formState
+ * @author SUNG WOOK HWANG
  */
 const useFormInput = (initialForm) => {
   const [form, setForm] = useState(initialForm);

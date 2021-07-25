@@ -4,10 +4,16 @@ export const reservationSlice = createSlice({
   name: 'reservation',
   initialState: {
     pageStatus: 'INFO',
+    addChangeView: false,
     inputVal: '',
     reservationInfo: [],
   },
   reducers: {
+
+    setAddChangeView(state, action) {
+      state.addChangeView = action.payload;
+    },
+
     changePage(state, action) {
       state.pageStatus = action.payload;
     },
@@ -41,6 +47,6 @@ export const reservationSlice = createSlice({
   },
 });
 
-export const { changePage, chaneInputVal, setReservationTime, upateReservationTime,removeReservationTime } = reservationSlice.actions;
+export const { changePage, chaneInputVal, setReservationTime, upateReservationTime,removeReservationTime, setAddChangeView } = reservationSlice.actions;
 
 export default reservationSlice.reducer;

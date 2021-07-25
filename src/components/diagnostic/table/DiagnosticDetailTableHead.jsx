@@ -40,7 +40,7 @@ const DiagnosticDetailTableHead = () => {
           검체명
         </StyledTypography>
       </TableCell>
-      <TableCell size="small" style={{ minWidth: '100px' }}>
+      <TableCell size="small" style={{ minWidth: '150px' }}>
         <StyledTypography variant="subtitle1" component="h5" weight={7}>
           용기
         </StyledTypography>

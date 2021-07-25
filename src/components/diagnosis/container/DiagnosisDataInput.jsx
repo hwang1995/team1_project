@@ -6,7 +6,7 @@ import { setDiagnosisInfo } from 'redux/features/diagnosis/diagnosisSlice';
 
 const SearchBase = styled(InputBase)`
   flex: 1;
-  width: 90%;
+  width: 100%;
   border-radius: 0.5rem;
   padding-left: 1rem;
   font-weight: 500;
@@ -19,6 +19,7 @@ const DiagnosisLabel = styled.div`
   align-items: center;
   height: 100%;
   font-weight: 700;
+  margin-left: 1rem;
 `;
 
 const DiagnosisTextarea = styled.textarea`
@@ -32,19 +33,29 @@ const DiagnosisTextarea = styled.textarea`
   font-family: 'Noto Sans KR';
 `;
 
+/**
+ * * 진료의 정보를 보여주기 위한 Template 컴포넌트
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosisDataPage = () => {
+  // Redux store에 저장되어 있는 회원 정보
+  const { memberId } = useSelector((state) => state.common.loginInfo);
+
+  // Redux store에 저장되어 있는 환자의 정보
   const patientInfo = useSelector((state) => state.diagnosis.patient);
   const dispatch = useDispatch();
 
+  // 정보를 입력시에 포인팅을 다른곳으로 옮겼을 시에 작동하는 이벤트 함수
   const handleBlurOut = (e) => {
-    const { diag_id, member_id, patient_id } = patientInfo;
-    const dr_opinion = e.target.value;
+    const { diagId, patientId } = patientInfo;
+    const drOpinion = e.target.value;
     dispatch(
       setDiagnosisInfo({
-        diag_id,
-        member_id,
-        patient_id,
-        dr_opinion,
+        diagId,
+        memberId,
+        patientId,
+        drOpinion,
       }),
     );
   };
@@ -52,35 +63,37 @@ const DiagnosisDataPage = () => {
   return (
     <Fragment>
       <Grid container style={{ padding: '1rem' }}>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>이름</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.patient_name} />
+          <SearchBase readOnly value={patientInfo.patientName} />
         </Grid>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>생년월일</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.patient_birth} />
+          <SearchBase readOnly value={patientInfo.patientBirth} />
         </Grid>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>성별</DiagnosisLabel>
         </Grid>
         <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.patient_gender} />
+          <SearchBase readOnly value={patientInfo.patientGender} />
         </Grid>
-        <Grid item xs={6} md={3} style={{ marginBottom: '1rem' }}>
+        <Grid item xs={6} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>내원사유</DiagnosisLabel>
         </Grid>
-        <Grid item xs={6} md={3}>
-          <SearchBase readOnly value={patientInfo.visit_purpose} />
+        <Grid item xs={6} md={11}>
+          <SearchBase readOnly value={patientInfo.visitPurpose} />
         </Grid>
-        <Grid item xs={12} md={3} style={{ marginBottom: '1rem' }}>
+      </Grid>
+
+      <Grid container style={{ padding: '0 1rem 1rem 1rem' }}>
+        <Grid item xs={12} md={1} style={{ marginBottom: '1rem' }}>
           <DiagnosisLabel>의사소견</DiagnosisLabel>
         </Grid>
-        <Grid item xs={12} md={9} style={{ marginBottom: '1rem' }}>
-          {/* <DiagnosisTextarea onChange={handleChange} /> */}
+        <Grid item xs={12} md={11} style={{ marginBottom: '1rem' }}>
           <DiagnosisTextarea onBlur={handleBlurOut} />
         </Grid>
       </Grid>

@@ -1,7 +1,15 @@
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, Modal, Backdrop, IconButton,Grid, Button } from '@material-ui/core';
+import {
+  makeStyles,
+  Modal,
+  Backdrop,
+  IconButton,
+  Grid,
+  Button,
+} from '@material-ui/core';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -9,6 +17,10 @@ import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
 import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
+import {
+  changeStatusToCompletedWithMemberId,
+  diagnosticChangeStatus,
+} from 'apis/diagnosisInsepctionAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -29,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * * 진단 검사에서 채혈 완료 버튼을 클릭시에 나오는 컴포넌트 (Template)
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticBloodDrawModal = () => {
   const classes = useStyles();
 
@@ -39,6 +56,19 @@ const DiagnosticBloodDrawModal = () => {
     (state) => state.diagnostic.modalStatus.bloodDraw,
   );
 
+  const loginInfo = useSelector((state) => state.common.loginInfo);
+  const diagTestId = useSelector((state) => state.diagnostic.currentDiagTestId);
+  const diagnosticList = useSelector(
+    (state) => state.diagnostic.currentDiagTestList,
+  );
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
   const handleClose = () =>
     dispatch(
       setDiagnosticModal({
@@ -46,6 +76,30 @@ const DiagnosticBloodDrawModal = () => {
         status: false,
       }),
     );
+
+  const handleBloodDraw = async () => {
+    try {
+      await diagnosticChangeStatus({
+        status: 'completed',
+        diagTestId,
+      });
+
+      const sendInfo = diagnosticList.map(({ diagTestRecordId }) => {
+        const inspectorMemberId = loginInfo.memberId;
+        return {
+          diagTestRecordId,
+          inspectorMemberId,
+        };
+      });
+
+      await changeStatusToCompletedWithMemberId(sendInfo);
+      handleAlert('success', '진단 검사의 상태가 접수로 완료되었습니다.');
+      handleClose();
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+  };
   return (
     <Fragment>
       <Modal
@@ -90,10 +144,10 @@ const DiagnosticBloodDrawModal = () => {
                   }}
                 >
                   <StyledTypography variant="h5" component="h5" weight={7}>
-                    정말로 채혈 결과를
+                    정말로 채혈 완료를
                   </StyledTypography>
                   <StyledTypography variant="h5" component="h5" weight={7}>
-                    추가하시겠습니까?
+                    진행하시겠습니까?
                   </StyledTypography>
                   <div
                     style={{
@@ -108,6 +162,7 @@ const DiagnosticBloodDrawModal = () => {
                         minWidth: '6rem',
                         marginRight: '0.5rem',
                       }}
+                      onClick={() => handleBloodDraw()}
                     >
                       네
                     </Button>
@@ -118,6 +173,7 @@ const DiagnosticBloodDrawModal = () => {
                         minWidth: '6rem',
                         marginRight: '0.5rem',
                       }}
+                      onClick={() => handleClose()}
                     >
                       아니요
                     </Button>

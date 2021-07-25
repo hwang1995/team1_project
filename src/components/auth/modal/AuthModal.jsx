@@ -1,6 +1,10 @@
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setHeaderInfo, setLoginInfo } from 'redux/features/common/commonSlice';
+import {
+  setAuthToken,
+  setHeaderInfo,
+  setLoginInfo,
+} from 'redux/features/common/commonSlice';
 import {
   makeStyles,
   Modal,
@@ -16,12 +20,15 @@ import { useHistory } from 'react-router-dom';
 import { AiOutlineClose } from 'react-icons/ai';
 import { RiHospitalLine, RiLockPasswordLine } from 'react-icons/ri';
 import { HiOutlineMail } from 'react-icons/hi';
+import { useSnackbar } from 'notistack';
 import SpringFade from 'components/common/fade/SpringFade';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import useInput from 'hooks/useInput';
+import { getAuthentication } from 'apis/authAPI';
+import { addAuthHeader } from 'apis/axiosConfig';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -86,9 +93,17 @@ const AuthModal = () => {
 
   const history = useHistory();
 
-  const hospital_code = useInput('');
-  const member_email = useInput('');
-  const member_password = useInput('');
+  const hospitalCode = useInput('');
+  const memberEmail = useInput('');
+  const memberPw = useInput('');
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+      autoHideDuration: 2000,
+    });
+  };
 
   const isOpened = useSelector((state) => state.common.headerInfo.auth);
   const handleClose = () =>
@@ -99,22 +114,74 @@ const AuthModal = () => {
       }),
     );
 
-  const handleLogin = () => {
-    console.log(hospital_code.value, member_email.value, member_password.value);
-    dispatch(
-      setLoginInfo({
-        member_id: 1,
-        member_email: 'destiny0810@naver.com',
-        member_name: '황성욱',
-        member_authority: 'ROLE_DOCTOR',
-        hospital_code: 'BDZ_1',
-        hospital_name: '국군수도병원',
-      }),
-    );
-    handleClose();
-    history.push('/dashboard');
-  };
+  const handleLogin = async (e) => {
+    const hospital = hospitalCode.value;
+    const email = memberEmail.value;
+    const password = memberPw.value;
+    try {
+      const { data } = await getAuthentication({
+        hospitalCode: hospital,
+        memberEmail: email,
+        memberPw: password,
+      });
 
+      const { authToken, ...rest } = data;
+
+      addAuthHeader(authToken);
+
+      dispatch(setAuthToken(authToken));
+      dispatch(setLoginInfo(rest));
+
+      sessionStorage.setItem('authToken', authToken);
+      sessionStorage.setItem('userInfo', JSON.stringify(rest));
+
+      handleAlert('success', '로그인에 성공하였습니다.');
+
+      handleClose();
+      history.push('/dashboard');
+    } catch (error) {
+      // alert(error.response);
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
+  };
+  const handleKeyPress = async (event) => {
+    const { key } = event;
+
+    const hospital = hospitalCode.value;
+    const email = memberEmail.value;
+    const password = memberPw.value;
+    if (key === 'Enter' && hospital && email && password) {
+      try {
+        const { data } = await getAuthentication({
+          hospitalCode: hospital,
+          memberEmail: email,
+          memberPw: password,
+        });
+
+        const { authToken, ...rest } = data;
+
+        addAuthHeader(authToken);
+
+        dispatch(setAuthToken(authToken));
+        dispatch(setLoginInfo(rest));
+
+        sessionStorage.setItem('authToken', authToken);
+        sessionStorage.setItem('userInfo', JSON.stringify(rest));
+
+        handleAlert('success', '로그인에 성공하였습니다.');
+
+        handleClose();
+        history.push('/dashboard');
+      } catch (error) {
+        // alert(error.response);
+        const { message } = error.response.data;
+        handleAlert('error', message);
+      }
+    } else if (key === 'Enter' && !hospital && !email && !password) {
+      handleAlert('error', '값을 올바르게 채워주세요.');
+    }
+  };
   return (
     <Fragment>
       <Modal
@@ -132,7 +199,11 @@ const AuthModal = () => {
             className={classes.paper}
             style={{ display: 'flex', flexDirection: 'column' }}
           >
-            <ResponsiveContainer breakpoint={breakpoint} style={{ flex: 1 }}>
+            <ResponsiveContainer
+              breakpoint={breakpoint}
+              style={{ flex: 1 }}
+              onKeyPress={handleKeyPress}
+            >
               <DrawerHeader breakpoint={breakpoint}>
                 <StyledTypography variant="h5" component="h5" weight={7}>
                   로그인
@@ -168,9 +239,10 @@ const AuthModal = () => {
                       <RiHospitalLine size={24} color="black" />
                     </div>
                     <InputBase
-                      type="text"
+                      // type="text"
                       className="input-area"
-                      {...hospital_code}
+                      {...hospitalCode}
+                      autoCapitalize="true"
                     />
                   </InputBox>
                   <StyledTypography
@@ -187,7 +259,7 @@ const AuthModal = () => {
                     <InputBase
                       type="email"
                       className="input-area"
-                      {...member_email}
+                      {...memberEmail}
                     />
                   </InputBox>
                   <StyledTypography
@@ -204,11 +276,12 @@ const AuthModal = () => {
                     <InputBase
                       type="password"
                       className="input-area"
-                      {...member_password}
+                      {...memberPw}
                     />
                   </InputBox>
 
                   <Button
+                    type="button"
                     variant="contained"
                     color="primary"
                     fullWidth

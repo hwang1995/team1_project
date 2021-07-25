@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apis/reservationAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apis/reservationAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+
+/**
+ * * 목적 : 진료 접수(예약) 목록 보기를 위한 API
+ * @param {WeekNoWithMemberVO} weekNoWithMember
+ * * !int weekNo
+ * * !int memberId
+ * * !String hospitalCode
+ * @returns {List&lt;ReservationVO>} result
+ * * !String category (time)
+ * * !String color (white)
+ * * [Diagnosis Entity]
+ * * !int id (diagId, 진료 pk)
+ * * !int calendarId (=weekNo)
+ * * !LocalDateTime start (예약 시작 시간)
+ * * !LocalDateTime end (예약 마감 시간)
+ * * !String visitPurpose (방문 목적)
+ * * [Patients Entity]
+ * * !String title (환자 이름)
+ * * !int patientId (환자 pk)
+ * * !String patientName (환자 이름)
+ * * !LocatDate patientBirth (환자 생년월일)
+ * * [Members Entity]
+ * * !int memberId
+ * * !String bgColor (의사마다의 고유 색)
+ * * !String doctorName (의사 이름)
+ * * !String doctorRoom (의사 방 이름)
+ * @author SI HYUN PARK
+ */
+export const getReservationInfo = async (weekNoWithMember) => {
+  return await axios.get('/reservation', weekNoWithMember);
+};
+
+/**
+ * * 목적 : 진료 접수(예약)을 추가하기 위한 API
+ * @param {DiagnosisDTO} diagnosisInfo
+ * * !int weekNo
+ * * !LocalDateTime startDate
+ * * !LocalDateTime endDate
+ * * !String visitPurpose
+ * * String drOpinion (null)
+ * * !boolean isPharmacy (false)
+ * * !boolean isInjector (false)
+ * * !boolean isDiagnosticTest (false)
+ * * !boolean isVital (false)
+ * * !String reservationStatus (RESERVATION_REGISTER)
+ * * !int memberId
+ * * !int patientId
+ * * !String hospitalCode
+ * @returns {boolean} result (등록 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const registerReservationInfo = async (diagnosisInfo) => {
+  return await axios.post('/reservation', diagnosisInfo);
+};
+
+/**
+ * * 목적 : 진료 접수 내용 (방문 목적)을 수정하기 위한 API
+ * @param {diagnosisUpdateVO} diagnosisUpdateVO
+ * * !int diagId
+ * * !int patientId
+ * * !int memberId
+ * * !String hospitalCode
+ * * !String visitPurpose
+ * @returns {boolean} result (수정 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const modifyReservationInfo = async (diagnosisUpdateVO) => {
+  return await axios.put('/reservation', diagnosisUpdateVO);
+};
+
+/**
+ * * 목적 : 진료 접수 내용을 삭제 (status 수정)하기 위한 API
+ * @param {int} diagId
+ * @returns {boolean} result (삭제 성공 여부)
+ * @author SI HYUN PARK
+ */
+export const removeReservationInfo = async (diagId) => {
+  return await axios.put(`/reservation/${diagId}`);
+};
+
+/**
+ * 목적 : 예약 추가시 등록할 환자를 검색하기 위한 API
+ * @param {PatientSearchVO} patientVO
+ * * !String hospitalCode
+ * * !String patientName
+ * @returns {List&lt;PatientDTO>} data
+ * * !int patientId
+ * * !String patientName
+ * * !String patientSsn
+ * * !String patientGender
+ * * !String patientTel
+ * * !String patientAddr1
+ * * String patientAddr2
+ * * !String patientPostal
+ * * !int patientHeight
+ * * !int patientWeight
+ * * !LocalDateTime recentDate
+ * * !LocalDate patientBirth
+ * * !String hospitalCode
+ * @author SI HYUN PARK
+ */
+export const getPatientInfo = async (patientVO) => {
+  return await axios.get('/reservation/patient', patientVO);
+};
+
+/**
+ * 목적 : 화면 렌더링 될때 select에 의사 정보를 세팅할 데이터를 가져오기 위한 API
+ * @param {String} hospitalCode
+ * @returns {List&lt;MemberDTO>} data
+ * * !int memberId
+ * * !String memberName
+ * * !String doctorRoom
+ * * !String hospitalCode
+ * * !String memberColor
+ * @author SI HYUN PARK
+ */
+export const getDoctorInfo = async (hospitalCode) => {
+  return await axios.get(`/reservation/doctor/${hospitalCode}`);
+};
+
+/**
+ * * 목적 : 예약 환자 검색
+ * @param {PatientSearchVO} patientSearchVO
+ * * !String hospitalCode
+ * * !String patientName
+ * @returns {List&lt;ReservationVO>} data
+ * * !String category (time)
+ * * !String color (white)
+ * * [Diagnosis Entity]
+ * * !int id (diagId, 진료 pk)
+ * * !int calendarId (=weekNo)
+ * * !LocalDateTime start (예약 시작 시간)
+ * * !LocalDateTime end (예약 마감 시간)
+ * * !String visitPurpose (방문 목적)
+ * * [Patients Entity]
+ * * !String title (환자 이름)
+ * * !int patientId (환자 pk)
+ * * !String patientName (환자 이름)
+ * * !LocatDate patientBirth (환자 생년월일)
+ * * [Members Entity]
+ * * !int memberId
+ * * !String bgColor (의사마다의 고유 색)
+ * * !String doctorName (의사 이름)
+ * * !String doctorRoom (의사 방 이름)
+ * @author SI HYUN PARK
+ */
+export const getSearchReservationPatient = async (patientSearchVO) => {
+  return await axios.get('/reservation/waitingPatient', patientSearchVO);
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addMember">addMember</a></li><li><a href="global.html#addNoticeImage">addNoticeImage</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#createNotice">createNotice</a></li><li><a href="global.html#createTodo">createTodo</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#deleteMember">deleteMember</a></li><li><a href="global.html#deletePatient">deletePatient</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#getDoctorInfo">getDoctorInfo</a></li><li><a href="global.html#getHospitalInfo">getHospitalInfo</a></li><li><a href="global.html#getHospitalListInfo">getHospitalListInfo</a></li><li><a href="global.html#getNoticeCommentsList">getNoticeCommentsList</a></li><li><a href="global.html#getNoticeList">getNoticeList</a></li><li><a href="global.html#getNoticesList">getNoticesList</a></li><li><a href="global.html#getNoticesListByTitle">getNoticesListByTitle</a></li><li><a href="global.html#getPatientInfo">getPatientInfo</a></li><li><a href="global.html#getPatientsList">getPatientsList</a></li><li><a href="global.html#getReservationInfo">getReservationInfo</a></li><li><a href="global.html#getSearchPatientList">getSearchPatientList</a></li><li><a href="global.html#getSearchReservationPatient">getSearchReservationPatient</a></li><li><a href="global.html#getTodosListByHospitalCode">getTodosListByHospitalCode</a></li><li><a href="global.html#getTodosListByMemberId">getTodosListByMemberId</a></li><li><a href="global.html#intializeMemberPw">intializeMemberPw</a></li><li><a href="global.html#isExistedEmail">isExistedEmail</a></li><li><a href="global.html#memberImageUpload">memberImageUpload</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#modifyComment">modifyComment</a></li><li><a href="global.html#modifyHospitalsInfo">modifyHospitalsInfo</a></li><li><a href="global.html#modifyMemberInfo">modifyMemberInfo</a></li><li><a href="global.html#modifyNotice">modifyNotice</a></li><li><a href="global.html#modifyPatient">modifyPatient</a></li><li><a href="global.html#modifyReservationInfo">modifyReservationInfo</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#registerHospitalInfo">registerHospitalInfo</a></li><li><a href="global.html#registerPatientInfo">registerPatientInfo</a></li><li><a href="global.html#registerReservationInfo">registerReservationInfo</a></li><li><a href="global.html#removeComment">removeComment</a></li><li><a href="global.html#removeHospitalInfo">removeHospitalInfo</a></li><li><a href="global.html#removeNotice">removeNotice</a></li><li><a href="global.html#removeReservationInfo">removeReservationInfo</a></li><li><a href="global.html#removeTodo">removeTodo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#ReservationReadContainer">ReservationReadContainer</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showMembersListByHospitalCode">showMembersListByHospitalCode</a></li><li><a href="global.html#showMembersListByNameAndCode">showMembersListByNameAndCode</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 19:45:00 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

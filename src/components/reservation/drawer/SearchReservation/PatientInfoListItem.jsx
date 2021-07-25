@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect} from 'react';
+import React, { Fragment} from 'react';
 import moment from 'moment';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -27,53 +27,53 @@ const PatientInfoListItem = ({ searchResults, setReadPatient, setReadOpened, pag
     setReadOpened(true);
   };
 
-  useEffect(() => {
-    console.log("환자 검색 리스트가 나오는 컴포넌트 입니다.");
-  }, [])
+
 
   // 검색된 결과에 대한 아이템 이다. (환자 데이터)
   const resultItem = (reservation) => {
       return (
-            <div key={reservation.id}>
-              <Divider variant="inset" component="li" />
-              <ListItem
-                alignItems="flex-start"
-                style={{ cursor: 'pointer' }}
-                onClick={() => handlePatientClick(reservation)}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    alt={reservation.title}
-                    src=""
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    reservation.title +
-                    ' / ' +
-                    reservation.drRoom +
-                    ' ( ' +
-                    moment(reservation.start).format('LT') +
-                    ' ~ ' +
-                    moment(reservation.end).format('LT') +
-                    ' )'
-                  }
-                  secondary={
-                    <Fragment>
-                      <StyledTypography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                      >
-                        {' ' + reservation.birth}
-                      </StyledTypography>
-                    </Fragment>
-                  }
-                />
-              </ListItem>
-              <Divider variant="inset" component="li" />
-            </div>
-      )
+        <div key={reservation.id}>
+          <Divider variant="inset" component="li" />
+          <ListItem
+            alignItems="flex-start"
+            style={{ cursor: 'pointer' }}
+            onClick={() => handlePatientClick(reservation)}
+          >
+            <ListItemAvatar>
+              <Avatar alt={reservation.title} src="" />
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                reservation.title +
+                ' / ' +
+                reservation.doctorRoom +
+                ' ( ' +
+                moment(reservation.start).format('LT') +
+                ' ~ ' +
+                moment(reservation.end).format('LT') +
+                ' )'
+              }
+              secondary={
+                <Fragment>
+                  <StyledTypography
+                    component="span"
+                    variant="body2"
+                    color="textPrimary"
+                  >
+                    {' ' +
+                      reservation.patientBirth[0] +
+                      '-' +
+                      reservation.patientBirth[1] +
+                      '-' +
+                      reservation.patientBirth[2]}
+                  </StyledTypography>
+                </Fragment>
+              }
+            />
+          </ListItem>
+          <Divider variant="inset" component="li" />
+        </div>
+      );
     }
   /// 검색어를 입력해주세요
   const resultSearch = () => {

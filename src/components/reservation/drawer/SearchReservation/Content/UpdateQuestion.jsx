@@ -1,11 +1,17 @@
 import StyledButton from "components/common/button/StyledButton";
 
-
-const UpdateQuestion = ({setCheckPage, setVisible,setReadOpened, setPageResult}) => {
+// 수정이 완료되었을 때 나타나는 컴포넌트
+const UpdateQuestion = ({
+  setCheckPage,
+  setVisible,
+  setReadOpened,
+  setPageResult,
+  setAddDisplay,
+}) => {
   return (
     <div style={{ textAlign: 'center' }}>
       <div>
-        <img src="/assets/image/accept.png" alt="accept"/>
+        <img src="/assets/image/accept.png" alt="accept" />
       </div>
       <div>
         <h1 style={{ fontWeight: 'bold', marginBottom: '2em' }}>
@@ -20,8 +26,9 @@ const UpdateQuestion = ({setCheckPage, setVisible,setReadOpened, setPageResult})
           onClick={() => {
             setCheckPage('');
             setVisible(false);
-            setReadOpened(false);
+            setAddDisplay(true);
             setPageResult(false);
+            setReadOpened(false);
           }}
         >
           이전 화면으로 돌아가기
@@ -29,6 +36,6 @@ const UpdateQuestion = ({setCheckPage, setVisible,setReadOpened, setPageResult})
       </div>
     </div>
   );
-}
+};
 
 export default UpdateQuestion;

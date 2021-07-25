@@ -6,6 +6,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField,
+  Paper,
 } from '@material-ui/core';
 import StyledTypography from 'components/common/typography/StyledTypography';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
@@ -18,62 +20,126 @@ import StyledButton from 'components/common/button/StyledButton';
 import PostalCodeModal from '../modal/PostalCodeModal';
 import { setModalStatus } from 'redux/features/member/memberSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  isExistedEmail,
+  memberImageUpload,
+  modifyMemberInfo,
+} from 'apis/memberAPI';
+import { v4 as uuid } from 'uuid';
+import { CirclePicker } from 'react-color';
+import ImageUploader from 'react-images-upload';
 
-/*관리자관점 임직원 정보수정 컴포넌트*/
-
+/**
+ * 이 DRAWER 컴포넌트는 임직원 수정사항을 작성하기 위한 컴포넌트입니다.
+ * 들어가야할 내용은 다음과 같습니다.
+ * * DRAWER (SwipeableDrawer)
+ * * * 주소 검색 (PostalCodeModal)
+ * * * 이미지 업로드 (ImageUploader)
+ * * * 색상 선택 (CirclePicker)
+ * @returns {JSX.Element}
+ * @author Jong Hyun Hong
+ */
 const MemberUpdateDrawer = ({
   isUpdateOpened,
   setUpdateOpened,
   memberData,
-  setMember,
-  member,
+  currentUser,
+  showMember,
 }) => {
   const { breakpoint } = useWindowSize();
 
+  // 임직원의 권한을 설정할때 저장하는 상태
   const [selectVal, setSelectVal] = useState('');
 
+  // 임직원의 이메일 중복체크의 확인여부를 저장하는 상태
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+
+  // 임직원 정보에 대한 데이터를 저장하는 상태
   const [memberInfo, setMemberInfo] = useState({});
+
   const { enqueueSnackbar } = useSnackbar();
+
+  // 임직원의 색상을 저장하기 위한 상태
+  const [currentColor, setCurrentColor] = useState('');
 
   const handleAlert = (variant, message) => {
     enqueueSnackbar(message, {
       variant,
     });
   };
+
+  // 데이터 변경시에 동작
   const handleChange = (event) => {
-    if (event.target.name === 'memberName') {
-      setMemberInfo({ ...memberInfo, member_name: event.target.value });
-    } else if (event.target.name === 'memberPassword') {
-      setMemberInfo({ ...memberInfo, member_password: event.target.value });
-    } else if (event.target.name === 'memberTel') {
-      setMemberInfo({ ...memberInfo, member_tel: event.target.value });
-    } else if (event.target.name === 'memberAddress1') {
-      setMemberInfo({ ...memberInfo, member_postal: event.target.value });
-    } else if (event.target.name === 'memberAddress2') {
-      setMemberInfo({ ...memberInfo, member_addr1: event.target.value });
-    } else if (event.target.name === 'memberAddress3') {
-      setMemberInfo({ ...memberInfo, member_addr2: event.target.value });
+    // 이메일 변경시 중복체크 여부 재설정
+    if (event.target.name === 'memberEmail') {
+      setIsEmailChecked(false);
+    }
+    setMemberInfo({ ...memberInfo, [event.target.name]: event.target.value });
+    console.log(event.target.name);
+    console.log('값 변경: ', event.target.value);
+  };
+
+  // 이미지를 업로드하거나 취소할때의 동작
+  const onDrop = async (event, picture) => {
+    if (event.length === 0 || picture.length === 0) {
+      return;
+    }
+
+    try {
+      let ext = '.jpg';
+
+      if (event[0].type === 'image/jpeg') {
+        ext = '.jpg';
+      } else if (event[0].type === 'image/gif') {
+        ext = '.gif';
+      } else if (event[0].type === 'image/png') {
+        ext = '.png';
+      } else if (event[0].type === 'image/webp') {
+        ext = '.webp';
+      }
+
+      const imageName = uuid() + ext;
+
+      let imageInfo = {
+        hospitalCode: currentUser.hospitalCode,
+        imageName,
+        base64Content: picture[0],
+      };
+
+      await memberImageUpload(imageInfo);
+      const sendImageName = `/${imageInfo.hospitalCode}/${imageInfo.imageName}`;
+      setMemberInfo((prevState) => ({
+        ...prevState,
+        memberImage: sendImageName,
+      }));
+      // setPictures(imageInfo);
+    } catch (error) {
+      // const { message } = error.response.data;
+
+      handleAlert('error', '알 수 없는 이유로 이미지 업로드에 실패하였습니다.');
+      return;
     }
   };
 
+  //Drawer창이 켜졌을때 데이터 받아오기
   useEffect(() => {
-    setMemberInfo({
-      member_name: memberData.member_name,
-      member_tel: memberData.member_tel,
-      member_postal: memberData.member_postal,
-      member_addr1: memberData.member_addr1,
-      member_addr2: memberData.member_addr2,
-    });
-
-    let memberAuthority = '';
-    if (memberData.member_authority === 'ROLE_DOCTOR') {
-      memberAuthority = '의사';
-    } else if (memberData.member_authority === 'ROLE_NURSE') {
-      memberAuthority = '간호사';
-    } else if (memberData.member_authority === 'ROLE_INSPECTOR') {
-      memberAuthority = '검사자';
+    if (isUpdateOpened) {
+      setMemberInfo({
+        memberId: memberData.memberId,
+        memberName: memberData.memberName,
+        memberTel: memberData.memberTel,
+        memberAuthority: memberData.memberAuthority,
+        memberPostal: memberData.memberPostal,
+        memberAddr1: memberData.memberAddr1,
+        memberAddr2: memberData.memberAddr2,
+        memberColor: memberData.memberColor,
+        memberEmail: memberData.memberEmail,
+        memberImage: memberData.memberImage,
+        memberIntroduction: memberData.memberIntroduction,
+      });
+      console.log('updateOpened', memberData);
+      setSelectVal(memberData.memberAuthority);
     }
-    setSelectVal(memberAuthority);
   }, [isUpdateOpened]);
 
   const dispatch = useDispatch();
@@ -82,66 +148,144 @@ const MemberUpdateDrawer = ({
     (state) => state.member.addressInfo,
   );
 
+  // 색상 변경시 데이터 저장
+  useEffect(() => {
+    console.log('currentCOlor', currentColor);
+    setMemberInfo({
+      ...memberInfo,
+      memberColor: currentColor,
+    });
+  }, [currentColor]);
+
+  // 권한 변경시 데이터 저장
+  useEffect(() => {
+    console.log('memberAuthority', selectVal);
+    setMemberInfo({
+      ...memberInfo,
+      memberAuthority: selectVal,
+    });
+  }, [selectVal]);
+
+  // 주소 및 우편번호 변경시 데이터 저장
   useEffect(() => {
     setMemberInfo({
       ...memberInfo,
-      member_postal,
-      member_addr1,
+      memberPostal: member_postal,
+      memberAddr1: member_addr1,
     });
   }, [member_postal, member_addr1]);
 
-  const handleSubmit = (event) => {
+  // '변경' 버튼을 클릭시 동작
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    try {
+      // 이메일 정규 표현식
+      const regExpEmail =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-    let member_authority = '';
-    if (selectVal === '병원장') {
-      member_authority = 'ROLE_ADMIN';
-    } else if (selectVal === '의사') {
-      member_authority = 'ROLE_DOCTOR';
-    } else if (selectVal === '간호사') {
-      member_authority = 'ROLE_NURSE';
-    } else if (selectVal === '검사자') {
-      member_authority = 'ROLE_INSPECTOR';
+      // 전화번호 정규표현식
+      const regExpTel =
+        /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
+
+      const isValidEmail = regExpEmail.test(memberInfo.memberEmail);
+      const isValidTel = regExpTel.test(memberInfo.memberTel);
+
+      // 동일한 이메일주소
+      let sameEmail = false;
+      // 같은 이메일일때
+      if (memberInfo.memberEmail === memberData.memberEmail) {
+        sameEmail = true;
+      }
+      console.log('이메일 체크 상태: ', isEmailChecked);
+
+      if (!sameEmail) {
+        if (!isEmailChecked) {
+          handleAlert('error', '이메일 중복 체크를 해주세요.');
+          return;
+        }
+      } else if (!isValidEmail) {
+        handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
+        return;
+      } else if (memberInfo.memberName === '') {
+        handleAlert('error', '이름이 공백입니다.');
+        return;
+      } else if (!isValidTel) {
+        handleAlert(
+          'error',
+          `전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)`,
+        );
+        return;
+      } else if (
+        memberInfo.memberPostal === '' ||
+        memberInfo.memberAddr1 === ''
+      ) {
+        handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
+        return;
+      } else if (memberInfo.memberAddr2 === '') {
+        handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
+        return;
+      } else if (memberInfo.memberColor === '') {
+        handleAlert('error', '색상이 없습니다. 색을 골라주세요.');
+        return;
+      }
+      console.log('modifyInfo', memberInfo);
+      await modifyMemberInfo(memberInfo);
+
+      handleAlert('success', '임직원 정보가 변경 되었습니다.');
+      showMember();
+      setUpdateOpened(false);
+    } catch (error) {
+      const { message } = error.response.data;
+
+      if (message === undefined) {
+        handleAlert(
+          'error',
+          '알 수 없는 이유로 임직원 정보 수정에 실패하였습니다.',
+        );
+        return;
+      }
+
+      handleAlert('error', message);
+      return;
     }
-    const member_name = event.target.memberName.value;
-    const member_tel = event.target.memberTel.value;
-    const member_postal = event.target.memberAddress1.value;
-    const member_addr1 = event.target.memberAddress2.value;
-    const member_addr2 = event.target.memberAddress3.value;
+  };
 
-    // 전화번호 정규표현식
-    const regExpTel =
-      /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/;
-    const isValidTel = regExpTel.test(member_tel);
-
-    if (member_name === '') {
-      handleAlert('error', '이름이 공백입니다.');
-      return;
-    } else if (!isValidTel) {
-      handleAlert(
-        'error',
-        '전화번호를 제대로 입력해주세요.(공백 또는 ' - ' 사용)',
-      );
-      return;
-    } else if (member_postal === '' || member_addr1 === '') {
-      handleAlert('error', '주소가 공백입니다. 주소 검색을 해주세요.');
-      return;
-    } else if (member_addr2 === '') {
-      handleAlert('error', '상세주소가 공백입니다. 상세주소를 입력해주세요.');
+  //이메일 중복체크
+  const handleEmailChecked = async () => {
+    if (memberInfo.memberEmail === '') {
+      handleAlert('error', '이메일을 입력해주세요.');
       return;
     }
 
-    const row = member.find((row) => row.member_id === memberData.member_id);
-    row.member_authority = member_authority;
-    row.member_name = member_name;
-    row.member_tel = member_tel;
-    row.member_postal = member_postal;
-    row.member_addr1 = member_addr1;
-    row.member_addr2 = member_addr2;
-    handleAlert('success', '임직원 정보가 변경 되었습니다.');
-    setMember(member);
-    console.log('선택임직원데이터: ', memberData);
-    setUpdateOpened(false);
+    //유효성 검사
+    const regExpEmail =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    const isValidEmail = regExpEmail.test(memberInfo.memberEmail);
+    if (!isValidEmail) {
+      handleAlert('error', '이메일을 올바른 형식으로 입력해주세요.');
+      return;
+    }
+
+    try {
+      if (memberInfo.memberEmail !== memberData.memberEmail) {
+        const { data } = await isExistedEmail(memberInfo.memberEmail);
+        console.log('이메일검사 결과: ', data);
+        handleAlert('success', '이메일을 사용해도 좋습니다.');
+      }
+      setIsEmailChecked(true);
+    } catch (error) {
+      handleAlert('error', '중복된 이메일 입니다. 다른 이메일을 사용해주세요.');
+      return;
+    }
+  };
+
+  // 색상 변경시 동작
+  const colorChange = (color, event) => {
+    if (color) {
+      setCurrentColor(color.hex);
+      console.log(color.hex);
+    }
   };
 
   useEffect(() => {
@@ -168,7 +312,7 @@ const MemberUpdateDrawer = ({
         <form onSubmit={handleSubmit}>
           <ResponsiveContainer breakpoint={breakpoint}>
             <DrawerHeader breakpoint={breakpoint}>
-              <h1>직원 정보 변경 - {memberData.member_name}님</h1>
+              <h1>직원 정보 변경 - {memberData.memberName}님</h1>
               <div>
                 <AiOutlineClose
                   size={32}
@@ -199,23 +343,60 @@ const MemberUpdateDrawer = ({
                     label="직책"
                     value={selectVal}
                   >
-                    <MenuItem value="의사" onClick={() => setSelectVal('의사')}>
+                    <MenuItem
+                      value="ROLE_DOCTOR"
+                      onClick={() => setSelectVal('ROLE_DOCTOR')}
+                    >
                       의사
                     </MenuItem>
                     <MenuItem
-                      value="간호사"
-                      onClick={() => setSelectVal('간호사')}
+                      value="ROLE_NURSE"
+                      onClick={() => setSelectVal('ROLE_NURSE')}
                     >
                       간호사
                     </MenuItem>
                     <MenuItem
-                      value="검사자"
-                      onClick={() => setSelectVal('검사자')}
+                      value="ROLE_INSPECTOR"
+                      onClick={() => setSelectVal('ROLE_INSPECTOR')}
                     >
                       검사자
                     </MenuItem>
                   </Select>
                 </FormControl>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledTypography variant="h6" component="h5" weight={5}>
+                  이메일
+                </StyledTypography>
+              </Grid>
+              <Grid item xs={7}>
+                <StyledInputBase
+                  name="memberEmail"
+                  onChange={handleChange}
+                  value={memberInfo.memberEmail || ''}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={2}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <StyledButton
+                  bgColor="lightgray"
+                  onClick={() => handleEmailChecked()}
+                >
+                  중복 체크
+                </StyledButton>
               </Grid>
               <Grid
                 item
@@ -232,7 +413,7 @@ const MemberUpdateDrawer = ({
               <Grid item xs={9}>
                 <StyledInputBase
                   name="memberName"
-                  value={memberInfo.member_name || ''}
+                  value={memberInfo.memberName || ''}
                   onChange={handleChange}
                 />
               </Grid>
@@ -251,7 +432,7 @@ const MemberUpdateDrawer = ({
               <Grid item xs={9}>
                 <StyledInputBase
                   name="memberTel"
-                  value={memberInfo.member_tel || ''}
+                  value={memberInfo.memberTel || ''}
                   onChange={handleChange}
                 />
               </Grid>
@@ -270,9 +451,9 @@ const MemberUpdateDrawer = ({
 
               <Grid item xs={9}>
                 <StyledInputBase
-                  name="memberAddress1"
+                  name="memberPostal"
                   placeholder="우편 번호"
-                  value={memberInfo.member_postal || ''}
+                  value={memberInfo.memberPostal || ''}
                   onChange={handleChange}
                   readOnly
                 />
@@ -294,22 +475,81 @@ const MemberUpdateDrawer = ({
               </Grid>
               <Grid item xs={12}>
                 <StyledInputBase
-                  name="memberAddress2"
+                  name="memberAddr1"
                   placeholder="주소"
-                  value={memberInfo.member_addr1 || ''}
+                  value={memberInfo.memberAddr1 || ''}
                   onChange={handleChange}
                   readOnly
                 />
               </Grid>
               <Grid item xs={12}>
                 <StyledInputBase
-                  name="memberAddress3"
+                  name="memberAddr2"
                   placeholder="상세 주소를 입력하세요."
-                  value={memberInfo.member_addr2 || ''}
+                  value={memberInfo.memberAddr2 || ''}
                   onChange={handleChange}
                 />
               </Grid>
             </Grid>
+
+            <div>
+              <StyledTypography variant="h6" component="h5" weight={5}>
+                이미지
+              </StyledTypography>
+              <ImageUploader
+                name="memberImage"
+                withIcon={true}
+                buttonText="이미지를 선택해주세요."
+                onChange={onDrop}
+                imgExtension={['.jpg', '.png', '.jpeg']}
+                fileSizeError="파일사이즈가 너무 큽니다. 최대크기(5242880)"
+                fileTypeError="파일확장자가 잘못되었습니다."
+                label="최대 파일 크기: 5mb, 확장자: jpg, png만 가능"
+                maxFileSize={5242880}
+                singleImage
+                withPreview
+              />
+            </div>
+            <div>
+              <StyledTypography variant="h6" component="h5" weight={5}>
+                자기소개
+              </StyledTypography>
+              <TextField
+                name="memberIntroduction"
+                value={memberInfo.memberIntroduction || ''}
+                onChange={handleChange}
+                label="간단한 소개인사를 적어주세요."
+                multiline
+                rows={4}
+                variant="outlined"
+                fullWidth
+              />
+            </div>
+            <div
+              style={{
+                marginTop: 15,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <StyledTypography
+                variant="h6"
+                component="h5"
+                weight={5}
+                style={{ marginRight: 15 }}
+              >
+                색상선택
+              </StyledTypography>
+              <CirclePicker onChange={colorChange} />
+              <Paper
+                style={{
+                  width: 60,
+                  height: 60,
+                  marginLeft: 30,
+                  backgroundColor: memberInfo.memberColor || '',
+                }}
+              />
+            </div>
 
             <div
               style={{

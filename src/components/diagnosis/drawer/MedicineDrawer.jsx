@@ -2,24 +2,26 @@ import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import { SwipeableDrawer, Grid, Divider } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useSnackbar } from 'notistack';
 import {
   addMedicineInfo,
   removeMedicineInfo,
   setMedicineDrawer,
 } from 'redux/features/diagnosis/diagnosisSlice';
 import SearchItem from '../container/SearchItem';
-import MedicineData from '../../../pages/dashboard/diagnosis/medicine';
 import useWindowSize from 'hooks/useWindowSize';
-import Spinner from 'components/common/spinner/Spinner';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import MedicineItem from '../container/MedicineItem';
 import StyledTypography from 'components/common/typography/StyledTypography';
+import { searchMedicineList } from 'apis/searchAPI';
+import HashSpinner from 'components/common/spinner/HashSpinner';
 
 const MedicineDrawer = () => {
   const { breakpoint } = useWindowSize();
   const [searchVal, setSearchVal] = useState('');
+  const [searchData, setSearchData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const medicineInfo = useSelector((state) => state.diagnosis.medicineInfo);
@@ -34,18 +36,38 @@ const MedicineDrawer = () => {
     dispatch(setMedicineDrawer(open));
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
   useEffect(() => {
     if (searchVal === '') {
       return;
     }
-
     setLoading(false);
+    async function getMedicineList(searchVal) {
+      try {
+        const result = await searchMedicineList(searchVal);
+        setSearchData(result);
+
+        setLoading(true);
+      } catch (error) {
+        const { message } = error.response.data;
+
+        handleAlert('error', message);
+        setLoading(true);
+      }
+    }
+    getMedicineList(searchVal);
+
     // 임시로 딜레이 부여
-    setTimeout(() => {
-      setLoading(true);
-    }, 1000);
 
     console.log('검색 창에서 searchVal이 변경되었습니다', searchVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal]);
 
   const addMedicine = useCallback(
@@ -61,7 +83,8 @@ const MedicineDrawer = () => {
     },
     [dispatch],
   );
-
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/';
   return (
     <Fragment>
       <SwipeableDrawer
@@ -104,7 +127,9 @@ const MedicineDrawer = () => {
                     }}
                   >
                     <img
-                      src="/assets/image/searchinfo.png"
+                      src={
+                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchInfo.png'
+                      }
                       width="100%"
                       alt="search"
                     />
@@ -123,7 +148,7 @@ const MedicineDrawer = () => {
                       height: '100vh',
                     }}
                   >
-                    <Spinner />
+                    <HashSpinner />
                   </div>
                 )}
                 {searchVal !== '' && isLoading && (
@@ -138,10 +163,8 @@ const MedicineDrawer = () => {
                     }}
                   >
                     <Divider />
-                    {MedicineData.filter(({ medicine_name }) =>
-                      medicine_name.includes(searchVal),
-                    ).map((data) => (
-                      <Fragment key={data.medicine_name}>
+                    {searchData.map((data) => (
+                      <Fragment key={data.medicineName}>
                         <Divider />
                         <SearchItem data={data} addMedicine={addMedicine} />
                       </Fragment>

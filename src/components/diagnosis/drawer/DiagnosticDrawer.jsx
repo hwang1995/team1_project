@@ -2,27 +2,43 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { SwipeableDrawer, Grid, Divider, IconButton } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineClose } from 'react-icons/ai';
-import {
-  setDiagnosticDrawer,
-  setSearchDiagnosticInfo,
-} from 'redux/features/diagnosis/diagnosisSlice';
+import { useSnackbar } from 'notistack';
+import { setDiagnosticDrawer } from 'redux/features/diagnosis/diagnosisSlice';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
-import diagnosticData from 'pages/dashboard/diagnosis/csvjson.json';
 import StyledTypography from 'components/common/typography/StyledTypography';
-import Spinner from 'components/common/spinner/Spinner';
+
 import DiagnosticItem from '../container/DiagnosticItem';
+import { searchDiagnosticList } from 'apis/searchAPI';
+import HashSpinner from 'components/common/spinner/HashSpinner';
+
+/**
+ * * 목표 : 진단 검사 Drawer 컴포넌트
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticDrawer = () => {
+  // 해상도 Breakpoint를 가져오기 위한 Custom Hook
   const { breakpoint } = useWindowSize();
+
+  // 검색어를 저장하기 위한 상태
   const [searchVal, setSearchVal] = useState('');
+
+  // Spinner를 띄울지 결정하는 상태
   const [isLoading, setLoading] = useState(false);
+
+  // 검색 결과 저장하기 위한 상태
+  const [searchData, setSearchData] = useState([]);
   const dispatch = useDispatch();
+
+  // 진단 검사 Drawer의 상태
   const isOpened = useSelector(
     (state) => state.diagnosis.drawerStatus.diagnostic,
   );
 
+  // 진단 검사의 상태
   const diagnosticInfo = useSelector((state) => state.diagnosis.diagnosticInfo);
 
   const toggleDrawer = (open) => (e) => {
@@ -32,21 +48,40 @@ const DiagnosticDrawer = () => {
     dispatch(setDiagnosticDrawer(open));
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
   useEffect(() => {
     if (searchVal === '') {
       return;
     }
     setLoading(false);
-    setTimeout(() => {
-      setLoading(true);
-      const filteredData = diagnosticData.filter(({ bundle_name }) => {
-        return bundle_name.includes(searchVal);
-      });
-      dispatch(setSearchDiagnosticInfo(filteredData));
-    }, 1000);
+
+    // 진단 검사를 가져오기 위한 함수
+    async function getDiagnosticList(searchVal) {
+      try {
+        const result = await searchDiagnosticList(searchVal);
+        setSearchData(result);
+        setLoading(true);
+      } catch (error) {
+        const { message } = error.response.data;
+        handleAlert('error', message);
+        setLoading(true);
+      }
+    }
+    getDiagnosticList(searchVal);
+
     console.log('검색 창에서 searchVal의 값이 변경되었습니다.', searchVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchVal, dispatch]);
 
+  const { REACT_APP_BUCKET_PATH } = process.env;
+  const IMAGE_PATH = '/assets/image/';
   return (
     <Fragment>
       <SwipeableDrawer
@@ -91,7 +126,9 @@ const DiagnosticDrawer = () => {
                     }}
                   >
                     <img
-                      src="/assets/image/searchinfo.png"
+                      src={
+                        REACT_APP_BUCKET_PATH + IMAGE_PATH + 'searchInfo.png'
+                      }
                       width="100%"
                       alt="search"
                     />
@@ -111,7 +148,7 @@ const DiagnosticDrawer = () => {
                       height: '100vh',
                     }}
                   >
-                    <Spinner />
+                    <HashSpinner />
                   </div>
                 )}
 
@@ -127,17 +164,13 @@ const DiagnosticDrawer = () => {
                     }}
                   >
                     <Divider />
-                    {diagnosticData
-                      .filter(({ bundle_name }) =>
-                        bundle_name.includes(searchVal),
-                      )
-                      .map((data) => (
-                        <Fragment key={data.diag_inspection_id}>
-                          <Divider />
-                          <DiagnosticItem data={data} />
-                          {/* <SearchItem data={data} addMedicine={addMedicine} /> */}
-                        </Fragment>
-                      ))}
+                    {searchData.map((data) => (
+                      <Fragment key={data.diagInspectionId}>
+                        <Divider />
+                        <DiagnosticItem data={data} />
+                        {/* <SearchItem data={data} addMedicine={addMedicine} /> */}
+                      </Fragment>
+                    ))}
                   </div>
                 )}
               </div>

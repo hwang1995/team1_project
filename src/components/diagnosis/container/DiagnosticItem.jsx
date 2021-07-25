@@ -2,17 +2,17 @@ import React, { Fragment } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Container, Divider } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import {
   addDiagnosticGroupItem,
   addDiagnosticInfo,
   removeDiagnosticInfo,
 } from 'redux/features/diagnosis/diagnosisSlice';
+import { searchDiagnosticListByCode } from 'apis/searchAPI';
 
 const DiagnosticContainer = styled(Container)`
   width: 100%;
   padding: 0.5rem;
-
-  // 임시
   display: flex;
   flex-direction: row;
 
@@ -101,19 +101,43 @@ const DiagnosticContainer = styled(Container)`
   }
 `;
 
+/**
+ * * 목표 : 진단 검사의 항목을 나타내기 위한 컴포넌트
+ * @param {object} data
+ * @param {function} isRemove
+ * @returns {JSX.Element} view
+ * @author SUNG WOOK HWANG
+ */
 const DiagnosticItem = ({ data, isRemove }) => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
+
+  // 추가 버튼을 이벤트 함수
   const handleAddButton = (data) => {
     dispatch(addDiagnosticInfo(data));
   };
 
+  // 제거 버튼을 이벤트 함수
   const handleRemoveButton = (data) => {
     dispatch(removeDiagnosticInfo(data));
   };
 
-  const handleGroupButton = (data) => {
-    dispatch(addDiagnosticGroupItem(data));
+  // 그룹 추가의 이벤트 함수
+  const handleGroupButton = async (data) => {
+    const { bundleCode } = data;
+    try {
+      const result = await searchDiagnosticListByCode(bundleCode);
+      dispatch(addDiagnosticGroupItem(result));
+    } catch (error) {
+      const { message } = error.response.data;
+      handleAlert('error', message);
+    }
   };
   return (
     <DiagnosticContainer>
@@ -121,7 +145,7 @@ const DiagnosticItem = ({ data, isRemove }) => {
         <p className="title">그룹 코드 </p>
         <Divider />
         <div className="group-code-container">
-          <p className="group-code">{data.bundle_code}</p>
+          <p className="group-code">{data.bundleCode}</p>
         </div>
       </div>
 
@@ -129,17 +153,17 @@ const DiagnosticItem = ({ data, isRemove }) => {
         <div className="row">
           <span className="title">그룹 명</span>
           <span>|</span>
-          <span className="content">{data.bundle_name}</span>
+          <span className="content">{data.bundleName}</span>
         </div>
         <div className="row">
           <span className="title">처방 코드</span>
           <span>|</span>
-          <span className="content">{data.pres_code}</span>
+          <span className="content">{data.presCode}</span>
         </div>
         <div className="row">
           <span className="title">처방 명</span>
           <span>|</span>
-          <span className="content">{data.pres_name}</span>
+          <span className="content">{data.presName}</span>
         </div>
         <div className="row">
           <div className="button-area">

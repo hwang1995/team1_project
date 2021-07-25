@@ -4,6 +4,7 @@ import StyledTypography from 'components/common/typography/StyledTypography';
 import StyledInputBase from 'components/common/input/StyledInputBase';
 import StyledButton from 'components/common/button/StyledButton';
 
+// 검색된 예약 데이터에 대한 상세정보를 볼 수 있는 컴포넌트
 const Content = ({
   readPatient,
   reservationTime,
@@ -50,7 +51,7 @@ const Content = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={readPatient.birth} />
+        <StyledInputBase readOnly value={readPatient.patientBirth} />
       </Grid>
       <Grid
         item
@@ -110,7 +111,7 @@ const Content = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={readPatient.drRoom} />
+        <StyledInputBase readOnly value={readPatient.doctorRoom} />
       </Grid>
       <Grid
         item
@@ -125,7 +126,7 @@ const Content = ({
         </StyledTypography>
       </Grid>
       <Grid item xs={9}>
-        <StyledInputBase readOnly value={readPatient.memberName} />
+        <StyledInputBase readOnly value={readPatient.doctorName} />
       </Grid>
       <Grid
         item

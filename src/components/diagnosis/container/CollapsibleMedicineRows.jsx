@@ -7,9 +7,14 @@ import {
   TableRow,
   TableCell,
 } from '@material-ui/core';
-
 import StyledTypography from 'components/common/typography/StyledTypography';
 
+/**
+ * * 목표 : 약품 처방 기록에 대한 테이블 행을 나타내기 위한 컴포넌트
+ * @param {object} data
+ * @returns {JSX.Element} View
+ * @author SUNG WOOK HWANG
+ */
 const CollapsibleMedicineRows = ({ data }) => {
   return (
     <TableContainer>
@@ -43,14 +48,15 @@ const CollapsibleMedicineRows = ({ data }) => {
         </TableHead>
 
         <TableBody>
-          {data.map((rows) => (
-            <Fragment>
+          {data.map((rows, index) => (
+            <Fragment key={index}>
               <TableRow>
-                <TableCell size="small">{rows.medicine_code}</TableCell>
-                <TableCell size="small">{rows.medicine_name}</TableCell>
-                <TableCell size="small">{rows.medicine_type}</TableCell>
-                <TableCell size="small">{rows.medicine_unit}</TableCell>
-                <TableCell size="small">{rows.medicine_dose}</TableCell>
+                <TableCell size="small">{rows.medicineCode}</TableCell>
+                <TableCell size="small">{rows.medicineName}</TableCell>
+
+                <TableCell size="small">{rows.medicineType}</TableCell>
+                <TableCell size="small">{rows.medicineUnit}</TableCell>
+                <TableCell size="small">{rows.medicineDose}</TableCell>
               </TableRow>
             </Fragment>
           ))}
@@ -60,4 +66,4 @@ const CollapsibleMedicineRows = ({ data }) => {
   );
 };
 
-export default CollapsibleMedicineRows;
+export default React.memo(CollapsibleMedicineRows);

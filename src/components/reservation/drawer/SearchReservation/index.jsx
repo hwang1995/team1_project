@@ -8,7 +8,8 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import SearchBox from 'components/common/search/SearchBox';
 import PatientInfoListItem from './PatientInfoListItem';
 import ReservationInfoListContainer from './ReservationInfoListContainer';
-
+import ClockSpinner from 'components/common/spinner/ClockSpinner';
+import { getSearchReservationPatient } from 'apis/reservationAPI';
 
 /*
   예약된 환자의 검색을 보여주는 Drawer 컨테이너
@@ -16,15 +17,16 @@ import ReservationInfoListContainer from './ReservationInfoListContainer';
 const SearchReservation = ({
   searchOpened,
   setSearchOpened,
+  setAddDisplay,
 }) => {
-  /*
-    리덕스에서 설정한 예약환자 데이터
-  */
-  const patinetReservationInfo = useSelector(
-    (state) => state.reservation.reservationInfo,
-  );
+ 
+  // 로그인한 유저의 정보
+  const loginInfo = useSelector((state) => state.common.loginInfo);
   // 검색어(SearchBox)를 보여주냐 안보여주냐를 세팅하는 상태 데이터
   const [visible, setVisible] = useState(false);
+
+  //clockSpinner에 시팅할 것
+  const [isLoading, setLoading] = useState(false);
   /*
      검색결과에 대한 환자 데이터를 담는 부분
      PatientInfoListItem 컴포넌트에 searchResults를 전달해 검색결과 데이터 리스트가 띄어진다
@@ -64,7 +66,6 @@ const SearchReservation = ({
   };
 
   useEffect(() => {
-    console.log("예약 환자 검색하는 Drawer가 나오는 컴포넌트 입니다.")
     setResult([]);
   }, [readOpened]);
 
@@ -74,16 +75,46 @@ const SearchReservation = ({
     1) result 변수에 담는다
     2) restul를 setResult 함수에 담는다 (searchResults)
   */
-  const setSearchVal = (inputVal) => {
-    const result = patinetReservationInfo.filter((info) => {
-      if (info.title === inputVal) {
-        return true;
-      }
-      return false;
-    });
-    setResult(result);
-    setReadOpened(false);
-    setPageResult(true);
+  const setSearchVal = async (inputVal) => {
+    try {
+      setLoading(true);
+      const { data } = await getSearchReservationPatient({
+        hospitalCode: loginInfo.hospitalCode,
+        patientName: inputVal,
+      });
+      setResult(data.data);
+      console.log(data.data);
+      setReadOpened(false);
+     
+    } catch (error) {
+      setResult([]);
+       setPageResult(true);
+      setLoading(false);
+    }
+  };
+
+  /*
+    검색결과에 대한 데이터의값이 있을 경우, spinner를 off 한다
+  */
+  useEffect(() => {
+    if (searchResults.length > 0) {
+      setLoading(false);
+    }
+  }, [searchResults]);
+
+  const clockSpinner = () => {
+    return (
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ClockSpinner isLoading={isLoading} />
+      </div>
+    );
   };
 
   return (
@@ -105,32 +136,36 @@ const SearchReservation = ({
               />
             </div>
           </DrawerHeader>
+
           {visible === false && (
             <SearchBox
               setSearchVal={setSearchVal}
               placeholder="환자 이름을 입력해주세요."
             />
           )}
-
-          <div style={{ marginTop: '2em' }}>
-            {readOpened === false ? (
-              // 검색시 나오는 컴포넌트
-              <PatientInfoListItem
-                searchResults={searchResults}
-                setReadOpened={setReadOpened}
-                setReadPatient={setReadPatient}
-                pageResult={pageResult}
-              />
-            ) : (
-              //예약한 환자에 대한 정보 데이터
-              <ReservationInfoListContainer
-                setReadOpened={setReadOpened}
-                readPatient={readPatient}
-                setVisible={setVisible}
-                setPageResult={setPageResult}
-              />
-            )}
-          </div>
+          {isLoading && clockSpinner()}
+          {!isLoading && (
+            <div style={{ marginTop: '2em' }}>
+              {readOpened === false ? (
+                // 검색시 나오는 컴포넌트
+                <PatientInfoListItem
+                  searchResults={searchResults}
+                  setReadOpened={setReadOpened}
+                  setReadPatient={setReadPatient}
+                  pageResult={pageResult}
+                />
+              ) : (
+                //예약한 환자에 대한 정보 데이터
+                <ReservationInfoListContainer
+                  setReadOpened={setReadOpened}
+                  readPatient={readPatient}
+                  setVisible={setVisible}
+                  setPageResult={setPageResult}
+                  setAddDisplay={setAddDisplay}
+                />
+              )}
+            </div>
+          )}
         </ResponsiveContainer>
       </SwipeableDrawer>
     </Fragment>

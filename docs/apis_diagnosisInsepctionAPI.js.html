@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apis/diagnosisInsepctionAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apis/diagnosisInsepctionAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import axios from 'axios';
+
+/**
+ * * 목적 : 진단 검사의 ID(diagTestId)로 진단 검사 상세 리스트를 출력
+ * 
+ * @param {number} diagTestId 
+ * @returns {List&lt;DiagnosticTestRecordsVO>} diagnosticTestRecordList
+ * * [DiagnosticInspections Entity]
+ * * * !String bundleCode (그룹 코드)
+ * * * !String bundleName (그룹 명)
+ * * * !String presCode (처방 코드)
+ * * * !String presName (처방 명)
+ * * * !String presVessel (처방 용기)
+ * * * !String presSpecimenName (처방 검체 명)
+ * * [DiagnosticTestRecords VO]
+ * * * !String diagTestAvgValue (진단 검사 평균 값)
+ * * [DiagnosticTestRecords Entity]
+ * * * !int diagTestRecordId (진단 검사 상세의 ID)
+ * * * double diagTestValue (진단 검사의 결과 값)
+ * * * !String diagTestStatus (진단 검사의 상태)
+ * * [Members Entity - Doctor]
+ * * * !String doctorName (의사의 이름)
+ * * [Members Entity - Inspector]
+ * * * String inspectorName (검사자의 이름)
+ * @throws
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_diag_test_id"
+ * * * message : "올바른 진단 검사 ID를 입력해주세요"
+ * * HTTP Status 204 - No Content
+ * > 진단 검사의 결과 값이 없는 경우 Throw
+ */
+export const showDiagnosticTestListByDiagTestId = async (diagTestId) => {
+    return await axios.get(`/diagnosis/inspection/${diagTestId}`);
+}
+
+/**
+ * * 목적 : 병원 코드로 startDate ~ endDate 기간 동안의 진단 검사 기록 리스트를 가져오기 위한 API
+ * 
+ * @param {DateWithHospitalCode} hospitalInfo 
+ * * !String startDate (yyyy-MM-dd 형식)
+ * * !String endDate (yyyy-MM-dd 형식)
+ * * !String hospitalCode (병원 코드)
+ * @returns {List&lt;DiagnosticVO>} weeklyTestList
+ * * [DiagnosticTests Entity]
+ * * * !int diagTestId (진단 검사 ID)
+ * * * !String createdDate (진단 검사의 생성 일자)
+ * * * !String inspectionStatus (진단 검사의 상태)
+ * * [Patients Entity]
+ * * * !String patientName (환자의 이름)
+ * * * !String patientBirth (환자의 생일)
+ * * * !String patientGender (환자의 성별)
+ * * [Members Entity]
+ * * * !String doctorRoom (의사의 진료실)
+ * 
+ * @throws 
+ * * HTTP Status 400 - Bad Request
+ * * * status : "no_date_with_hospital_info"
+ * * * message : "올바른 정보를 입력해주세요."
+ * * HTTP Status 204 - No Content
+ * * * status : "no_contents" || "no_member_and_patient"
+ * * * message : "이번 주에는 진단 검사가 존재하지 않습니다." || "임직원과 환자 정보가 존재하지 않습니다"
+ */
+export const showWeeklyDiagnosticTestListByHospitalCode = async (hospitalInfo) => {
+    return await axios.get("/diagnosis/inspection", hospitalInfo);
+}
+
+/**
+ * * 목표 : 진단 검사의 상태를 COMPLETED, PROCESSING, PENDING으로 변경하는 API
+ * @param {object} statusInfo 
+ * * !String status (completed || processing || pending)
+ * * !int diagTestId (진단 검사의 ID)
+ * @returns {boolean} result
+ * @throws 
+ * * HTTP Status 400 - Bad Request
+ * * * status : "not_diag_test_id"
+ * * * message : "올바르지 않은 진단 검사의 식별자입니다."
+ * * HTTP Status 409 - Conflict Request
+ * * * status : "not_updated_diag_test_status"
+ * * * message : "진단 검사의 상태가 변경되지 않았습니다."
+ */
+export const diagnosticChangeStatus = async (statusInfo) => {
+    return await axios.put("/diagmosis/status", statusInfo);
+}
+
+/**
+ * * 목표 : [미구현 사항] 해당 환자의 진단 검사 상세에서 결과를 입력시에 값을 추가
+ * @param {object} testInfos 
+ * * !int inspector_member_id (검사자 임직원의 ID)
+ * * !List&lt;DiagnosticTestResultVO>
+ * * * !int diag_test_record_id (진단 검사 상세의 ID)
+ * * * !double diag_test_value (진단 검사 상세의 결과 값)
+ * @return {Boolean} result
+ */
+export const changeDiagnosticTestValue = async (testInfos) => {
+    return await axios.put("/diagnosis/inspection/", testInfos);
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addComment">addComment</a></li><li><a href="global.html#addMember">addMember</a></li><li><a href="global.html#addNoticeImage">addNoticeImage</a></li><li><a href="global.html#App">App</a></li><li><a href="global.html#changeDiagnosticTestValue">changeDiagnosticTestValue</a></li><li><a href="global.html#createNotice">createNotice</a></li><li><a href="global.html#createTodo">createTodo</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#deleteMember">deleteMember</a></li><li><a href="global.html#deletePatient">deletePatient</a></li><li><a href="global.html#diagnosticChangeStatus">diagnosticChangeStatus</a></li><li><a href="global.html#DiagnosticPage">DiagnosticPage</a></li><li><a href="global.html#getAuthentication">getAuthentication</a></li><li><a href="global.html#getDiagnosisList">getDiagnosisList</a></li><li><a href="global.html#getDoctorInfo">getDoctorInfo</a></li><li><a href="global.html#getHospitalInfo">getHospitalInfo</a></li><li><a href="global.html#getHospitalListInfo">getHospitalListInfo</a></li><li><a href="global.html#getNoticeCommentsList">getNoticeCommentsList</a></li><li><a href="global.html#getNoticeList">getNoticeList</a></li><li><a href="global.html#getNoticesList">getNoticesList</a></li><li><a href="global.html#getNoticesListByTitle">getNoticesListByTitle</a></li><li><a href="global.html#getPatientInfo">getPatientInfo</a></li><li><a href="global.html#getPatientsList">getPatientsList</a></li><li><a href="global.html#getReservationInfo">getReservationInfo</a></li><li><a href="global.html#getSearchPatientList">getSearchPatientList</a></li><li><a href="global.html#getSearchReservationPatient">getSearchReservationPatient</a></li><li><a href="global.html#getTodosListByHospitalCode">getTodosListByHospitalCode</a></li><li><a href="global.html#getTodosListByMemberId">getTodosListByMemberId</a></li><li><a href="global.html#intializeMemberPw">intializeMemberPw</a></li><li><a href="global.html#isExistedEmail">isExistedEmail</a></li><li><a href="global.html#memberImageUpload">memberImageUpload</a></li><li><a href="global.html#MemberPage">MemberPage</a></li><li><a href="global.html#modifyComment">modifyComment</a></li><li><a href="global.html#modifyHospitalsInfo">modifyHospitalsInfo</a></li><li><a href="global.html#modifyMemberInfo">modifyMemberInfo</a></li><li><a href="global.html#modifyNotice">modifyNotice</a></li><li><a href="global.html#modifyPatient">modifyPatient</a></li><li><a href="global.html#modifyReservationInfo">modifyReservationInfo</a></li><li><a href="global.html#Pages">Pages</a></li><li><a href="global.html#PatientPage">PatientPage</a></li><li><a href="global.html#registDiagnosisInfo">registDiagnosisInfo</a></li><li><a href="global.html#registerHospitalInfo">registerHospitalInfo</a></li><li><a href="global.html#registerPatientInfo">registerPatientInfo</a></li><li><a href="global.html#registerReservationInfo">registerReservationInfo</a></li><li><a href="global.html#removeComment">removeComment</a></li><li><a href="global.html#removeHospitalInfo">removeHospitalInfo</a></li><li><a href="global.html#removeNotice">removeNotice</a></li><li><a href="global.html#removeReservationInfo">removeReservationInfo</a></li><li><a href="global.html#removeTodo">removeTodo</a></li><li><a href="global.html#ReservationPage">ReservationPage</a></li><li><a href="global.html#ReservationReadContainer">ReservationReadContainer</a></li><li><a href="global.html#searchDiagnosticList">searchDiagnosticList</a></li><li><a href="global.html#searchDiagnosticListByCode">searchDiagnosticListByCode</a></li><li><a href="global.html#searchInjectorList">searchInjectorList</a></li><li><a href="global.html#searchMedicineList">searchMedicineList</a></li><li><a href="global.html#searchPatientInfoByName">searchPatientInfoByName</a></li><li><a href="global.html#showDiagnosisHistoryByPatientId">showDiagnosisHistoryByPatientId</a></li><li><a href="global.html#showDiagnosticTestListByDiagTestId">showDiagnosticTestListByDiagTestId</a></li><li><a href="global.html#showMembersListByHospitalCode">showMembersListByHospitalCode</a></li><li><a href="global.html#showMembersListByNameAndCode">showMembersListByNameAndCode</a></li><li><a href="global.html#showWeeklyDiagnosticTestListByHospitalCode">showWeeklyDiagnosticTestListByHospitalCode</a></li><li><a href="global.html#useFormInput">useFormInput</a></li><li><a href="global.html#useWindowSize">useWindowSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 08 2021 19:45:00 GMT+0900 (대한민국 표준시)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

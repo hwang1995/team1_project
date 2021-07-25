@@ -2,6 +2,7 @@ import React from 'react';
 import { TableRow, TableCell } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import {
+  setCurrentDiagTestId,
   setDiagnosticDrawer,
   setDiagnosticDrawerPage,
 } from 'redux/features/diagnostic/diagnosticSlice';
@@ -12,55 +13,69 @@ const DiagnosticTableRow = ({ data }) => {
   const dispatch = useDispatch();
 
   const handleClick = () => {
+    dispatch(setCurrentDiagTestId(data.diagTestId));
+
     dispatch(setDiagnosticDrawer(true));
     dispatch(setDiagnosticDrawerPage('LIST'));
   };
   return (
-    <TableRow>
-      <TableCell size="small">{data.diag_test_id}</TableCell>
-      <TableCell size="small">{data.patient_name}</TableCell>
-      <TableCell size="small">{data.patient_birth}</TableCell>
-      <TableCell size="small">
-        {data.patient_gender === 'MAN' ? '남자' : '여자'}
+    <TableRow hover>
+      <TableCell size="small">{data.diagTestId}</TableCell>
+      <TableCell
+        size="small"
+        style={{
+          fontWeight: 700,
+        }}
+      >
+        {data.patientName}
       </TableCell>
-      <TableCell size="small">{data.created_date}</TableCell>
-      <TableCell size="small">{data.doctor_room}</TableCell>
+      <TableCell size="small">{data.patientBirth}</TableCell>
+      <TableCell size="small">
+        {data.patientGender === 'male' ? '남자' : '여자'}
+      </TableCell>
+      <TableCell size="small">{data.createdDate}</TableCell>
+      <TableCell size="small">{data.doctorRoom}</TableCell>
       <TableCell size="small">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <ColorCircleContainer size={10} color={data.inspection_status} />
-          {data.inspection_status === 'PENDING' && (
+          <ColorCircleContainer size={12} color={data.inspectionStatus} />
+          {data.inspectionStatus === 'DIAGNOSTIC_PENDING' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
               weight={9}
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '0.75rem', color: '#F1BF4D' }}
             >
               대기
             </StyledTypography>
           )}
-          {data.inspection_status === 'REGISTER' && (
+          {data.inspectionStatus === 'DIAGNOSTIC_REGISTER' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
               weight={7}
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '0.75rem', color: '#E35E5C' }}
             >
               접수
             </StyledTypography>
           )}
-          {data.inspection_status === 'COMPLETED' && (
+          {data.inspectionStatus === 'DIAGNOSTIC_COMPLETED' && (
             <StyledTypography
               variant="subtitle2"
               component="h5"
               weight={7}
-              style={{ marginLeft: '0.75rem' }}
+              style={{ marginLeft: '0.75rem', color: '#488EF3' }}
             >
               완료
             </StyledTypography>
           )}
         </div>
       </TableCell>
-      <TableCell size="small">
+      <TableCell
+        size="small"
+        style={{
+          minWidth: '100px',
+        }}
+      >
         <StyledButton bgColor="#004D80" color="white" onClick={handleClick}>
           검사 보기
         </StyledButton>
