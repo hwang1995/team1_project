@@ -102,7 +102,7 @@ const DiagnosticBloodDrawModal = () => {
       const sendMessageInfo = {
         topic: `/${hospitalCode}/inspector`,
         priority: 'success',
-        message: `진단 검사의 상태가 채혈 완료로 인해 완료로 변경되었습니다.`,
+        message: `진단 검사의 상태가 완료로 변경되었습니다.`,
       };
       await sendMqttMessage(sendMessageInfo);
       dispatch(setDiagnosticMessageCount());
