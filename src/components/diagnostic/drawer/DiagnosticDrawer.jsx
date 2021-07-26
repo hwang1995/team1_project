@@ -256,6 +256,17 @@ const DiagnosticDrawer = () => {
     // toggleModal('bloodDraw', true);
   };
 
+  const handleResultInput = () => {
+    if (diagnosticInfo[0].diagTestStatus !== 'DIAGNOSTIC_COMPLETED') {
+      handleAlert(
+        'error',
+        '진단 검사의 결과를 입력하기 위해서는 채혈을 진행하고 상태가 완료로 변경되어야 합니다.',
+      );
+      return;
+    }
+    togglePage('RESULT_INPUT');
+  };
+
   const getStepContent = (step) => {
     if (step === 'LIST') {
       return (
@@ -359,9 +370,7 @@ const DiagnosticDrawer = () => {
                 <Button onClick={() => toggleModal('barcode', true)}>
                   바코드 출력
                 </Button>
-                <Button onClick={() => togglePage('RESULT_INPUT')}>
-                  결과 입력
-                </Button>
+                <Button onClick={() => handleResultInput()}>결과 입력</Button>
 
                 <Button>
                   <CSVLink data={diagnosticInfo} headers={headers}>

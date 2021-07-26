@@ -16,11 +16,15 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
-import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
+import {
+  setDiagnosticMessageCount,
+  setDiagnosticModal,
+} from 'redux/features/diagnostic/diagnosticSlice';
 import {
   changeStatusToCompletedWithMemberId,
   diagnosticChangeStatus,
 } from 'apis/diagnosisInsepctionAPI';
+import { sendMqttMessage } from 'apis/pushAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -79,6 +83,7 @@ const DiagnosticBloodDrawModal = () => {
 
   const handleBloodDraw = async () => {
     try {
+      const { hospitalCode } = loginInfo;
       await diagnosticChangeStatus({
         status: 'completed',
         diagTestId,
@@ -93,7 +98,15 @@ const DiagnosticBloodDrawModal = () => {
       });
 
       await changeStatusToCompletedWithMemberId(sendInfo);
-      handleAlert('success', '진단 검사의 상태가 접수로 완료되었습니다.');
+
+      const sendMessageInfo = {
+        topic: `/${hospitalCode}/inspector`,
+        priority: 'success',
+        message: `진단 검사의 상태가 채혈 완료로 인해 완료로 변경되었습니다.`,
+      };
+      await sendMqttMessage(sendMessageInfo);
+      dispatch(setDiagnosticMessageCount());
+      // handleAlert('success', '진단 검사의 상태가 접수로 완료되었습니다.');
       handleClose();
     } catch (error) {
       const { message } = error.response.data;

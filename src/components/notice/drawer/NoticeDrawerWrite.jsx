@@ -82,8 +82,8 @@ const NoticeDrawerWrite = () => {
       };
 
       await createNotice(sendInfo);
-
-      dispatch(setActiveStep('SUCCESS'));
+      handleAlert('success', '게시물 등록이 완료 되었습니다.');
+      dispatch(setActiveStep('MAIN'));
     } catch (error) {
       console.log(error);
     }
