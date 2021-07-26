@@ -79,9 +79,13 @@ const DiagnosticDrawer = () => {
     (state) => state.diagnostic.diagnosticDataInput,
   );
   const isOpened = useSelector((state) => state.diagnostic.drawerStatus.status);
-  // const modalStatus = useSelector((state) => state.diagnostic.modalStatus);
+  const modalStatus = useSelector((state) => state.diagnostic.modalStatus);
   const { memberAuthority, memberId, hospitalCode } = useSelector(
     (state) => state.common.loginInfo,
+  );
+
+  const diagnosticMessageCount = useSelector(
+    (state) => state.diagnostic.diagnosticMessageCount,
   );
 
   // Static Data
@@ -162,8 +166,11 @@ const DiagnosticDrawer = () => {
     if (!isOpened) {
       dispatch(resetDiagnosticData());
     }
+
+    console.log(modalStatus);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpened, pageStatus]);
+  }, [isOpened, pageStatus, diagnosticMessageCount]);
 
   const togglePage = (page) => {
     dispatch(setDiagnosticDrawerPage(page));

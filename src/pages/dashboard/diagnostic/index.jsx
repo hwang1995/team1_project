@@ -52,6 +52,10 @@ const DiagnosticPage = () => {
   // Redux store에 있는 병원 코드
   const { hospitalCode } = useSelector((state) => state.common.loginInfo);
 
+  const diagnosticMessageCount = useSelector(
+    (state) => state.diagnostic.diagnosticMessageCount,
+  );
+
   // Redux store에 있는 진단 검사 ID
   const currentDiagTestId = useSelector(
     (state) => state.diagnostic.currentDiagTestId,
@@ -105,7 +109,7 @@ const DiagnosticPage = () => {
       getDiagnosticInfos(sendInfo);
     }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendCalInfo]);
+  }, [sendCalInfo, diagnosticMessageCount]);
 
   const { REACT_APP_BUCKET_PATH } = process.env;
   const IMAGE_PATH = '/assets/image/404/';

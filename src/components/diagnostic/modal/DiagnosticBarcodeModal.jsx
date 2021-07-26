@@ -23,6 +23,7 @@ import {
   changeStatusToRegisterWithMemberId,
   diagnosticChangeStatus,
 } from 'apis/diagnosisInsepctionAPI';
+import { sendMqttMessage } from 'apis/pushAPI';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -84,7 +85,7 @@ const DiagnosticBarcodeModal = () => {
   const handlePrintAndStatus = async () => {
     try {
       handlePrint();
-
+      const { hospitalCode } = loginInfo;
       const { diagTestStatus } = diagnosticList[0];
       if (
         diagTestStatus === 'DIAGNOSTIC_REGISTER' ||
@@ -110,7 +111,14 @@ const DiagnosticBarcodeModal = () => {
       });
 
       await changeStatusToRegisterWithMemberId(sendInfo);
-      handleAlert('success', '진단 검사의 상태가 접수로 변경되었습니다.');
+
+      const sendMessageInfo = {
+        topic: `/${hospitalCode}/inspector`,
+        priority: 'success',
+        message: `진단 검사의 상태가 접수로 변경되었습니다.`,
+      };
+      await sendMqttMessage(sendMessageInfo);
+      // handleAlert('success', '진단 검사의 상태가 접수로 변경되었습니다.');
     } catch (error) {
       const { message } = error.response.data;
       handleAlert('error', message);

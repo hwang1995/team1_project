@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useCallback, useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useSelector } from 'react-redux';
@@ -12,6 +13,7 @@ import MemberPage from './member';
 import PatientPage from './patient';
 import ReservationPage from './reservation';
 import TutorialPage from './tutorial';
+import { setDiagnosticMessageCount } from 'redux/features/diagnostic/diagnosticSlice';
 
 /**
  * Dashboard 컴포넌트의 페이지를 정의하고
@@ -28,6 +30,7 @@ import TutorialPage from './tutorial';
 const Dashboard = () => {
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.common.loginInfo);
   const handleAlert = useCallback(
     (variant, message) => {
@@ -62,7 +65,12 @@ const Dashboard = () => {
     };
     client.current.onMessageArrived = (msg) => {
       const parseMsg = JSON.parse(msg.payloadString);
-      const { priority, message } = parseMsg;
+      const { priority, message, topic } = parseMsg;
+      const parseTopic = topic.split('/');
+
+      if (parseTopic[parseTopic.length - 1] === 'inspector') {
+        dispatch(setDiagnosticMessageCount());
+      }
       handleAlert(priority, message);
       // console.log(message);
     };
