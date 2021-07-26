@@ -18,7 +18,10 @@ import DrawerHeader from 'components/common/drawer/DrawerHeader';
 import useWindowSize from 'hooks/useWindowSize';
 import ResponsiveContainer from 'components/common/container/ResponsiveContainer';
 
-import { setDiagnosticModal } from 'redux/features/diagnostic/diagnosticSlice';
+import {
+  setDiagnosticMessageCount,
+  setDiagnosticModal,
+} from 'redux/features/diagnostic/diagnosticSlice';
 import {
   changeStatusToRegisterWithMemberId,
   diagnosticChangeStatus,
@@ -118,6 +121,7 @@ const DiagnosticBarcodeModal = () => {
         message: `진단 검사의 상태가 접수로 변경되었습니다.`,
       };
       await sendMqttMessage(sendMessageInfo);
+      dispatch(setDiagnosticMessageCount());
       // handleAlert('success', '진단 검사의 상태가 접수로 변경되었습니다.');
     } catch (error) {
       const { message } = error.response.data;
