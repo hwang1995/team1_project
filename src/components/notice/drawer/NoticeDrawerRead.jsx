@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BsPencilSquare, BsListUl, BsFillTrashFill } from 'react-icons/bs';
 import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
+import { Viewer } from '@toast-ui/react-editor';
 import Typography from '@material-ui/core/Typography';
 import { MdRemoveCircleOutline } from 'react-icons/md';
 import {
@@ -178,18 +179,11 @@ const NoticeDrawerRead = () => {
           </div>
           <hr />
           <div style={{ display: 'flex' }}>
-            <h2
-              style={{
-                fontWeight: '500',
-                padding: '0.5rem',
-                display: 'flex',
-                marginTop: '0.5rem',
-                marginBottom: '0.5rem',
-                alignItems: 'center',
-              }}
-            >
-              {parse(notice.noticeContent.toString())}
-            </h2>
+            <Viewer
+              isViewer={true}
+              useDefaultHTMLSanitizer={true}
+              initialValue={notice.noticeContent}
+            />
           </div>
 
           <hr />
