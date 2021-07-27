@@ -30,6 +30,7 @@ import ResponsivePageHeader from 'components/common/header/ResponsivePageHeader'
 import PageTransition from 'components/common/transition/PageTransition';
 import ClockSpinner from 'components/common/spinner/ClockSpinner';
 
+import { useSnackbar } from 'notistack';
 /**
  * 이 페이지 컴포넌트는 진료 에약(접수) 페이지를 작성하기 위한 컴포넌트입니다.
  * 들어가야할 내용은 다음과 같습니다.
@@ -148,6 +149,15 @@ const ReservationPage = () => {
     startDate: initStartDate,
     endDate: initEndDate,
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  // Alert를 띄우기 위한 함수
+  const handleAlert = (variant, message) => {
+    enqueueSnackbar(message, {
+      variant,
+    });
+  };
 
   // toast ui calendar dom을 가져오기 위한 useEffect
   useEffect(() => {
@@ -367,6 +377,24 @@ const ReservationPage = () => {
 
     const scheduleStart = moment(start.toDate()).format();
     const scheduleEnd = moment(end.toDate()).format();
+
+    const startHour = moment(start.toDate()).get('hours');
+
+    const weekdayNum = moment(start.toDate()).isoWeekday();
+
+    console.log('평일 가져온다.', moment(start.toDate()).isoWeekday());
+
+    if (weekdayNum > 5) {
+      handleAlert('error', '진료 접수는 평일만 가능합니다.');
+      return;
+    }
+    if (startHour < 9 || startHour > 18) {
+      handleAlert(
+        'error',
+        '진료 접수는 오전 9시부터 오후 6시까지 진행가능합니다.',
+      );
+      return;
+    }
 
     //2)
     setReservationTime({
